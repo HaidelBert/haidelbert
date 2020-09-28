@@ -1,0 +1,28 @@
+<h2>Hinzufügen</h2>
+<form nz-form [formGroup]="newForm" (ngSubmit)="submitForm($event)">
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="year">Jar</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Jahr ist ein Pflichtfeld!">
+      <input type="text" nz-input formControlName="year" (ngModelChange)="newYear$.next($event)">
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item nz-row>
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <div class="button-container">
+        <button nz-button nzType="danger" (click)="handleCancel()">Abbrechen</button>
+        <button nz-button nzType="primary" [nzLoading]="saving">Speicher</button>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div class="flex-row h-center">
+  <nz-descriptions [nzColumn]="1" nzTitle="Daten">
+    <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1">{{ formatMoney(simulated ? simulated.grossRevenue : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Reverse Charge" [nzSpan]="1">{{ formatMoney(simulated ? simulated.reverseCharge : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="20% Mwst." [nzSpan]="1">{{ formatMoney(simulated ? simulated.vat : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Vorsteuer" [nzSpan]="1">{{ formatMoney(simulated ? simulated.inputTax : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Zahllast" [nzSpan]="1">{{ formatMoney(simulated ? simulated.vatPayable : undefined) }}</nz-descriptions-item>
+  </nz-descriptions>
+</div>

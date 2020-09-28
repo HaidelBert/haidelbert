@@ -1,0 +1,59 @@
+<h2>Hinzufügen</h2>
+<form nz-form [formGroup]="newForm" (ngSubmit)="submitForm($event)">
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="year">Jar</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Jahr ist ein Pflichtfeld!">
+      <input type="text" nz-input formControlName="year" (ngModelChange)="newYear$.next($event)">
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="interval">Interval</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Interval ist ein Pflichtfeld!">
+      <nz-select formControlName="interval" (ngModelChange)="selectedInterval$.next($event)">
+        <nz-option nzValue="QUARTER" nzLabel="Quartal"></nz-option>
+        <nz-option nzValue="MONTH" nzLabel="Monat"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="isQuarterMode">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="quarter">Quartal</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-select formControlName="quarter" (ngModelChange)="selectedQuarter$.next($event)">
+        <nz-option [nzValue]="1" nzLabel="1"></nz-option>
+        <nz-option [nzValue]="2" nzLabel="2"></nz-option>
+        <nz-option [nzValue]="3" nzLabel="3"></nz-option>
+        <nz-option [nzValue]="4" nzLabel="4"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item *ngIf="isMonthMode">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="month">Monat</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" >
+      <nz-select formControlName="month" (ngModelChange)="selectedMonth$.next($event)">
+        <nz-option *ngFor="let m of months" [nzValue]="m" [nzLabel]="formatMonth(m)"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item nz-row>
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <div class="button-container">
+        <button nz-button nzType="danger" (click)="handleCancel()">Abbrechen</button>
+        <button nz-button nzType="primary" [nzLoading]="saving">Speicher</button>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div class="flex-row h-center">
+  <nz-descriptions [nzColumn]="1" nzTitle="Daten">
+    <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1">{{ formatMoney(simulated ? simulated.grossRevenue : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Reverse Charge" [nzSpan]="1">{{ formatMoney(simulated ? simulated.reverseCharge : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="20% Mwst." [nzSpan]="1">{{ formatMoney(simulated ? simulated.vat : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Vorsteuer" [nzSpan]="1">{{ formatMoney(simulated ? simulated.inputTax : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Zahllast" [nzSpan]="1">{{ formatMoney(simulated ? simulated.vatPayable : undefined) }}</nz-descriptions-item>
+  </nz-descriptions>
+</div>

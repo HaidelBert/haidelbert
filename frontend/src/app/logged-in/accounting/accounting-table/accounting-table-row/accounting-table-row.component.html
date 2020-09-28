@@ -15,7 +15,7 @@
   </td>
   <td>{{ formatMoney({amount: calculateNetAmount(data.grossAmount, data.taxRate), currency: 'EUR'}) }}</td>
   <td>
-    <nz-tag>{{ data.category.name }} - {{ data.category.taxAuthorityNumber }}</nz-tag>
+    <nz-tag>{{ data.category.name }}</nz-tag>
   </td>
   <td><a (click)="startEdit()">Edit</a></td>
 </ng-container>
@@ -48,7 +48,7 @@
     <td>{{ getNetAmount(data) }}</td>
     <td>
       <nz-select *ngIf="!categoriesLoading" [(ngModel)]="editCache.category" [compareWith]="compareCategories">
-        <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category.name+' - '+category.taxAuthorityNumber"></nz-option>
+        <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category.name"></nz-option>
       </nz-select>
       <nz-spin *ngIf="categoriesLoading" nzSimple></nz-spin>
     </td>

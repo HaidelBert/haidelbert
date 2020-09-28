@@ -1,0 +1,17 @@
+<nz-skeleton [nzLoading]="!details">
+  <nz-descriptions [nzColumn]="2" nzTitle="Zeitraum">
+    <nz-descriptions-item nzTitle="Jahr" [nzSpan]="1">{{ details ? details.year : '' }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Interval" [nzSpan]="1">{{ formatInterval(details) }}</nz-descriptions-item>
+
+  </nz-descriptions>
+</nz-skeleton>
+  <nz-divider></nz-divider>
+<nz-skeleton [nzLoading]="!details">
+  <nz-descriptions [nzColumn]="1" nzTitle="Daten">
+    <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1">{{ formatMoney(details ? details.grossRevenue : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Reverse Charge" [nzSpan]="1">{{ formatMoney(details ? details.reverseCharge : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="20% Mwst." [nzSpan]="1">{{ formatMoney(details ? details.vat : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="- Vorsteuer" [nzSpan]="1">{{ formatMoney(details ? details.inputTax : undefined) }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Zahllast" [nzSpan]="1">{{ formatMoney(details ? details.vatPayable : undefined) }}</nz-descriptions-item>
+  </nz-descriptions>
+</nz-skeleton>

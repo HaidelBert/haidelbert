@@ -58,7 +58,6 @@ export class AccountingRecordRepository {
         category: {
           id: '1',
           name: 'Bürokosten',
-          taxAuthorityNumber: '9230',
         },
         reverseCharge: true
       });
@@ -82,7 +81,6 @@ export class AccountingRecordRepository {
         category: {
           id: '1',
           name: 'Bürokosten',
-          taxAuthorityNumber: '9230',
         },
         reverseCharge: true
       });
@@ -106,7 +104,6 @@ export class AccountingRecordRepository {
       category: {
         id: '1',
         name: 'Bürokosten',
-        taxAuthorityNumber: '9230',
       },
       ...rest
     } as AccountingRecord);

@@ -24,6 +24,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AccountingTableComponent } from './accounting/accounting-table/accounting-table.component';
 import { AccountingTableRowComponent } from './accounting/accounting-table/accounting-table-row/accounting-table-row.component';
 import { NewAccountingRecordComponent } from './accounting/new-accounting-record/new-accounting-record.component';
+import {VatComponent} from './vat/vat.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { NewAccountingRecordComponent } from './accounting/new-accounting-record
     AccountingComponent,
     AccountingTableComponent,
     AccountingTableRowComponent,
-    NewAccountingRecordComponent
+    NewAccountingRecordComponent,
   ],
   imports: [
     NzLayoutModule,

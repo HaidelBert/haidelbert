@@ -18,6 +18,7 @@ import {NzAlertModule, NzButtonModule, NzCardModule, NzFormModule, NzInputModule
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoggedInGuard} from './loggedInGuard';
 import {TokenInterceptor} from './tokenInterceptor';
+import {VatModule} from './logged-in/vat/vat.module';
 
 registerLocaleData(en);
 
@@ -44,6 +45,7 @@ registerLocaleData(en);
     NzButtonModule,
     NzAlertModule,
     NzSpinModule,
+    VatModule
   ],
   bootstrap: [AppComponent],
   providers: [
