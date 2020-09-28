@@ -21,7 +21,7 @@ jobs:
           (npm run start&)
           npm run lint
           npm run test
-          cd .. && cd ./github/workflows && ./waitForFrontend.sh 4200
+          cd .. && ./waitForPort.sh 4200
           npm run cypress:run
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
