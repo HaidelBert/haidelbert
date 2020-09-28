@@ -22,6 +22,7 @@ jobs:
           npm run lint
           npm run test
           cd .. && ./waitForPort.sh 4200
+          pwd
           npm run cypress:run
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
