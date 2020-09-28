@@ -2,6 +2,7 @@ on:
   push:
     paths:
     - 'user/**'
+    - '.github/workflows/ci-user.yml'
 name: CI/CD User
 jobs:
   build:
