@@ -5,8 +5,6 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test --watch=false --browsers=ChromeHeadlessCustom",
-    "test:watch": "ng test",
     "lint": "ng lint",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open"
