@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "lint": "ng lint",
+    "test": "jest --passWithNoTests",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open"
   },
@@ -40,9 +41,16 @@
     "codelyzer": "^6.0.0",
     "cypress": "^5.2.0",
     "cypress-graphql-mock": "^0.5.0-alpha.4",
+    "jest": "^26.4.2",
+    "jest-preset-angular": "^8.3.1",
     "puppeteer": "^5.3.1",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
+  },
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupTestFrameworkScriptFile": "./src/setupJest.ts",
+    "testPathIgnorePatterns": ["/node_modules/", "/cypress/"]
   }
 }

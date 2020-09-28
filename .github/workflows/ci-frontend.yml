@@ -18,6 +18,7 @@ jobs:
           cd frontend
           npm ci
           npm run lint
+          npm run test
           (npm run start&)
           npm run cypress:run
       - name: Set up QEMU
