@@ -18,9 +18,9 @@ jobs:
         run: |
           cd frontend
           npm ci
+          (npm run start&)
           npm run lint
           npm run test
-          (npm run start&)
           cd ./github/workflows && ./waitForFrontend.sh
           npm run cypress:run
       - name: Set up QEMU
