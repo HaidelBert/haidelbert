@@ -2,7 +2,7 @@ on:
   push:
     paths:
     - 'user/**'
-name: CI/CD
+name: CI/CD User
 jobs:
   build:
     runs-on: ubuntu-latest
