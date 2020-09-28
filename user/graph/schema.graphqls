@@ -1,0 +1,23 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Token {
+  accessToken: String!
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+}
+
+type Query {
+  me: User!
+  token(credentials: Credentials!): Token
+}
+
+input Credentials {
+  usernameOrEmail: String!
+  password: String!
+}

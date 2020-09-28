@@ -1,0 +1,64 @@
+on: push
+name: CI/CD
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Start MongoDB 4.2
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          mongodb-version: 4.2
+      - name: Migrate test DB
+        run: ENV=ci go run ./cmd/migration/migration.go
+      - name: Test
+        run: ENV=ci go test ./...
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: |
+            haidelbert/user:${{ github.sha }}
+            haidelbert/user:latest
+          push: true
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Migrate staging DB
+        run: ENV=staging mongoUrl=${{ secrets.MONGOURLSTAGING }} go run ./cmd/migration/migration.go
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/user user=haidelbert/user:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/user --namespace haidelbert --context staging --insecure-skip-tls-verify=true

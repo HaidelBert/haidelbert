@@ -1,0 +1,5 @@
+<router-outlet *ngIf="isInitialized()"></router-outlet>
+<div *ngIf="!isInitialized()" class="flex-row fill-height h-center v-center">
+  <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+</div>
+

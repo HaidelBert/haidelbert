@@ -1,0 +1,6 @@
+{
+  "watch": ["*"],
+  "ext": "go",
+  "ignore": ["*gen.go"],
+  "exec": "(lsof -i :9090 -t | xargs kill || true) && (go run ./cmd/server/server.go || true)"
+}

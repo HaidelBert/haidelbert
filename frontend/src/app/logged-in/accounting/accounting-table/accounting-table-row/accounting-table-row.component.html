@@ -1,0 +1,60 @@
+<ng-container *ngIf="!editing; else editTemplate" >
+  <td>{{ data.runningNumber }}</td>
+  <td>{{ data.bookingDate }}</td>
+  <td>
+    <nz-tag>{{ data.receiptType }}</nz-tag>
+  </td>
+  <td>
+    <nz-tag [nzColor]="getColorForTag(data)">{{ data.moneyFlow }}</nz-tag>
+  </td>
+  <td>{{ data.reverseCharge ? 'Ja' : 'Nein' }}</td>
+  <td>{{ data.description }}</td>
+  <td>{{ data.taxRate }}</td>
+  <td>
+    {{ formatMoney({amount: data.grossAmount, currency: data.currency}) }}
+  </td>
+  <td>{{ formatMoney({amount: calculateNetAmount(data.grossAmount, data.taxRate), currency: 'EUR'}) }}</td>
+  <td>
+    <nz-tag>{{ data.category.name }} - {{ data.category.taxAuthorityNumber }}</nz-tag>
+  </td>
+  <td><a (click)="startEdit()">Edit</a></td>
+</ng-container>
+<ng-template #editTemplate>
+    <td>{{ data.runningNumber }}</td>
+    <td>{{ data.bookingDate }}</td>
+    <td>
+      <nz-select [(ngModel)]="editCache.receiptType">
+        <nz-option nzValue="CASH" nzLabel="Kassa"></nz-option>
+        <nz-option nzValue="BANK" nzLabel="Bank"></nz-option>
+      </nz-select>
+    </td>
+    <td>
+      <nz-select [(ngModel)]="editCache.moneyFlow">
+        <nz-option nzValue="REVENUE" nzLabel="Einnahme"></nz-option>
+        <nz-option nzValue="EXPENDITURE" nzLabel="Ausgabe"></nz-option>
+      </nz-select>
+    </td>
+    <td>
+      <label nz-checkbox [(ngModel)]="editCache.reverseCharge"
+             (ngModelChange)="reverseChargeChanged($event)"></label>
+    </td>
+    <td><input type="text" nz-input [(ngModel)]="editCache.description"/></td>
+    <td><input type="text" nz-input [value]="editCache.taxRate"
+               (blur)="editCache.taxRate = parseInt($event.target.value)"/></td>
+    <td>
+      <input type="text" nz-input [value]="formatMoney({amount: data.grossAmount, currency: data.currency })"
+             (blur)="editCache.grossAmount = parseMoney($event)"/>
+    </td>
+    <td>{{ getNetAmount(data) }}</td>
+    <td>
+      <nz-select *ngIf="!categoriesLoading" [(ngModel)]="editCache.category" [compareWith]="compareCategories">
+        <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category.name+' - '+category.taxAuthorityNumber"></nz-option>
+      </nz-select>
+      <nz-spin *ngIf="categoriesLoading" nzSimple></nz-spin>
+    </td>
+    <td>
+      <a (click)="cancelEdit()" class="save">Cancel</a>
+      <a nz-popconfirm nzTitle="Sure to save?" (nzOnConfirm)="saveEdit()" style="margin-left: 10px">Save</a>
+    </td>
+</ng-template>
+
