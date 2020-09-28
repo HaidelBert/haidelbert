@@ -2,6 +2,7 @@ on:
   push:
     paths:
     - 'frontend/**'
+    - '.github/workflows/ci-frontend.yml'
 name: CI/CD Frontend
 jobs:
   build_frontend:
