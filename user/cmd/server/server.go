@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/HaidelBert/user/api"
 	"github.com/HaidelBert/user/cmd/config"
-	"github.com/HaidelBert/user/cmd/db"
 	"github.com/HaidelBert/user/domain"
+	"github.com/HaidelBert/user/infrastructure/db"
 	"github.com/HaidelBert/user/infrastructure/token"
 	"github.com/HaidelBert/user/infrastructure/user"
 	"github.com/go-chi/chi"

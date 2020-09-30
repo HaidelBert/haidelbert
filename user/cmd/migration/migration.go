@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/HaidelBert/user/cmd/config"
-	"github.com/HaidelBert/user/cmd/db"
+	"github.com/HaidelBert/user/infrastructure/db"
 	"gopkg.in/mgo.v2"
 )
 
