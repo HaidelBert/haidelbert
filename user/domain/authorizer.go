@@ -5,12 +5,12 @@ import (
 )
 
 type Authorizer struct {
-	generator
+	generator Generator
 	userRepository UserRepository
-	passwordEncoder
+	passwordEncoder PasswordEncoder
 }
 
-func NewAuthorizer(generator generator, userRepository UserRepository, passwordEncoder passwordEncoder) Authorizer {
+func NewAuthorizer(generator Generator, userRepository UserRepository, passwordEncoder PasswordEncoder) Authorizer {
 	return Authorizer{
 		generator:       generator,
 		userRepository:  userRepository,

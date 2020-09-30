@@ -2,9 +2,9 @@ package user
 
 import "golang.org/x/crypto/bcrypt"
 
-type BcryptPasswordEncoder struct{}
+type BcryptEncoder struct{}
 
-func (BcryptPasswordEncoder) Compare(hashedPassword string, password string) bool {
+func (BcryptEncoder) Compare(hashedPassword string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
 		return false
@@ -12,7 +12,7 @@ func (BcryptPasswordEncoder) Compare(hashedPassword string, password string) boo
 	return true
 }
 
-func (BcryptPasswordEncoder) Encode(password string) (*string, error) {
+func (BcryptEncoder) Encode(password string) (*string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
 		return nil, err

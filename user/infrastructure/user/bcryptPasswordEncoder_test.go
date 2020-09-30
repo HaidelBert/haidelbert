@@ -3,7 +3,7 @@ package user
 import "testing"
 
 func TestBCryptPasswordEncoder(t *testing.T) {
-	sut := BcryptPasswordEncoder{}
+	sut := BcryptEncoder{}
 	hashed, err := sut.Encode("123")
 	if err != nil {
 		t.Fatalf("Should run without errors")

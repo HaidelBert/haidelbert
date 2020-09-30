@@ -5,6 +5,7 @@ import (
 	"github.com/HaidelBert/user/cmd/config"
 	"github.com/HaidelBert/user/domain"
 	"github.com/HaidelBert/user/infrastructure/db"
+	"github.com/HaidelBert/user/infrastructure/passwordEncoder"
 	"github.com/HaidelBert/user/infrastructure/token"
 	"github.com/HaidelBert/user/infrastructure/user"
 	"github.com/go-chi/chi"
@@ -52,7 +53,7 @@ func main() {
 	if expiryParseErr != nil {
 		log.Fatal(expiryParseErr)
 	}
-	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(secret, time.Duration(expiryInSeconds)), userRepository, user.BcryptPasswordEncoder{})
+	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(secret, time.Duration(expiryInSeconds)), userRepository, passwordEncoder.BcryptPasswordEncoder{})
 	authController := api.NewAuthController(authorizer)
 
 	userController := api.NewUserController(userService)

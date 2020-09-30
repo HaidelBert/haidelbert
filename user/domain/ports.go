@@ -1,10 +1,10 @@
 package domain
 
-type generator interface {
+type Generator interface {
 	Generate(u UserMinimal) (*Token, error)
 }
 
-type passwordEncoder interface {
+type PasswordEncoder interface {
 	Compare(hashedPassword string, password string) bool
 	Encode(password string) (*string, error)
 }
