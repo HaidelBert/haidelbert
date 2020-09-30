@@ -41,5 +41,6 @@ func fromEntity(entity Entity) *domain.User {
 		ID: entity.Id.Hex(),
 		Username: entity.Username,
 		Email: entity.Email,
+		Password: entity.Password,
 	}
 }

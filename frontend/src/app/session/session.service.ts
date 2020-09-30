@@ -1,47 +1,24 @@
 import {Injectable} from '@angular/core';
-import {Apollo} from 'apollo-angular';
-import gql from 'graphql-tag';
-import {tap} from 'rxjs/operators';
-import {Observable} from 'rxjs';
 import {SessionStore} from './session.store';
+import {HttpClient} from '@angular/common/http';
+import {getUserApiBaseUrl} from '../../config/config';
 
-const tokenQuery = (username: string, password: string) => {
-  return {
-    query: gql`
-      query {
-        token(credentials: { usernameOrEmail: "${username}", password: "${password}"}) {
-          accessToken
-        }
-      }`
-  };
-};
-
-const meQuery = () => {
-  return {
-    query: gql`
-      query {
-        me {
-          id
-          username
-          email
-        }
-      }`
-  };
-};
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
-  constructor(private sessionStore: SessionStore, private apollo: Apollo){}
+  constructor(private sessionStore: SessionStore, private httpClient: HttpClient){}
 
   async login(username: string, password: string): Promise<any> {
-    const result = await this.apollo.use('user').query<any>(tokenQuery(username, password)).toPromise();
-    localStorage.setItem('accessToken', result.data.token.accessToken);
-    const meResult = await this.apollo.use('user').query<any>(meQuery()).toPromise();
+    const result = await this.httpClient
+      .post<any>(`${getUserApiBaseUrl()}/user/api/public/token`, { usernameOrEmail: username, password })
+      .toPromise();
+    localStorage.setItem('accessToken', result.accessToken);
+    const meResult = await this.httpClient.get(`${getUserApiBaseUrl()}/user/api/protected/me`).toPromise();
     this.sessionStore.update({
-      user: meResult.data.me,
+      user: meResult,
       loggedIn: true
     });
   }
@@ -50,10 +27,10 @@ export class SessionService {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       try {
-        const result = await this.apollo.use('user').query<any>(meQuery()).toPromise();
+        const result = await this.httpClient.get(`${getUserApiBaseUrl()}/user/api/protected/me`).toPromise();
         console.log('SessionService: logging in');
         this.sessionStore.update({
-          user: result.data.me,
+          user: result,
           loggedIn: true
         });
         return true;

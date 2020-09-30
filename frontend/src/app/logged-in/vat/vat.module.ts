@@ -1,16 +1,9 @@
 import {NgModule} from '@angular/core';
-import {DashboardComponent} from '../dashboard/dashboard.component';
-import {LoggedInComponent} from '../logged-in.component';
-import {AccountingComponent} from '../accounting/accounting.component';
-import {AccountingTableComponent} from '../accounting/accounting-table/accounting-table.component';
-import {AccountingTableRowComponent} from '../accounting/accounting-table/accounting-table-row/accounting-table-row.component';
-import {NewAccountingRecordComponent} from '../accounting/new-accounting-record/new-accounting-record.component';
 import {VatComponent} from './vat.component';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from '../../app-routing.module';
-import {GraphQLModule} from '../../graphql.module';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {IconsProviderModule} from '../../icons-provider.module';
@@ -48,7 +41,6 @@ import {NewAnnualCompletionComponent} from './annual-completion/new-annual-compl
     NzMenuModule,
     BrowserModule,
     AppRoutingModule,
-    GraphQLModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,

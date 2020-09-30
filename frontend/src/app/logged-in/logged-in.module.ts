@@ -3,7 +3,6 @@ import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {NzMenuModule} from 'ng-zorro-antd/menu';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from '../app-routing.module';
-import {GraphQLModule} from '../graphql.module';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {IconsProviderModule} from '../icons-provider.module';
@@ -61,7 +60,6 @@ import {SellAssetComponent} from './register-of-assets/sell-asset/sell-asset.com
     NzMenuModule,
     BrowserModule,
     AppRoutingModule,
-    GraphQLModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,

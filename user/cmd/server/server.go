@@ -5,7 +5,6 @@ import (
 	"github.com/HaidelBert/user/cmd/config"
 	"github.com/HaidelBert/user/domain"
 	"github.com/HaidelBert/user/infrastructure/db"
-	"github.com/HaidelBert/user/infrastructure/passwordEncoder"
 	"github.com/HaidelBert/user/infrastructure/token"
 	"github.com/HaidelBert/user/infrastructure/user"
 	"github.com/go-chi/chi"
@@ -53,18 +52,18 @@ func main() {
 	if expiryParseErr != nil {
 		log.Fatal(expiryParseErr)
 	}
-	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(secret, time.Duration(expiryInSeconds)), userRepository, passwordEncoder.BcryptPasswordEncoder{})
+	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(secret, time.Duration(expiryInSeconds)), userRepository, user.BcryptEncoder{})
 	authController := api.NewAuthController(authorizer)
 
 	userController := api.NewUserController(userService)
 
 	router.Route("/user/api", func(rootRouter chi.Router) {
 		rootRouter.Route("/public", func(publicRouter chi.Router) {
-			publicRouter.Post("/auth/token", authController.Login)
+			publicRouter.Post("/token", authController.Login)
 		})
 		rootRouter.Route("/protected", func(protectedRouter chi.Router) {
 			protectedRouter.Use(api.Middleware(api.NewJwtDecoder(secret)))
-			protectedRouter.Get("/user/me", userController.Me)
+			protectedRouter.Get("/me", userController.Me)
 		})
 	})
 
