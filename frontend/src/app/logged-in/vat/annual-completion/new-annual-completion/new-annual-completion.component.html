@@ -2,7 +2,7 @@
 <form nz-form [formGroup]="newForm" (ngSubmit)="submitForm($event)">
 
   <nz-form-item>
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="year">Jar</nz-form-label>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="year">Jahr</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Jahr ist ein Pflichtfeld!">
       <input type="text" nz-input formControlName="year" (ngModelChange)="newYear$.next($event)">
     </nz-form-control>

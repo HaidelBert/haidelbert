@@ -7,7 +7,7 @@
     <nz-option *ngFor="let year of selectableYears" [nzValue]="year" [nzLabel]="year"></nz-option>
   </nz-select>
   <nz-skeleton-element *ngIf="selectableYearsLoading" nzType="input" nzActive="true" style="width:300px"></nz-skeleton-element>
-  <nz-table #preRegistrationsTable nzBordered [nzData]="preRegistrations" nzTableLayout="fixed" nzPageSize="50" style="margin-top: 20px">
+  <nz-table #preRegistrationsTable nzBordered [nzData]="preRegistrations" nzTableLayout="fixed" nzPageSize="50" style="margin-top: 20px" [nzShowPagination]="false">
     <thead>
     <tr>
       <th nzWidth="60%">Interval</th>
@@ -31,6 +31,6 @@
   <app-vat-new-pre-registration (cancel)="newOpen=false"></app-vat-new-pre-registration>
 </nz-drawer>
 
-<nz-drawer [nzVisible]="detailsOpen" [nzWidth]="640" [nzClosable]="false" (nzOnClose)="closeDetails()">
+<nz-drawer [nzVisible]="detailsOpen" [nzWidth]="300" [nzClosable]="false" (nzOnClose)="closeDetails()">
   <app-vat-pre-registration-details [details]="details"></app-vat-pre-registration-details>
 </nz-drawer>

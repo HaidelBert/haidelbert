@@ -1,0 +1,12 @@
+<nz-descriptions *ngIf="!!details" [nzColumn]="1" nzTitle="Zusammenfassung">
+  <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1">{{ formatTotalRevenue() }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Ausgaben" [nzSpan]="1">{{ formatTotalExpenditure() }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Ergebnis" [nzSpan]="1"><strong>{{ details ? formatMoney(details.result) : '' }}</strong></nz-descriptions-item>
+</nz-descriptions>
+<nz-divider></nz-divider>
+<nz-descriptions *ngIf="!!details" [nzColumn]="1" nzTitle="Details">
+  <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1"></nz-descriptions-item>
+  <nz-descriptions-item *ngFor="let revenue of revenues" [nzTitle]="revenue.key" [nzSpan]="1">{{ formatMoney(revenue.value) }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Ausgaben" [nzSpan]="1"></nz-descriptions-item>
+  <nz-descriptions-item *ngFor="let expenditure of expenditures" [nzTitle]="expenditure.key" [nzSpan]="1">{{ formatMoney(expenditure.value) }}</nz-descriptions-item>
+</nz-descriptions>

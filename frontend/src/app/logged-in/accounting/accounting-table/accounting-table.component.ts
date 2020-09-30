@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AccountingRecord, AccountingRecordRepository, UpdateAccountingRecord} from '../accounting.repository';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import moment from 'moment';
 
 const years: number[] = [];
 const upperLimitYear = new Date().getFullYear();
@@ -21,21 +22,21 @@ export class AccountingTableComponent implements OnInit {
   constructor(
     private accountingRecordRepository: AccountingRecordRepository,
     private fb: FormBuilder
-  ) {}
+  ) {
+    this.filterForm = this.fb.group({
+      selectedYear: [new Date().getFullYear(), [Validators.required]],
+      selectedQuarter: [moment().quarter(), [Validators.required]],
+    });
+  }
 
   handleUpdate = async (update: Partial<UpdateAccountingRecord>): Promise<void> =>  {
     return this.accountingRecordRepository.patch(update);
   }
 
   async ngOnInit(): Promise<void> {
-    this.filterForm = this.fb.group({
-      selectedYear: [null, [Validators.required]],
-      selectedQuarter: [null, [Validators.required]],
-    });
-    this.filterForm.controls.selectedYear.setValue(new Date().getFullYear());
     this.records = await this.accountingRecordRepository.find(
       this.filterForm.controls.selectedYear.value,
-      this.filterForm.controls.selectedQuarter.value > 0 ? this.filterForm.controls.selectedQuarter.value : undefined
+      this.filterForm.controls.selectedQuarter.value
     );
   }
 

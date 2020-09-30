@@ -9,12 +9,21 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {IconsProviderModule} from '../icons-provider.module';
 import {LoggedInComponent} from './logged-in.component';
 import {
-  NzAutocompleteModule,
-  NzButtonModule, NzCardModule, NzCheckboxModule, NzDatePickerModule, NzDescriptionsModule, NzDividerModule, NzDrawerModule, NzFormModule,
+  NzAutocompleteModule, NzBadgeModule,
+  NzButtonModule,
+  NzCardModule,
+  NzCheckboxModule,
+  NzDatePickerModule,
+  NzDescriptionsModule,
+  NzDividerModule,
+  NzDrawerModule,
+  NzDropDownModule,
+  NzFormModule,
   NzInputModule,
   NzInputNumberModule,
   NzPopconfirmModule,
-  NzSelectModule, NzSpinModule,
+  NzSelectModule,
+  NzSpinModule,
   NzTableModule,
   NzTagModule
 } from 'ng-zorro-antd';
@@ -24,7 +33,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AccountingTableComponent } from './accounting/accounting-table/accounting-table.component';
 import { AccountingTableRowComponent } from './accounting/accounting-table/accounting-table-row/accounting-table-row.component';
 import { NewAccountingRecordComponent } from './accounting/new-accounting-record/new-accounting-record.component';
-import {VatComponent} from './vat/vat.component';
+import {AnnualFinancialStatementsComponent} from './annual-financial-statements/annual-financial-statements.component';
+import {AnnualFinancialStatementsDetailsComponent} from './annual-financial-statements/annual-financial-statements-details/annual-financial-statements-details.component';
+import {NewAnnualFinancialStatementComponent} from './annual-financial-statements/new-annual-financial-statement/new-annual-financial-statement.component';
+import {RegisterOfAssetsComponent} from './register-of-assets/register-of-assets.component';
+import {NewAssetComponent} from './register-of-assets/new-asset/new-asset.component';
+import {SellAssetComponent} from './register-of-assets/sell-asset/sell-asset.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +49,12 @@ import {VatComponent} from './vat/vat.component';
     AccountingTableComponent,
     AccountingTableRowComponent,
     NewAccountingRecordComponent,
+    AnnualFinancialStatementsComponent,
+    AnnualFinancialStatementsDetailsComponent,
+    NewAnnualFinancialStatementComponent,
+    RegisterOfAssetsComponent,
+    NewAssetComponent,
+    SellAssetComponent
   ],
   imports: [
     NzLayoutModule,
@@ -63,7 +83,9 @@ import {VatComponent} from './vat/vat.component';
     NzDividerModule,
     NzAutocompleteModule,
     NzDatePickerModule,
-    NzSpinModule
+    NzSpinModule,
+    NzDropDownModule,
+    NzBadgeModule
   ]
 })
 export class LoggedInModule {

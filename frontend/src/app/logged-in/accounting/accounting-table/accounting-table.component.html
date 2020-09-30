@@ -6,11 +6,10 @@
   </nz-form-item>
   <nz-form-item>
     <nz-select formControlName="selectedQuarter" nzPlaceHolder="Select a Quarter" style="width: 140px">
-      <nz-option  nzLabel="" nzValue="-1"></nz-option>
-      <nz-option  nzLabel="Quartal 1" nzValue="1"></nz-option>
-      <nz-option  nzLabel="Quartal 2" nzValue="2"></nz-option>
-      <nz-option  nzLabel="Quartal 3" nzValue="3"></nz-option>
-      <nz-option  nzLabel="Quartal 4" nzValue="4"></nz-option>
+      <nz-option nzLabel="Quartal 1" [nzValue]="1"></nz-option>
+      <nz-option nzLabel="Quartal 2" [nzValue]="2"></nz-option>
+      <nz-option nzLabel="Quartal 3" [nzValue]="3"></nz-option>
+      <nz-option nzLabel="Quartal 4" [nzValue]="4"></nz-option>
     </nz-select>
   </nz-form-item>
 </form>
