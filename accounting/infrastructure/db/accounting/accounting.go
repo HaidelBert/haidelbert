@@ -4,6 +4,7 @@ import (
 	"github.com/HaidelBert/accounting/domain/accounting"
 	"github.com/jmoiron/sqlx"
 	"github.com/thoas/go-funk"
+	"strconv"
 	"time"
 )
 
@@ -35,7 +36,19 @@ func (r Repository) Find(tx sqlx.Tx, userId string, filter accounting.Filter) ([
 	params = append(params, userId)
 	if filter.Name != nil && *filter.Name != ""{
 		params = append(params, *filter.Name)
-		where += " AND name LIKE '%$2%'"
+		where += " AND name LIKE '%$"+strconv.Itoa(len(params))+"%'"
+	}
+	if filter.Year != nil {
+		params = append(params, *filter.Year)
+		where += " AND extract(year from booking_date)=$"+strconv.Itoa(len(params))
+	}
+	if filter.Quarter != nil && *filter.Quarter > 0 {
+		params = append(params, *filter.Quarter)
+		where += " AND extract(quarter from booking_date)=$"+strconv.Itoa(len(params))
+	}
+	if filter.Month != nil && *filter.Month > 0 {
+		params = append(params, *filter.Month)
+		where += " AND extract(month from booking_date)=$"+strconv.Itoa(len(params))
 	}
 	list := []Entity{}
 	err := tx.Select(&list, "SELECT * FROM accounting_records where "+where+" ORDER BY booking_date DESC", params...)

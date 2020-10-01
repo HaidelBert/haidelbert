@@ -107,4 +107,7 @@ type Record struct {
 
 type Filter struct {
 	Name *string
+	Year *int64
+	Quarter *int64
+	Month *int64
 }

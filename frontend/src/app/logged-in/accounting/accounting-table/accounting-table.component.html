@@ -1,11 +1,11 @@
 <form nz-form [nzLayout]="'inline'" [formGroup]="filterForm">
   <nz-form-item>
-    <nz-select formControlName="selectedYear" nzPlaceHolder="Select a year" style="width: 140px">
+    <nz-select formControlName="selectedYear" nzPlaceHolder="Select a year" style="width: 140px" (ngModelChange)="refresh()">
       <nz-option *ngFor="let year of years" [nzLabel]="year" [nzValue]="year"></nz-option>
     </nz-select>
   </nz-form-item>
   <nz-form-item>
-    <nz-select formControlName="selectedQuarter" nzPlaceHolder="Select a Quarter" style="width: 140px">
+    <nz-select formControlName="selectedQuarter" nzPlaceHolder="Select a Quarter" style="width: 140px" (ngModelChange)="refresh()">
       <nz-option nzLabel="Quartal 1" [nzValue]="1"></nz-option>
       <nz-option nzLabel="Quartal 2" [nzValue]="2"></nz-option>
       <nz-option nzLabel="Quartal 3" [nzValue]="3"></nz-option>

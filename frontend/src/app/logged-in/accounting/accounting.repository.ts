@@ -84,7 +84,13 @@ export class AccountingRecordRepository {
   constructor(private httpClient: HttpClient) {}
 
   public async find(year: number, quarter?: number, month?: number): Promise<AccountingRecord[]> {
-    return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/`).toPromise();
+    if (quarter) {
+      return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/?year=${year}&quarter=${quarter}`).toPromise();
+    }
+    if (month) {
+      return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/?year=${year}&month=${month}`).toPromise();
+    }
+    return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/?year=${year}`).toPromise();
   }
 
   public async findByDescription(name: string): Promise<AccountingRecord[]> {

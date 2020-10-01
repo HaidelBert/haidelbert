@@ -31,9 +31,15 @@ func (c AccountingController) Post(res http.ResponseWriter, req *http.Request) {
 
 func (c AccountingController) Get(res http.ResponseWriter, req *http.Request) {
 	claims := ForContext(req.Context())
-	nameFilter := chi.URLParam(req, "name")
+	nameFilter := req.URL.Query().Get("name")
+	yearFilter, _ := strconv.ParseInt(req.URL.Query().Get("year"), 10, 64)
+	quarterFilter, _ := strconv.ParseInt(req.URL.Query().Get("quarter"), 10, 64)
+	monthFilter, _ := strconv.ParseInt(req.URL.Query().Get("month"), 10, 64)
 	newRecord, err := c.Service.ListAllRecords(claims.UserId, accounting.Filter{
 		Name: &nameFilter,
+		Year: &yearFilter,
+		Quarter: &quarterFilter,
+		Month: &monthFilter,
 	})
 	if err != nil {
 		respondWithError(res, err)
