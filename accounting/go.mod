@@ -12,6 +12,7 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.0.0
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/thoas/go-funk v0.7.0
 	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae // indirect
 	golang.org/x/text v0.3.3 // indirect
 )

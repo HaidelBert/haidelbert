@@ -73,25 +73,38 @@ func (e ReceiptType) String() string {
 }
 
 type NewRecord struct {
-	BookingDate 	int64 `json:"bookingDate"`
-	Name 			string `json:"name"`
-	GrossAmount 	int64  `json:"grossAmount"`
-	TaxRate 		uint16 `json:"taxRate"`
+	BookingDate 	int64 		`json:"bookingDate"`
+	Name 			string 		`json:"name"`
+	GrossAmount 	int64  		`json:"grossAmount"`
+	TaxRate 		uint16 		`json:"taxRate"`
 	ReceiptType 	ReceiptType `json:"receiptType"`
-	Currency 		string `json:"currency"`
-	Category 		Category `json:"category"`
-	ReverseCharge 	bool `json:"reverseCharge"`
+	Category 		Category 	`json:"category"`
+	ReverseCharge 	bool 		`json:"reverseCharge"`
+	IdUser			string		`json:"idUser"`
+}
+
+type UpdateRecord struct {
+	BookingDate 	*int64 			`json:"bookingDate"`
+	Name 			*string 		`json:"name"`
+	GrossAmount 	*int64  		`json:"grossAmount"`
+	TaxRate 		*uint16			`json:"taxRate"`
+	ReceiptType 	*ReceiptType	`json:"receiptType"`
+	Category 		*Category 		`json:"category"`
+	ReverseCharge 	*bool 			`json:"reverseCharge"`
 }
 
 type Record struct {
 	ID            	int64    	`json:"id"`
-	RunningNumber 	int64       `json:"runningNumber"`
+	RunningNumber 	*int64      `json:"runningNumber"`
 	BookingDate   	int64       `json:"bookingDate"`
 	Name   			string    	`json:"name"`
 	GrossAmount   	int64       `json:"grossAmount"`
 	TaxRate       	uint16      `json:"taxRate"`
 	ReceiptType   	ReceiptType `json:"receiptType"`
-	Currency      	string    	`json:"currency"`
 	Category      	Category 	`json:"category"`
 	ReverseCharge 	bool     	`json:"reverseCharge"`
+}
+
+type Filter struct {
+	Name *string
 }

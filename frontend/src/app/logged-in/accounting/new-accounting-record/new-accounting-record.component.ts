@@ -10,6 +10,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {calculateNetAmount, formatMoney} from '../../../utils';
 import currency from 'currency.js';
 import {NzAutocompleteOptionComponent} from 'ng-zorro-antd';
+import moment from 'moment';
 
 @Component({
   selector: 'app-new-accounting-record',
@@ -68,7 +69,7 @@ export class NewAccountingRecordComponent {
 
   descriptionSelected($event: NzAutocompleteOptionComponent): void {
     const template: AccountingRecord = $event.nzValue;
-    this.newForm.controls.description.setValue(template.description);
+    this.newForm.controls.description.setValue(template.name);
     this.newForm.controls.receiptType.setValue(template.receiptType);
     this.newForm.controls.reverseCharge.setValue(template.reverseCharge);
     this.newForm.controls.taxRate.setValue(template.taxRate);
@@ -96,14 +97,13 @@ export class NewAccountingRecordComponent {
 
   private mapFromForm(): UpdateAccountingRecord {
     return {
-      bookingDate: this.newForm.controls.bookingDate.value,
-      description: this.newForm.controls.description.value,
+      bookingDate: moment(this.newForm.controls.bookingDate.value).unix(),
+      name: this.newForm.controls.description.value,
       receiptType: this.newForm.controls.receiptType.value,
       reverseCharge: this.newForm.controls.reverseCharge.value,
-      grossAmount: this.newForm.controls.grossAmount.value,
-      taxRate: this.newForm.controls.taxRate.value,
-      category: this.newForm.controls.category.value.key,
-      currency: 'EUR'
+      grossAmount: currency(this.newForm.controls.grossAmount.value).intValue,
+      taxRate: parseInt(this.newForm.controls.taxRate.value, 10),
+      category: this.newForm.controls.category.value,
     };
   }
 

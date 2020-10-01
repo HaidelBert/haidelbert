@@ -9,6 +9,7 @@ create table accounting_records
     gross_amount bigint NOT NULL,
     category varchar NOT NULL,
     id_user varchar NOT NULL,
+    reverse_charge bool NOT NULL,
     created_ts timestamp NOT NULL default CURRENT_TIMESTAMP,
     updated_ts timestamp NOT NULL default CURRENT_TIMESTAMP
 );

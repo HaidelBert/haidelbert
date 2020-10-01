@@ -13,5 +13,23 @@ func Connect() *sqlx.DB {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
+	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(50)
 	return db
+}
+
+func HandleError(tx sqlx.Tx, err error) error {
+	if err != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			return rollbackErr
+		}
+		return err
+	}
+	commitErr := tx.Commit()
+	if commitErr != nil {
+		return commitErr
+	}
+
+	return nil
 }

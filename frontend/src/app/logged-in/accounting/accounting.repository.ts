@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {waitFor} from '../../utils';
+import {HttpClient} from '@angular/common/http';
+import {getAccountingApiBaseUrl} from '../../../config/config';
 
 
 export enum MoneyFlow {
@@ -53,25 +55,23 @@ export const revenueCategories: Category[] = [Category.REVENUE_SERVICES, Categor
 export const isRevenueCategory = (category: Category) => revenueCategories.some(value => value === category);
 
 export interface UpdateAccountingRecord {
-  bookingDate: string;
-  description: string;
+  bookingDate: number;
+  name: string;
   grossAmount: number;
   taxRate: number;
   receiptType: ReceiptType;
-  currency: string;
   category: Category;
   reverseCharge: boolean;
 }
 
 export interface AccountingRecord {
-  id: string;
+  id: number;
   runningNumber: number;
-  bookingDate: string;
-  description: string;
+  bookingDate: number;
+  name: string;
   grossAmount: number;
   taxRate: number;
   receiptType: ReceiptType;
-  currency: string;
   category: Category;
   reverseCharge: boolean;
 }
@@ -81,58 +81,25 @@ export interface AccountingRecord {
 })
 export class AccountingRecordRepository {
 
-  public find(year: number, quarter?: number, month?: number): Promise<AccountingRecord[]> {
-    const data = [];
-    for (let i = 0; i < 50; i++) {
-      data.push({
-        id: `${i}`,
-        runningNumber: null,
-        bookingDate: '01.01.2020',
-        description: 'koajsd fkjasdflk ajksd',
-        grossAmount: 12000,
-        taxRate: 20,
-        receiptType: ReceiptType.BANK,
-        currency: 'EUR',
-        category: Category.OFFICE_EXPENDITURE,
-        reverseCharge: true
-      });
-    }
-    return Promise.resolve(data);
+  constructor(private httpClient: HttpClient) {}
+
+  public async find(year: number, quarter?: number, month?: number): Promise<AccountingRecord[]> {
+    return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/`).toPromise();
   }
 
-  public findByDescription(description: string): Promise<AccountingRecord[]> {
-    const data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({
-        id: `${i}`,
-        runningNumber: null,
-        bookingDate: '01.01.2020',
-        description: 'koajsd fkjasdflk ajksd',
-        grossAmount: 12000,
-        taxRate: 20,
-        receiptType: ReceiptType.BANK,
-        currency: 'EUR',
-        category: {
-          id: '1',
-          name: 'Bürokosten',
-        },
-        reverseCharge: true
-      });
-    }
-    return Promise.resolve(data);
+  public async findByDescription(name: string): Promise<AccountingRecord[]> {
+    return await this.httpClient.get<AccountingRecord[]>(`${getAccountingApiBaseUrl()}/accounting/api/protected/?name=${name}`).toPromise();
   }
 
-  public async patch(patch: Partial<UpdateAccountingRecord>): Promise<void> {
-    await waitFor(500);
-    return Promise.resolve();
+  public async patch(id: number, patch: Partial<UpdateAccountingRecord>): Promise<void> {
+    await this.httpClient.patch<void>(`${getAccountingApiBaseUrl()}/accounting/api/protected/${id}`, patch).toPromise();
   }
 
   public async post(post: UpdateAccountingRecord): Promise<AccountingRecord> {
-    await waitFor(5000);
-    return Promise.resolve({
-      id: '1',
-      ...post
-    } as AccountingRecord);
+    return await this.httpClient.post<AccountingRecord>(`${getAccountingApiBaseUrl()}/accounting/api/protected/`, post).toPromise();
   }
 
+  async delete(id: number): Promise<void> {
+    await this.httpClient.delete<void>(`${getAccountingApiBaseUrl()}/accounting/api/protected/${id}`).toPromise();
+  }
 }

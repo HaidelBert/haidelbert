@@ -2,62 +2,102 @@ package dbAccounting
 
 import (
 	"github.com/HaidelBert/accounting/domain/accounting"
-	"github.com/jackc/pgx/pgtype"
 	"github.com/jmoiron/sqlx"
+	"github.com/thoas/go-funk"
 	"time"
 )
 
-type Entity struct {
-	ID            	int64 `db:"id"`
-	RunningNumber 	int `db:"running_number"`
-	BookingDate   	pgtype.Date `db:"booking_date"`
-	Name   			string `db:"name"`
-	GrossAmount   	int `db:"gross_amount"`
-	TaxRate       	int `db:"tax_rate"`
-	ReceiptType   	string `db:"receipt_type"`
-	Category      	string `db:"category"`
-	ReverseCharge 	bool `db:"reverse_charge"`
-	IdUser 			string `db:"id_user"`
-}
-
-type NewRecordEntity struct {
-	bookingDate 	time.Time
-	name 			string
-	grossAmount 	int64
-	taxRate 		uint16
-	receiptType 	string
-	currency 		string
-	category 		string
-	reverseCharge 	bool
-}
-
 type Repository struct {}
 
-func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord) (*accounting.Record, error) {
-
-	newRecordEntity := NewRecordEntity{
-		bookingDate: time.Unix(newRecord.BookingDate, 0),
-		name: newRecord.Name,
-		category: newRecord.Category.String(),
-		currency: newRecord.Currency,
-		grossAmount: newRecord.GrossAmount,
-		receiptType: newRecord.ReceiptType.String(),
-		reverseCharge: newRecord.ReverseCharge,
-		taxRate: newRecord.TaxRate,
+func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId string) (*accounting.Record, error) {
+	newRecordEntity := Entity {
+		BookingDate: time.Unix(newRecord.BookingDate, 0),
+		Name: newRecord.Name,
+		Category: newRecord.Category.String(),
+		GrossAmount: newRecord.GrossAmount,
+		ReceiptType: newRecord.ReceiptType.String(),
+		ReverseCharge: newRecord.ReverseCharge,
+		TaxRate: newRecord.TaxRate,
+		IdUser: userId,
 	}
-	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user)`, newRecordEntity)
+	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge)`, newRecordEntity)
 	if err != nil {
 		return nil, err
 	}
 	id, _ := result.LastInsertId()
+	newRecordEntity.ID = id
+	return fromEntityToDomain(newRecordEntity), nil
+}
+
+func (r Repository) Find(tx sqlx.Tx, userId string, filter accounting.Filter) ([]accounting.Record, error) {
+	where := "id_user=$1"
+	params := make([]interface{}, 0)
+	params = append(params, userId)
+	if filter.Name != nil && *filter.Name != ""{
+		params = append(params, *filter.Name)
+		where += " AND name LIKE '%$2%'"
+	}
+	list := []Entity{}
+	err := tx.Select(&list, "SELECT * FROM accounting_records where "+where+" ORDER BY booking_date DESC", params...)
+	if err != nil {
+		return nil, err
+	}
+	return fromEntitySlice(list), nil
+}
+
+func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting.UpdateRecord) error {
+	tmp := Entity{}
+	err := tx.Get(&tmp, "SELECT * FROM accounting_records WHERE id=$1 and id_user=$2",id, userId)
+	if err != nil {
+		return err
+	}
+	if input.TaxRate != nil {
+		tmp.TaxRate = *input.TaxRate
+	}
+	if input.ReceiptType != nil {
+		tmp.ReceiptType = input.ReceiptType.String()
+	}
+	if input.Name != nil {
+		tmp.Name = *input.Name
+	}
+	if input.Category != nil {
+		tmp.Category = input.Category.String()
+	}
+	if input.GrossAmount != nil {
+		tmp.GrossAmount = *input.GrossAmount
+	}
+	if input.ReverseCharge != nil {
+		tmp.ReverseCharge = *input.ReverseCharge
+	}
+	if input.BookingDate!= nil {
+		tmp.BookingDate = time.Unix(*input.BookingDate, 0)
+	}
+	_, err = tx.NamedExec("UPDATE accounting_records set booking_date=:booking_date, name=:name, receipt_type=:receipt_type, tax_rate=:tax_rate, gross_amount=:gross_amount, category=:category, reverse_charge=:reverse_charge, updated_ts=CURRENT_TIMESTAMP where id=:id and id_user=:id_user", tmp)
+
+	return err
+}
+
+func (r Repository) Delete(tx sqlx.Tx, userId string, id int64,) error {
+	_, err := tx.Exec(`DELETE from accounting_records WHERE id=$1 AND id_user=$2`,id, userId);
+
+	return err
+}
+
+func fromEntitySlice(input []Entity) []accounting.Record {
+	return funk.Map(input, func(entity Entity) accounting.Record {
+		return *fromEntityToDomain(entity)
+	}).([]accounting.Record)
+}
+
+func fromEntityToDomain(e Entity) *accounting.Record {
 	return &accounting.Record{
-		ID: id,
-		BookingDate: newRecord.BookingDate,
-		Category: newRecord.Category,
-		Currency: newRecord.Currency,
-		GrossAmount: newRecord.GrossAmount,
-		Name: newRecord.Name,
-		ReceiptType: newRecord.ReceiptType,
-		ReverseCharge: newRecord.ReverseCharge,
-	}, nil
+		ID: e.ID,
+		BookingDate: e.BookingDate.Unix(),
+		Category: accounting.Category(e.Category),
+		GrossAmount: e.GrossAmount,
+		Name: e.Name,
+		ReceiptType: accounting.ReceiptType(e.ReceiptType),
+		ReverseCharge: e.ReverseCharge,
+		TaxRate: e.TaxRate,
+	}
 }

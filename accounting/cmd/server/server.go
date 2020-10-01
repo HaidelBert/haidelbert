@@ -38,24 +38,28 @@ func main() {
 	}
 	accountingService := accounting.Service{
 		PersistRecordPort: accountingInfrastructureService,
+		RecordListPort: accountingInfrastructureService,
+		ChangeRecordPort: accountingInfrastructureService,
+		DeleteRecordPort: accountingInfrastructureService,
 	}
 	accountingController := api.AccountingController{
 		Service: accountingService,
 	}
 
-	router.Route("/user/api", func(rootRouter chi.Router) {
+	router.Route("/accounting/api", func(rootRouter chi.Router) {
 		rootRouter.Route("/public", func(publicRouter chi.Router) {
 
 		})
 		rootRouter.Route("/protected", func(protectedRouter chi.Router) {
 			protectedRouter.Use(api.Middleware(api.NewJwtDecoder(secret)))
-			protectedRouter.Route("/accounting", func(accountingRouter chi.Router) {
-				accountingRouter.Post("/", accountingController.Post)
-			})
+			protectedRouter.Post("/", accountingController.Post)
+			protectedRouter.Get("/", accountingController.Get)
+			protectedRouter.Patch("/{recordId}", accountingController.Patch)
+			protectedRouter.Delete("/{recordId}", accountingController.Delete)
 		})
 	})
 	log.Printf("server is running on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
 
 

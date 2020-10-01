@@ -32,3 +32,6 @@ func respondWithError(w http.ResponseWriter, err error) {
 	}
 	w.Write(response)
 }
+func respondWithStatus(w http.ResponseWriter, code int) {
+	w.WriteHeader(code)
+}

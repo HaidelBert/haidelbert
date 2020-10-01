@@ -29,8 +29,13 @@ export class AccountingTableComponent implements OnInit {
     });
   }
 
-  handleUpdate = async (update: Partial<UpdateAccountingRecord>): Promise<void> =>  {
-    return this.accountingRecordRepository.patch(update);
+  handleUpdate = async (id: number, update: Partial<UpdateAccountingRecord>): Promise<void> =>  {
+    await this.accountingRecordRepository.patch(id, update);
+    this.refresh();
+  }
+  handleDelete = async (id: number): Promise<void> =>  {
+    await this.accountingRecordRepository.delete(id);
+    this.refresh();
   }
 
   async ngOnInit(): Promise<void> {

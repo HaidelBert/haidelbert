@@ -1,24 +1,25 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {Money, formatMoney, calculateNetAmount} from '../../../../utils';
 import currency from 'currency.js';
 import {
   AccountingRecord,
   Category,
   categoryTranslations, isRevenueCategory,
-  MoneyFlow,
-  revenueCategories,
   UpdateAccountingRecord
 } from '../../accounting.repository';
+import moment from 'moment';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: '[app-accounting-table-row]',
   templateUrl: './accounting-table-row.component.html',
 })
-export class AccountingTableRowComponent {
+export class AccountingTableRowComponent implements OnChanges{
   @Input() data: AccountingRecord;
-  @Input() onUpdate: (update: Partial<UpdateAccountingRecord>) => Promise<void>;
+  @Input() onUpdate: (id: number, update: Partial<UpdateAccountingRecord>) => Promise<void>;
+  @Input() onDelete: (id: number) => Promise<void>;
   editCache: AccountingRecord;
+  editBookingDate: Date;
   editing  = false;
   categories = Object.keys(Category).map(key => {
     return {
@@ -69,15 +70,17 @@ export class AccountingTableRowComponent {
   }
 
   cancelEdit(): void {
+    this.editBookingDate = moment.unix(this.data.bookingDate).toDate();
     this.editing = false;
   }
 
   async saveEdit(): Promise<void> {
+    this.editCache.bookingDate = moment(this.editBookingDate).unix();
     const {
       id,
       ...rest
     } = this.editCache;
-    await this.onUpdate(rest);
+    await this.onUpdate(id, rest);
     this.data = this.editCache;
     this.editing = false;
     this.editCache = undefined;
@@ -85,5 +88,17 @@ export class AccountingTableRowComponent {
 
   translateCategory(category: Category): string {
     return categoryTranslations[category];
+  }
+
+  formatBookingDate(bookingDate: number): string {
+    return moment.unix(bookingDate).format('DD.MM.YYYY');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.editBookingDate = moment.unix(this.data.bookingDate).toDate();
+  }
+
+  async deleteRecord(): Promise<void> {
+    await this.onDelete(this.data.id);
   }
 }

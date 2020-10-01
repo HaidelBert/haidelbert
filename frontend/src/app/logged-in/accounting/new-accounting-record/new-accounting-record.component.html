@@ -13,7 +13,7 @@
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="bookingDate">Datum</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Datum ist ein Pflichtfeld!">
-      <nz-date-picker formControlName="bookingDate"></nz-date-picker>
+      <nz-date-picker nzFormat="dd.MM.yyyy" formControlName="bookingDate"></nz-date-picker>
     </nz-form-control>
   </nz-form-item>
 

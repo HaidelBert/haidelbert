@@ -1,24 +1,28 @@
 <ng-container *ngIf="!editing; else editTemplate" >
   <td>{{ data.runningNumber }}</td>
-  <td>{{ data.bookingDate }}</td>
+
+  <td>{{ formatBookingDate(data.bookingDate) }}</td>
   <td>
     <nz-tag>{{ data.receiptType }}</nz-tag>
   </td>
   <td>{{ data.reverseCharge ? 'Ja' : 'Nein' }}</td>
-  <td>{{ data.description }}</td>
+  <td>{{ data.name }}</td>
   <td>{{ data.taxRate }}</td>
   <td>
-    {{ formatMoney({amount: data.grossAmount, currency: data.currency}) }}
+    {{ formatMoney({amount: data.grossAmount, currency: 'EUR'}) }}
   </td>
   <td>{{ formatMoney({amount: calculateNetAmount(data.grossAmount, data.taxRate), currency: 'EUR'}) }}</td>
   <td>
     <nz-tag [nzColor]="getColorForTag(data)">{{ translateCategory(data.category) }}</nz-tag>
   </td>
-  <td><a (click)="startEdit()">Edit</a></td>
+  <td>
+    <a (click)="startEdit()">Ändern</a>
+    <a nz-popconfirm nzCancelText="Abbrechen" nzTitle="Wirklich löschen?" (nzOnConfirm)="deleteRecord()" style="margin-left: 10px">Löschen</a>
+  </td>
 </ng-container>
 <ng-template #editTemplate>
     <td>{{ data.runningNumber }}</td>
-    <td>{{ data.bookingDate }}</td>
+    <td><nz-date-picker [(ngModel)]="editBookingDate" nzFormat="dd.MM.yyyy"></nz-date-picker></td>
     <td>
       <nz-select [(ngModel)]="editCache.receiptType">
         <nz-option nzValue="CASH" nzLabel="Kassa"></nz-option>
@@ -29,11 +33,11 @@
       <label nz-checkbox [(ngModel)]="editCache.reverseCharge"
              (ngModelChange)="reverseChargeChanged($event)"></label>
     </td>
-    <td><input type="text" nz-input [(ngModel)]="editCache.description"/></td>
+    <td><input type="text" nz-input [(ngModel)]="editCache.name"/></td>
     <td><input type="text" nz-input [value]="editCache.taxRate"
                (blur)="editCache.taxRate = parseInt($event.target.value)"/></td>
     <td>
-      <input type="text" nz-input [value]="formatMoney({amount: data.grossAmount, currency: data.currency })"
+      <input type="text" nz-input [value]="formatMoney({amount: data.grossAmount, currency: 'EUR' })"
              (blur)="editCache.grossAmount = parseMoney($event)"/>
     </td>
     <td>{{ getNetAmount(data) }}</td>
@@ -43,8 +47,8 @@
       </nz-select>
     </td>
     <td>
-      <a (click)="cancelEdit()" class="save">Cancel</a>
-      <a nz-popconfirm nzTitle="Sure to save?" (nzOnConfirm)="saveEdit()" style="margin-left: 10px">Save</a>
+      <a (click)="cancelEdit()" class="save">Abbrechen</a>
+      <a nz-popconfirm nzCancelText="Abbrechen" nzTitle="Wirklich speichern?" (nzOnConfirm)="saveEdit()" style="margin-left: 10px">Speichern</a>
     </td>
 </ng-template>
 
