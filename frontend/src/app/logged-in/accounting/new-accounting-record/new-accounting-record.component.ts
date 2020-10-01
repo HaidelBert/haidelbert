@@ -1,9 +1,14 @@
 import {Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
-import {AccountingRecord, AccountingRecordRepository, UpdateAccountingRecord} from '../accounting.repository';
+import {
+  AccountingRecord,
+  AccountingRecordRepository,
+  Category,
+  categoryTranslations,
+  UpdateAccountingRecord
+} from '../accounting.repository';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {calculateNetAmount, formatMoney} from '../../../utils';
 import currency from 'currency.js';
-import {RecordCategory, RecordCategoryRepository} from '../record-category.repository';
 import {NzAutocompleteOptionComponent} from 'ng-zorro-antd';
 
 @Component({
@@ -18,19 +23,22 @@ export class NewAccountingRecordComponent {
   @Input() onClose: () => void;
   @Output() cancelEmitter = new EventEmitter<void>();
   @Output() successEmitter = new EventEmitter<void>();
-  compareCategories = (c1: RecordCategory, c2: RecordCategory) => (c1 && c2 ? c1.id === c2.id : c1 === c2);
+  categories = Object.keys(Category).map(key => {
+    return {
+      key,
+      label: categoryTranslations[key]
+    };
+  });
 
   constructor(
     private fb: FormBuilder,
     private accountingRecordRepository: AccountingRecordRepository,
-    private recordCategoryRepository: RecordCategoryRepository
   ) {
     this.newForm = this.fb.group({
       bookingDate: ['', [Validators.required]],
       description: ['', [Validators.required]],
       receiptType: [undefined, [Validators.required]],
-      moneyFlow: [undefined, [Validators.required]],
-      reverseCharge: [true, [Validators.required]],
+      reverseCharge: [false, [Validators.required]],
       grossAmount: [undefined, [Validators.required]],
       taxRate: [undefined, [Validators.required]],
       category: [undefined, [Validators.required]],
@@ -58,19 +66,10 @@ export class NewAccountingRecordComponent {
     });
   }
 
-  get categories(): RecordCategory[] {
-    return this.recordCategoryRepository.categories;
-  }
-
-  get categoriesLoading(): boolean {
-    return this.recordCategoryRepository.categoriesLoaded;
-  }
-
   descriptionSelected($event: NzAutocompleteOptionComponent): void {
     const template: AccountingRecord = $event.nzValue;
     this.newForm.controls.description.setValue(template.description);
     this.newForm.controls.receiptType.setValue(template.receiptType);
-    this.newForm.controls.moneyFlow.setValue(template.moneyFlow);
     this.newForm.controls.reverseCharge.setValue(template.reverseCharge);
     this.newForm.controls.taxRate.setValue(template.taxRate);
     this.newForm.controls.category.setValue(template.category);
@@ -100,11 +99,10 @@ export class NewAccountingRecordComponent {
       bookingDate: this.newForm.controls.bookingDate.value,
       description: this.newForm.controls.description.value,
       receiptType: this.newForm.controls.receiptType.value,
-      moneyFlow: this.newForm.controls.moneyFlow.value,
       reverseCharge: this.newForm.controls.reverseCharge.value,
       grossAmount: this.newForm.controls.grossAmount.value,
       taxRate: this.newForm.controls.taxRate.value,
-      categoryId: this.newForm.controls.category.value.id,
+      category: this.newForm.controls.category.value.key,
       currency: 'EUR'
     };
   }

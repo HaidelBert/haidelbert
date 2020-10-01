@@ -4,9 +4,6 @@
   <td>
     <nz-tag>{{ data.receiptType }}</nz-tag>
   </td>
-  <td>
-    <nz-tag [nzColor]="getColorForTag(data)">{{ data.moneyFlow }}</nz-tag>
-  </td>
   <td>{{ data.reverseCharge ? 'Ja' : 'Nein' }}</td>
   <td>{{ data.description }}</td>
   <td>{{ data.taxRate }}</td>
@@ -15,7 +12,7 @@
   </td>
   <td>{{ formatMoney({amount: calculateNetAmount(data.grossAmount, data.taxRate), currency: 'EUR'}) }}</td>
   <td>
-    <nz-tag>{{ data.category.name }}</nz-tag>
+    <nz-tag [nzColor]="getColorForTag(data)">{{ translateCategory(data.category) }}</nz-tag>
   </td>
   <td><a (click)="startEdit()">Edit</a></td>
 </ng-container>
@@ -26,12 +23,6 @@
       <nz-select [(ngModel)]="editCache.receiptType">
         <nz-option nzValue="CASH" nzLabel="Kassa"></nz-option>
         <nz-option nzValue="BANK" nzLabel="Bank"></nz-option>
-      </nz-select>
-    </td>
-    <td>
-      <nz-select [(ngModel)]="editCache.moneyFlow">
-        <nz-option nzValue="REVENUE" nzLabel="Einnahme"></nz-option>
-        <nz-option nzValue="EXPENDITURE" nzLabel="Ausgabe"></nz-option>
       </nz-select>
     </td>
     <td>
@@ -47,10 +38,9 @@
     </td>
     <td>{{ getNetAmount(data) }}</td>
     <td>
-      <nz-select *ngIf="!categoriesLoading" [(ngModel)]="editCache.category" [compareWith]="compareCategories">
-        <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category.name"></nz-option>
+      <nz-select [(ngModel)]="editCache.category" style="width: 100%">
+        <nz-option *ngFor="let category of categories" [nzValue]="category.key" [nzLabel]="category.label"></nz-option>
       </nz-select>
-      <nz-spin *ngIf="categoriesLoading" nzSimple></nz-spin>
     </td>
     <td>
       <a (click)="cancelEdit()" class="save">Cancel</a>

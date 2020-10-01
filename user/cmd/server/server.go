@@ -16,14 +16,9 @@ import (
 	"time"
 )
 
-const defaultPort = "9090"
-
 func main() {
 	config.Load()
 	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
 	session, err := db.Connect()
 	defer session.Close()
 

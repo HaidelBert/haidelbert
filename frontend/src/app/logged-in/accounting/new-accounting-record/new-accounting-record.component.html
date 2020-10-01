@@ -2,6 +2,15 @@
 <form nz-form [formGroup]="newForm" (ngSubmit)="submitForm($event)">
 
   <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="receiptType">Kategorie</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Pflichtfeld!">
+      <nz-select formControlName="category">
+        <nz-option *ngFor="let category of categories" [nzValue]="category.key" [nzLabel]="category.label"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="bookingDate">Datum</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Datum ist ein Pflichtfeld!">
       <nz-date-picker formControlName="bookingDate"></nz-date-picker>
@@ -24,16 +33,6 @@
       <nz-select formControlName="receiptType" >
         <nz-option nzValue="CASH" nzLabel="Kassa"></nz-option>
         <nz-option nzValue="BANK" nzLabel="Bank"></nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item>
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="receiptType">Einnahme - Ausgabe</nz-form-label>
-    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Pflichtfeld!">
-      <nz-select formControlName="moneyFlow">
-        <nz-option nzValue="REVENUE" nzLabel="Einnahme"></nz-option>
-        <nz-option nzValue="EXPENDITURE" nzLabel="Ausgabe"></nz-option>
       </nz-select>
     </nz-form-control>
   </nz-form-item>
@@ -63,15 +62,6 @@
     <nz-form-label [nzSm]="6" [nzXs]="24">Netto Betrag</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
       <span>{{ netAmount }}</span>
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item>
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="receiptType">Kategorie</nz-form-label>
-    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Pflichtfeld!">
-      <nz-select *ngIf="!categoriesLoading" formControlName="category" [compareWith]="compareCategories" >
-        <nz-option *ngFor="let category of categories" [nzValue]="category" [nzLabel]="category.name+' - '+category.taxAuthorityNumber"></nz-option>
-      </nz-select>
     </nz-form-control>
   </nz-form-item>
 

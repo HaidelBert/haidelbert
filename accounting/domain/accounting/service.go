@@ -1,21 +1,32 @@
 package accounting
 
-import "errors"
+import "github.com/HaidelBert/accounting/domain/validation"
 
-type AddRecordPort interface {
-	AddRecord(input NewRecord) (*Record, error)
+type Service struct {
+	PersistRecordPort PersistRecordPort
 }
-
-type Service struct {}
 
 func (s Service) AddRecord(input NewRecord) (*Record, error){
-	if !validateNewRecord(input) {
-		return nil, errors.New("not a valid record")
+	validationErr := validateNewRecord(input)
+	if validationErr != nil {
+		return nil, validationErr
+	}
+	newRecord, err := s.PersistRecordPort.PersistRecord(input)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, nil
+	return newRecord, nil
 }
 
-func validateNewRecord(input NewRecord) bool {
-	return true
+func validateNewRecord(input NewRecord) error {
+	fieldErrors := make(map[string][]string)
+	if input.Category == "" {
+		validation.AddFieldError(fieldErrors, "category", "must not be empty")
+	}
+	if input.Name == "" {
+		validation.AddFieldError(fieldErrors, "name", "must not be empty")
+	}
+	return nil
 }

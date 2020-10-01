@@ -14,7 +14,7 @@ RUN cd /app && go mod download
 RUN go build -o /bin/app /app/cmd/server/server.go
 
 # Export necessary port
-EXPOSE 9090
+EXPOSE 9091
 
 # Command to run when starting the container
 CMD ["/bin/app"]

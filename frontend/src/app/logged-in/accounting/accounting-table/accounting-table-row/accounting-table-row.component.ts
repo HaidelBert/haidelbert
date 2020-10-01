@@ -1,24 +1,31 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef} from '@angular/core';
 import {Money, formatMoney, calculateNetAmount} from '../../../../utils';
 import currency from 'currency.js';
-import {AccountingRecord, MoneyFlow, UpdateAccountingRecord} from '../../accounting.repository';
-import {RecordCategory, RecordCategoryRepository} from '../../record-category.repository';
+import {
+  AccountingRecord,
+  Category,
+  categoryTranslations, isRevenueCategory,
+  MoneyFlow,
+  revenueCategories,
+  UpdateAccountingRecord
+} from '../../accounting.repository';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: '[app-accounting-table-row]',
   templateUrl: './accounting-table-row.component.html',
 })
-export class AccountingTableRowComponent implements OnInit {
+export class AccountingTableRowComponent {
   @Input() data: AccountingRecord;
   @Input() onUpdate: (update: Partial<UpdateAccountingRecord>) => Promise<void>;
   editCache: AccountingRecord;
   editing  = false;
-  compareCategories = (c1: RecordCategory, c2: RecordCategory) => (c1 && c2 ? c1.id === c2.id : c1 === c2);
-
-  constructor(private recordCategoryRepository: RecordCategoryRepository) {}
-
-  ngOnInit(): void {}
+  categories = Object.keys(Category).map(key => {
+    return {
+      key,
+      label: categoryTranslations[key]
+    };
+  });
 
   formatMoney(money: Money): string {
     return formatMoney(money);
@@ -37,10 +44,10 @@ export class AccountingTableRowComponent implements OnInit {
   }
 
   getColorForTag(data: AccountingRecord): string {
-    if (data.moneyFlow === MoneyFlow.EXPENDITURE) {
-      return 'red';
+    if (isRevenueCategory(data.category)) {
+      return 'green';
     }
-    return 'green';
+    return 'red';
   }
 
   reverseChargeChanged(value: boolean): void {
@@ -76,11 +83,7 @@ export class AccountingTableRowComponent implements OnInit {
     this.editCache = undefined;
   }
 
-  get categories(): RecordCategory[] {
-    return this.recordCategoryRepository.categories;
-  }
-
-  get categoriesLoading(): boolean {
-    return this.recordCategoryRepository.categoriesLoaded;
+  translateCategory(category: Category): string {
+    return categoryTranslations[category];
   }
 }

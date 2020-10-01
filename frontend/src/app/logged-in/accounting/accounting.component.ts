@@ -1,5 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {RecordCategoryRepository} from './record-category.repository';
+import {Component, ViewChild} from '@angular/core';
 import {AccountingTableComponent} from './accounting-table/accounting-table.component';
 
 @Component({
@@ -7,15 +6,11 @@ import {AccountingTableComponent} from './accounting-table/accounting-table.comp
   templateUrl: './accounting.component.html',
   styleUrls: ['./accounting.component.less']
 })
-export class AccountingComponent implements OnInit {
+export class AccountingComponent {
   @ViewChild(AccountingTableComponent) recordTable: AccountingTableComponent;
   newOpen = false;
 
-  constructor(private recordCategoryRepository: RecordCategoryRepository) { }
-
-  ngOnInit(): void {
-    this.recordCategoryRepository.find();
-  }
+  constructor() { }
 
   openNew(): void {
     this.newOpen = true;
