@@ -7,7 +7,7 @@ export function getUserApiBaseUrl(): string {
   }
 }
 
-export function getAccountingApiBaseUrl() {
+export function getAccountingApiBaseUrl(): string {
   if (window.location.hostname === 'localhost') {
     return 'http://localhost:9091';
   } else if (window.location.hostname === 'frontend-staging.haidelbert.io') {
