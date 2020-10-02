@@ -23,7 +23,6 @@ jobs:
           npm run lint
           npm run test
           ./../infra/ci/waitForPort.sh 4200
-          cd frontend
           npm run cypress:run
         working-directory: frontend
       - name: Set up QEMU
