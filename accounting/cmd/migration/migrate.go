@@ -24,6 +24,8 @@ func main() {
 	migrationErr := m.Up()
 	if migrationErr != nil {
 		fmt.Fprintf(os.Stderr, "Unable to migrate database: %v\n", migrationErr)
-		os.Exit(1)
+		if migrationErr.Error() != "no change" {
+			os.Exit(1)
+		}
 	}
 }
