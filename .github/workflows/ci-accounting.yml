@@ -5,7 +5,7 @@ on:
     - '.github/workflows/ci-accounting.yml'
 name: CI/CD Accounting
 jobs:
-  build-user:
+  build-accounting:
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
@@ -42,7 +42,7 @@ jobs:
             haidelbert/accounting:${{ github.sha }}
             haidelbert/accounting:latest
           push: true
-  deploy-user-staging:
+  deploy-accounting-staging:
     runs-on: ubuntu-latest
     needs: build-user
     steps:
