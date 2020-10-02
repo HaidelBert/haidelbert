@@ -51,7 +51,7 @@ jobs:
           push: true
   deploy-accounting-staging:
     runs-on: ubuntu-latest
-    needs: build-user
+    needs: build-accounting
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
