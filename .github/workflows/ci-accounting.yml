@@ -1,8 +1,8 @@
 on:
   push:
     paths:
-    - 'user/**'
-    - '.github/workflows/ci-user.yml'
+    - 'accounting/**'
+    - '.github/workflows/ci-accounting.yml'
 name: CI/CD User
 jobs:
   build-user:
@@ -19,10 +19,11 @@ jobs:
         with:
           mongodb-version: 4.2
       - name: Migrate test DB
-        run: ENV=ci go run ./user/cmd/migration/migration.go
+        run: ENV=ci go run ./cmd/migration/migrate.go
+        working-directory: accounting
       - name: Test
         run: ENV=ci go test ./...
-        working-directory: user
+        working-directory: accounting
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -36,10 +37,10 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./user
+          context: ./accounting
           tags: |
-            haidelbert/user:${{ github.sha }}
-            haidelbert/user:latest
+            haidelbert/accounting:${{ github.sha }}
+            haidelbert/accounting:latest
           push: true
   deploy-user-staging:
     runs-on: ubuntu-latest
@@ -52,17 +53,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Migrate staging DB
-        run: ENV=staging mongoUrl=${{ secrets.MONGOURLSTAGING }} go run ./cmd/migration/migration.go
+        run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=31028 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
-          args: set image deployment/user user=haidelbert/user:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+          args: set image deployment/accounting user=haidelbert/accounting:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
       - name: verify deployment
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
           KUBECTL_VERSION: "1.15"
         with:
-          args: rollout status deployment/user --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+          args: rollout status deployment/accounting --namespace haidelbert --context staging --insecure-skip-tls-verify=true

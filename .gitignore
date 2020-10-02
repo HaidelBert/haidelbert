@@ -2,3 +2,4 @@
 .DS_Store
 
 infra/mongo-volume/
+infra/dev/mongo-volume/

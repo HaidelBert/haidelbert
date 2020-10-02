@@ -5,7 +5,7 @@ on:
     - '.github/workflows/ci-frontend.yml'
 name: CI/CD Frontend
 jobs:
-  build_frontend:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,18 +14,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Prepare Frontend
+      - name: Prepare CI
+        run: chmod +x :/infra/ci/waitForPort.sh
+      - name: Test Frontend
         run: |
-          cd frontend
           npm ci
           (npm run start&)
           npm run lint
           npm run test
-          cd ..
-          chmod +x waitForPort.sh
-          ./waitForPort.sh 4200
+          ./../infra/ci/waitForPort.sh 4200
           cd frontend
           npm run cypress:run
+        working-directory: frontend
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -43,9 +43,9 @@ jobs:
           file: ./Dockerfile
           tags: haidelbert/frontend:${{ github.sha }}
           push: true
-  deploy_frontend:
+  deploy-frontend-staging:
     runs-on: ubuntu-latest
-    needs: build_frontend
+    needs: build-frontend
     steps:
       - name: deploy to cluster
         uses: steebchen/kubectl@master
