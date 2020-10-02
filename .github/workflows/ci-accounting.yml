@@ -38,8 +38,8 @@ jobs:
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
-        working-directory: accounting
         with:
+          context: ./accounting
           tags: |
             haidelbert/accounting:${{ github.sha }}
             haidelbert/accounting:latest
