@@ -7,18 +7,12 @@ name: CI/CD Accounting
 jobs:
   build-accounting:
     runs-on: ubuntu-latest
-    services:
-      postgres-accounting:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: root
-          POSTGRES_DB: accounting
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: accounting
+          postgresql password: root
       - name: Install Go
         uses: actions/setup-go@v2
         with:
