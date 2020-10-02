@@ -11,8 +11,9 @@ jobs:
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql db: accounting
+          postgresql user: postgres
           postgresql password: root
+          postgresql db: accounting
       - name: Install Go
         uses: actions/setup-go@v2
         with:
