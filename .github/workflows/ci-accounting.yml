@@ -3,7 +3,7 @@ on:
     paths:
     - 'accounting/**'
     - '.github/workflows/ci-accounting.yml'
-name: CI/CD User
+name: CI/CD Accounting
 jobs:
   build-user:
     runs-on: ubuntu-latest
