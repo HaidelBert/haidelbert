@@ -2,11 +2,18 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/HaidelBert/accounting/domain/validation"
 	"net/http"
+	"os"
 )
 
-func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
+type errorDto struct {
+	cause error
+	message string
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -14,8 +21,12 @@ func respondwithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Write(response)
 }
 
-func respondWithError(w http.ResponseWriter, err error) {
-	response, _ := json.Marshal(err)
+func respondWithError(w http.ResponseWriter,req *http.Request, err error) {
+	fmt.Fprintf(os.Stderr, "error happened in request %v %v %v", req.Method, req.URL.Path, err.Error())
+	response, _ := json.Marshal(errorDto{
+		message: err.Error(),
+		cause: err,
+	})
 
 	w.Header().Set("Content-Type", "application/json")
 	switch err.(type) {
