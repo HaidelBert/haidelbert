@@ -37,6 +37,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          file: ./user/Dockerfile
           context: ./user
           tags: |
             haidelbert/user:${{ github.sha }}
