@@ -55,6 +55,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Migrate staging DB
         run: ENV=staging mongoUrl=${{ secrets.MONGOURLSTAGING }} go run ./cmd/migration/migration.go
+        working-directory: user
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
