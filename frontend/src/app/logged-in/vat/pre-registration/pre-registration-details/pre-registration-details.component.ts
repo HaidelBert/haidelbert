@@ -30,8 +30,4 @@ export class PreRegistrationDetailsComponent implements OnInit {
     const date = new Date(data.year, data.intervalValue - 1, 1);  // 2009-11-10
     return date.toLocaleString('default', { month: 'long' });
   }
-
-  handleSubmittedChange($event: boolean) {
-    this.submittedChangedToTrue = true;
-  }
 }
