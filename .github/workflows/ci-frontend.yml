@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: 12
       - name: Prepare CI
-        run: chmod +x :/infra/ci/waitForPort.sh
+        run: chmod +x ./infra/ci/waitForPort.sh
       - name: Test Frontend
         run: |
           npm ci
