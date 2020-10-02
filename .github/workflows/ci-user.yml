@@ -19,7 +19,8 @@ jobs:
         with:
           mongodb-version: 4.2
       - name: Migrate test DB
-        run: ENV=ci go run ./user/cmd/migration/migration.go
+        run: ENV=ci go run ./cmd/migration/migration.go
+        working-directory: user
       - name: Test
         run: ENV=ci go test ./...
         working-directory: user
