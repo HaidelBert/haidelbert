@@ -39,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./frontend
-          file: ./Dockerfile
+          file: ./frontend/Dockerfile
           tags: haidelbert/frontend:${{ github.sha }}
           push: true
   deploy-frontend-staging:
