@@ -1,6 +1,4 @@
 
 .DS_Store
 
-infra/mongo-volume/
-infra/dev/mongo-volume/
-infra/dev/postgres-volume/
+infra/dev/*-volume/

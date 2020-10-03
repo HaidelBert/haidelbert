@@ -23,3 +23,14 @@ services:
       - ./postgres-volume:/var/lib/postgresql/data
     ports:
       - 5433:5432
+  vat-postgres:
+    image: postgres
+    container_name: 'vat-postgres'
+    environment:
+      - POSTGRES_DB=vat
+      - POSTGRES_PASSWORD=root
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./vat-volume:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
