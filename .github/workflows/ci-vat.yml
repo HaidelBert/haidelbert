@@ -16,6 +16,10 @@ jobs:
           postgresql db: vat
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Set up jdk11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
       - name: Build Native
         working-directory: vat
         run: ./mvnw package -Pnative -Dquarkus.native.container-build=true
