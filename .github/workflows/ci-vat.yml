@@ -1,7 +1,7 @@
 on:
   push:
     paths:
-    - 'user/**'
+    - 'vat/**'
     - '.github/workflows/ci-vat.yml'
 name: CI/CD VAT
 jobs:
