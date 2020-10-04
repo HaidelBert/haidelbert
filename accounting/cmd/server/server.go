@@ -32,15 +32,12 @@ func main() {
 	}))
 
 	accountingRepository := dbAccounting.Repository{}
-	accountingInfrastructureService := infrastructure.AccountingService{
+	accountingPersistenceAdapter := infrastructure.AccountingPersistenceAdapter{
 		DB: conn,
 		Repository: accountingRepository,
 	}
 	accountingService := accounting.Service{
-		PersistRecordPort: accountingInfrastructureService,
-		RecordListPort: accountingInfrastructureService,
-		ChangeRecordPort: accountingInfrastructureService,
-		DeleteRecordPort: accountingInfrastructureService,
+		PersistencePort: accountingPersistenceAdapter,
 	}
 	accountingController := api.AccountingController{
 		Service: accountingService,

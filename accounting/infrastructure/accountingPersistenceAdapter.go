@@ -7,12 +7,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type AccountingService struct {
+type AccountingPersistenceAdapter struct {
 	DB 	*sqlx.DB
 	Repository 	db_accounting.Repository
 }
 
-func (s AccountingService) PersistRecord(userId string, input accounting.NewRecord) (*accounting.Record, error) {
+func (s AccountingPersistenceAdapter) PersistRecord(userId string, input accounting.NewRecord) (*accounting.Record, error) {
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (s AccountingService) PersistRecord(userId string, input accounting.NewReco
 	return newRecord, nil
 }
 
-func (s AccountingService) ListRecords(userId string, filter accounting.Filter) ([]accounting.Record, error){
+func (s AccountingPersistenceAdapter) ListRecords(userId string, filter accounting.Filter) ([]accounting.Record, error){
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (s AccountingService) ListRecords(userId string, filter accounting.Filter) 
 	return records, dbErr
 }
 
-func (s AccountingService) ChangeRecord(userId string, id int64, input accounting.UpdateRecord) error {
+func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, input accounting.UpdateRecord) error {
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (s AccountingService) ChangeRecord(userId string, id int64, input accountin
 	return dbErr
 }
 
-func (s AccountingService) DeleteRecord(userId string, id int64) error {
+func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) error {
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return err
