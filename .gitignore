@@ -2,3 +2,4 @@
 .DS_Store
 
 infra/dev/*-volume/
+infra/dev/zk-single-kafka-single/
