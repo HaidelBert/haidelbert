@@ -1,8 +1,10 @@
 package api
 
 import (
+	b64 "encoding/base64"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"os"
 )
 
 type JwtDecoder struct {
@@ -17,10 +19,18 @@ func NewJwtDecoder(secret string) *JwtDecoder {
 
 func (d JwtDecoder) decode(tokenString string) (*Claims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(d.secret), nil
+		publicKey, err := b64.StdEncoding.DecodeString(os.Getenv("JWT_PUBLIC_KEY"))
+		if err != nil {
+			return nil, err
+		}
+		validationKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKey)
+		if err != nil {
+			return nil, err
+		}
+		return validationKey, nil
 	})
 	if err != nil {
 		return nil, err

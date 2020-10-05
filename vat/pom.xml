@@ -75,6 +75,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+      <version>${quarkus.platform.version}</version>
     </dependency>
   </dependencies>
   <build>

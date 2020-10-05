@@ -3,6 +3,8 @@ package token
 import (
 	"github.com/HaidelBert/user/domain"
 	"github.com/dgrijalva/jwt-go"
+	b64 "encoding/base64"
+	"os"
 	"time"
 )
 
@@ -19,11 +21,18 @@ func NewJwtGenerator(secret string, expiryIndSeconds time.Duration) *JwtGenerato
 }
 
 func (g JwtGenerator) Generate(u domain.UserMinimal) (*domain.Token, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	privateKey, err := b64.StdEncoding.DecodeString(os.Getenv("JWT_PRIVATE_KEY"))
+	if err != nil {
+		return nil, err
+	}
+	signKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKey)
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
 		"userId": u.ID,
 		"exp":    time.Now().Add(time.Second * g.expiryInSeconds).Unix(),
+		"groups": []string{"User"},
+		"upn": u.ID,
 	})
-	tokenString, err := token.SignedString([]byte(g.secret))
+	tokenString, err := token.SignedString(signKey)
 	if err != nil {
 		return nil, err
 	}

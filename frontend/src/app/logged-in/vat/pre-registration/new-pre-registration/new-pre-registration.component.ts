@@ -1,7 +1,12 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { formatMoney } from 'src/app/utils';
 import {Subject} from 'rxjs';
-import {PreRegistrationRepository, VatPreRegistrationInterval, VatPreRegistrationSimulation} from '../pre-registration.repository';
+import {
+  PreRegistrationRepository,
+  VatPreRegistrationInterval,
+  VatPreRegistrationSimulation,
+  VatPreRegistrationUpdate
+} from '../pre-registration.repository';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -28,7 +33,7 @@ export class NewPreRegistrationComponent implements OnInit{
     });
   }
 
-  submitForm($event: any): void {
+  async submitForm($event: any): Promise<void>{
     $event.preventDefault();
     Object.keys(this.newForm.controls).forEach(key => {
       this.newForm.controls[key].markAsDirty();
@@ -38,6 +43,18 @@ export class NewPreRegistrationComponent implements OnInit{
       return;
     }
     this.clearForm();
+    await this.preRegistrationRepository.add(this.fromForm());
+  }
+
+  fromForm(): VatPreRegistrationUpdate {
+    return {
+      year: this.newForm.controls.year.value,
+      interval: this.newForm.controls.interval.value,
+      intervalValue:
+      // tslint:disable-next-line:max-line-length
+        this.newForm.controls.interval.value === VatPreRegistrationInterval.QUARTER ? this.newForm.controls.quarter.value : this.newForm.controls.month.value,
+      taxAuthoritySubmitted: false,
+    };
   }
 
   get isQuarterMode(): boolean {
@@ -49,7 +66,6 @@ export class NewPreRegistrationComponent implements OnInit{
   }
 
   async ngOnInit(): Promise<void> {
-
     this.selectedInterval$.subscribe(() => {
       this.simulate();
     });

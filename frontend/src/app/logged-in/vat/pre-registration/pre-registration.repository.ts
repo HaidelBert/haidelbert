@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {waitFor} from '../../../utils';
+import {HttpClient} from '@angular/common/http';
+import {getVatApiBaseUrl} from '../../../../config/config';
 
 export enum VatPreRegistrationInterval {
   QUARTER= 'QUARTER', MONTH = 'MONTH'
@@ -34,6 +36,9 @@ export interface VatPreRegistrationSimulation {
   providedIn: 'root'
 })
 export class PreRegistrationRepository {
+
+  constructor(private httpClient: HttpClient) {}
+
   async findYears(): Promise<number[]> {
     await waitFor(300);
     return [2020, 2019, 2018, 2017];
@@ -94,15 +99,7 @@ export class PreRegistrationRepository {
   }
 
   async add(add: VatPreRegistrationUpdate): Promise<VatPreRegistration> {
-    return {
-      id: '123123',
-      grossRevenue: 898623,
-      vat: 0,
-      inputTax: 7390,
-      reverseCharge: 898623,
-      vatPayable: -7390,
-      ...add
-    };
+    return await this.httpClient.post<VatPreRegistration>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration`, add).toPromise();
   }
 
   async simulate(

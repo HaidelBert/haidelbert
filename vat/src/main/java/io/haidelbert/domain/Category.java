@@ -1,0 +1,20 @@
+package io.haidelbert.domain;
+
+public enum Category {
+    TAX_AUTHORITY_PAYMENT,
+    OFFICE_EXPENDITURE,
+    MARKETING,
+    TRAVELLING,
+    POST_PHONE,
+    TRAINING,
+    MISC_EXPENDITURE,
+    SVA,
+    THIRD_PARTY_SERVICES,
+    OFFICE_MATERIALS,
+    GWG,
+    INTEREST_CHARGES,
+    INSURANCE,
+    LITERATURE,
+    REVENUE_SERVICES,
+    REVENUE_SELLS,
+}
