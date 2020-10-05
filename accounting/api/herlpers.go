@@ -2,10 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/HaidelBert/accounting/domain/validation"
+	"log"
 	"net/http"
-	"os"
 )
 
 type errorDto struct {
@@ -22,7 +21,7 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 func respondWithError(w http.ResponseWriter,req *http.Request, err error) {
-	fmt.Fprintf(os.Stderr, "error happened in request %v %v %v", req.Method, req.URL.Path, err.Error())
+	log.Printf("error happened in request %v %v %v", req.Method, req.URL.Path, err.Error())
 	response, _ := json.Marshal(errorDto{
 		message: err.Error(),
 		cause: err,

@@ -22,7 +22,7 @@
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Gegenstand ist ein Pflichtfeld!">
       <input nz-input formControlName="description" [nzAutocomplete]="descriptionAuto" (ngModelChange)="handleDescriptionChange($event)"/>
       <nz-autocomplete #descriptionAuto (selectionChange)="descriptionSelected($event)">
-        <nz-auto-option *ngFor="let option of descriptionSuggestions" [nzValue]="option" [nzLabel]="option.description">{{ option.description }}</nz-auto-option>
+        <nz-auto-option *ngFor="let option of descriptionSuggestions" [nzValue]="option" [nzLabel]="option.name">{{ option.name }}</nz-auto-option>
       </nz-autocomplete>
     </nz-form-control>
   </nz-form-item>

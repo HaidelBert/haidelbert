@@ -18,7 +18,7 @@ export class TokenInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req).pipe(retry(1), catchError((error: HttpErrorResponse) => {
+    return next.handle(req).pipe(retry(0), catchError((error: HttpErrorResponse) => {
       const errorMessage = '';
       if (error.error instanceof ErrorEvent) {
         console.error(error);

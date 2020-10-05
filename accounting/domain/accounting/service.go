@@ -16,7 +16,7 @@ func (s Service) AddRecord(userId string, input NewRecord) (*Record, error){
 	return newRecord, err
 }
 
-func (s Service) ListAllRecords(userId string, filter Filter) ([]Record, error) {
+func (s Service) ListRecords(userId string, filter Filter) ([]Record, error) {
 	records, err := s.PersistencePort.ListRecords(userId, filter)
 	return records, err
 }

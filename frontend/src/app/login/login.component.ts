@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder, private sessionService: SessionService, private router: Router) {}
 
   async submitForm(e: any): Promise<void> {
+    debugger;
     e.preventDefault();
     Object.keys(this.validateForm.controls).forEach(key => {
       this.validateForm.controls[key].markAsDirty();

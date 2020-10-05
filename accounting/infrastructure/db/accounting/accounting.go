@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/thoas/go-funk"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -35,10 +36,10 @@ func (r Repository) Find(tx sqlx.Tx, userId string, filter accounting.Filter) ([
 	params := make([]interface{}, 0)
 	params = append(params, userId)
 	if filter.Name != nil && *filter.Name != ""{
-		params = append(params, *filter.Name)
-		where += " AND name LIKE '%$"+strconv.Itoa(len(params))+"%'"
+		params = append(params, "%"+strings.ToLower(*filter.Name)+"%")
+		where += " AND LOWER(name) LIKE $"+strconv.Itoa(len(params))+""
 	}
-	if filter.Year != nil {
+	if filter.Year != nil && *filter.Year > 0 {
 		params = append(params, *filter.Year)
 		where += " AND extract(year from booking_date)=$"+strconv.Itoa(len(params))
 	}
