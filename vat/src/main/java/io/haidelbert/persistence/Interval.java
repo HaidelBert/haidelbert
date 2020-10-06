@@ -1,4 +1,4 @@
-package io.haidelbert.domain;
+package io.haidelbert.persistence;
 
 public enum Interval {
     QUARTER, MONTH

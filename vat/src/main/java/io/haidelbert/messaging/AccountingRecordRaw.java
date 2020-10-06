@@ -1,9 +1,7 @@
 package io.haidelbert.messaging;
 
-import io.haidelbert.domain.Category;
-import io.haidelbert.domain.ReceiptType;
-
-import java.time.LocalDate;
+import io.haidelbert.backends.accounting.Category;
+import io.haidelbert.backends.accounting.ReceiptType;
 
 public class AccountingRecordRaw {
     private Long id;

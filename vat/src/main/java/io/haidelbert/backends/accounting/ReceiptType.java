@@ -1,4 +1,4 @@
-package io.haidelbert.domain;
+package io.haidelbert.backends.accounting;
 
 public enum ReceiptType {
     CASH, BANK

@@ -25,9 +25,9 @@ export class PreRegistrationDetailsComponent implements OnInit {
       return '';
     }
     if (data.interval === VatPreRegistrationInterval.QUARTER) {
-      return 'Quartal ' + data.intervalValue;
+      return 'Quartal ' + data.quarter;
     }
-    const date = new Date(data.year, data.intervalValue - 1, 1);  // 2009-11-10
+    const date = new Date(data.year, data.month - 1, 1);  // 2009-11-10
     return date.toLocaleString('default', { month: 'long' });
   }
 }

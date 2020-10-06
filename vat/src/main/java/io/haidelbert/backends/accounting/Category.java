@@ -1,4 +1,4 @@
-package io.haidelbert.domain;
+package io.haidelbert.backends.accounting;
 
 public enum Category {
     TAX_AUTHORITY_PAYMENT,
@@ -18,3 +18,4 @@ public enum Category {
     REVENUE_SERVICES,
     REVENUE_SELLS,
 }
+

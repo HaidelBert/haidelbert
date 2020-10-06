@@ -42,8 +42,8 @@ export class NewPreRegistrationComponent implements OnInit{
     if (!this.newForm.valid) {
       return;
     }
-    this.clearForm();
     await this.preRegistrationRepository.add(this.fromForm());
+    this.clearForm();
   }
 
   fromForm(): VatPreRegistrationUpdate {

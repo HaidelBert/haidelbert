@@ -1,6 +1,6 @@
-package io.haidelbert.domain;
+package io.haidelbert.domain.model;
 
-import io.haidelbert.domain.Interval;
+import io.haidelbert.persistence.Interval;
 
 public class CreatePreRegistration {
     private Integer year;

@@ -7,13 +7,18 @@ export enum VatPreRegistrationInterval {
   QUARTER= 'QUARTER', MONTH = 'MONTH'
 }
 
-export interface VatPreRegistration extends VatPreRegistrationUpdate {
+export interface VatPreRegistration {
   id: string;
   grossRevenue: number;
   vat: number;
   inputTax: number;
   reverseCharge: number;
   vatPayable: number;
+  interval: VatPreRegistrationInterval;
+  quarter: number;
+  month: number;
+  taxAuthoritySubmitted: boolean;
+  year: number;
 }
 
 export interface VatPreRegistrationUpdate {
@@ -40,62 +45,13 @@ export class PreRegistrationRepository {
   constructor(private httpClient: HttpClient) {}
 
   async findYears(): Promise<number[]> {
-    await waitFor(300);
-    return [2020, 2019, 2018, 2017];
+    return await this.httpClient
+      .get<number[]>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration/years`).toPromise();
   }
 
   async findByYear(year: number): Promise<VatPreRegistration[]>{
-    await waitFor(200);
-    return [
-      {
-        id: '1',
-        year: 2020,
-        interval: VatPreRegistrationInterval.QUARTER,
-        intervalValue: 1,
-        taxAuthoritySubmitted: true,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '2',
-        year: 2020,
-        interval: VatPreRegistrationInterval.QUARTER,
-        intervalValue: 2,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '3',
-        year: 2020,
-        interval: VatPreRegistrationInterval.MONTH,
-        intervalValue: 9,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '4',
-        year: 2020,
-        interval: VatPreRegistrationInterval.MONTH,
-        intervalValue: 12,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-    ];
+    return await this.httpClient
+      .get<VatPreRegistration[]>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration?year=${year}`).toPromise();
   }
 
   async add(add: VatPreRegistrationUpdate): Promise<VatPreRegistration> {

@@ -77,6 +77,11 @@
       <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
       <version>${quarkus.platform.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-money</artifactId>
+      <version>1.0.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -144,6 +149,39 @@
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <configuration>
+              <propertyFile>src/main/liquibase/liquibase.properties</propertyFile>
+              <changeLogFile>src/main/liquibase/changelog.xml</changeLogFile>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>update</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.16</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 </project>

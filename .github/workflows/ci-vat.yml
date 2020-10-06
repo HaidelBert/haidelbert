@@ -22,7 +22,7 @@ jobs:
           java-version: 11
       - name: Build Native
         working-directory: vat
-        run: ./mvnw package -Pnative -Dquarkus.native.container-build=true
+        run: ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dliquibase.should.run=false
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

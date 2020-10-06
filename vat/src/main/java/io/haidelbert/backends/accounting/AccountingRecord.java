@@ -1,11 +1,13 @@
-package io.haidelbert.domain;
+package io.haidelbert.backends.accounting;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class AccountingRecord {
     private Long id;
     private Long runningNumber;
-    private LocalDate bookingDate;
+    private Long bookingDate;
     private String name;
     private Long grossAmount;
     private Integer taxRate;
@@ -18,7 +20,7 @@ public class AccountingRecord {
 
     public AccountingRecord(Long id,
                             Long runningNumber,
-                            LocalDate bookingDate,
+                            Long bookingDate,
                             String name,
                             Long grossAmount,
                             Integer taxRate,
@@ -52,11 +54,15 @@ public class AccountingRecord {
         this.runningNumber = runningNumber;
     }
 
-    public LocalDate getBookingDate() {
+    public Long getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(LocalDate bookingDate) {
+    public LocalDate getBookingDateASLocalDate() {
+        return Instant.ofEpochMilli(this.bookingDate).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public void setBookingDate(Long bookingDate) {
         this.bookingDate = bookingDate;
     }
 
