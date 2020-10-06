@@ -20,7 +20,7 @@ func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId st
 		ReceiptType: newRecord.ReceiptType.String(),
 		ReverseCharge: newRecord.ReverseCharge,
 		TaxRate: newRecord.TaxRate,
-		IdUser: userId,
+		UserId: userId,
 	}
 	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge)`, newRecordEntity)
 	if err != nil {
@@ -113,5 +113,6 @@ func fromEntityToDomain(e Entity) *accounting.Record {
 		ReceiptType: accounting.ReceiptType(e.ReceiptType),
 		ReverseCharge: e.ReverseCharge,
 		TaxRate: e.TaxRate,
+		UserId: e.UserId,
 	}
 }

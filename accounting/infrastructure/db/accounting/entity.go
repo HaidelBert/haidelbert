@@ -12,7 +12,7 @@ type Entity struct {
 	ReceiptType   	string `db:"receipt_type"`
 	Category      	string `db:"category"`
 	ReverseCharge 	bool `db:"reverse_charge"`
-	IdUser 			string `db:"id_user"`
+	UserId 			string `db:"id_user"`
 	Created			time.Time  `db:"created_ts"`
 	Updated			time.Time  `db:"updated_ts"`
 }

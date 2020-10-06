@@ -1,27 +1,20 @@
 package io.haidelbert.domain.preRegistration.create;
 
-import io.haidelbert.domain.UserContext;
-import io.haidelbert.backends.accounting.AccountingClient;
-import io.haidelbert.backends.accounting.AccountingRecord;
+import io.haidelbert.domain.AuthContext;
 import io.haidelbert.domain.exception.ConflictException;
-import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
-import io.haidelbert.persistence.PreRegistration;
 import io.haidelbert.persistence.PreRegistrationRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class MonthCreatePreRegistrationStrategy implements CreatePreRegistrationStrategy {
 
     private final TimeConstraints timeConstrains;
-    private final UserContext context;
-    private final AccountingClient accountingClient;
+    private final AuthContext context;
     private final PreRegistrationRepository repository;
 
-    public MonthCreatePreRegistrationStrategy(TimeConstraints timeConstrains, UserContext context, AccountingClient accountingClient, PreRegistrationRepository repository) {
+    public MonthCreatePreRegistrationStrategy(TimeConstraints timeConstrains, AuthContext context, PreRegistrationRepository repository) {
         this.timeConstrains = timeConstrains;
         this.context = context;
-        this.accountingClient = accountingClient;
         this.repository = repository;
     }
 
@@ -40,11 +33,6 @@ public class MonthCreatePreRegistrationStrategy implements CreatePreRegistration
         if (repository.countByQuarter(timeConstrains.getYear(), timeConstrains.getIntervalValue()) > 0) {
             throw new ConflictException("Pre registration already exists");
         }
-    }
-
-    @Override
-    public List<AccountingRecord> listRecords() {
-        return accountingClient.listByMonth(context.getAuthHeader(), timeConstrains.getYear(), timeConstrains.getIntervalValue());
     }
 
     private LocalDate getMonthStart() {

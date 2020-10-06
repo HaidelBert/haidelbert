@@ -103,6 +103,7 @@ type Record struct {
 	ReceiptType   	ReceiptType `json:"receiptType"`
 	Category      	Category 	`json:"category"`
 	ReverseCharge 	bool     	`json:"reverseCharge"`
+	UserId			string		`json:"userId"`
 }
 
 type Filter struct {

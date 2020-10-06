@@ -85,3 +85,21 @@ func (c AccountingController) Delete(res http.ResponseWriter, req *http.Request)
 	}
 	respondWithStatus(res, http.StatusOK)
 }
+
+func (c AccountingController) GetInternal(res http.ResponseWriter, req *http.Request) {
+	nameFilter := req.URL.Query().Get("name")
+	yearFilter, _ := strconv.ParseInt(req.URL.Query().Get("year"), 10, 64)
+	quarterFilter, _ := strconv.ParseInt(req.URL.Query().Get("quarter"), 10, 64)
+	monthFilter, _ := strconv.ParseInt(req.URL.Query().Get("month"), 10, 64)
+	newRecord, err := c.Service.ListRecords(req.Header.Get("User_ID"), accounting.Filter{
+		Name: &nameFilter,
+		Year: &yearFilter,
+		Quarter: &quarterFilter,
+		Month: &monthFilter,
+	})
+	if err != nil {
+		respondWithError(res, req, err)
+		return
+	}
+	respondWithJSON(res, http.StatusOK, newRecord)
+}

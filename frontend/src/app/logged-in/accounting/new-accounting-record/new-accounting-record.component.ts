@@ -79,7 +79,6 @@ export class NewAccountingRecordComponent {
   clearForm(): void {
     this.newForm.reset();
     Object.keys(this.newForm.controls).forEach(key => {
-      this.newForm.controls[key].markAsUntouched();
       this.newForm.controls[key].markAsPristine();
       this.newForm.controls[key].updateValueAndValidity();
     });
@@ -114,6 +113,8 @@ export class NewAccountingRecordComponent {
       this.newForm.controls[key].updateValueAndValidity();
     });
     if (!this.newForm.valid) {
+      debugger;
+      console.error('Form is invalid');
       return;
     }
     this.saving = true;

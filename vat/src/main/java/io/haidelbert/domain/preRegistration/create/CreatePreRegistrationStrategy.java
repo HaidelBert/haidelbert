@@ -11,5 +11,4 @@ public interface CreatePreRegistrationStrategy {
     LocalDate getToDate();
     LocalDate getFromDate();
     void  checkExistingPreRegistration() throws ConflictException;
-    List<AccountingRecord> listRecords();
 }

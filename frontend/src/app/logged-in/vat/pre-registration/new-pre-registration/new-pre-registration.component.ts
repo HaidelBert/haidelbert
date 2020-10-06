@@ -40,6 +40,8 @@ export class NewPreRegistrationComponent implements OnInit{
       this.newForm.controls[key].updateValueAndValidity();
     });
     if (!this.newForm.valid) {
+      debugger;
+      console.error('Form is invalid');
       return;
     }
     await this.preRegistrationRepository.add(this.fromForm());

@@ -81,6 +81,10 @@ func main() {
 			protectedRouter.Patch("/{recordId}", accountingController.Patch)
 			protectedRouter.Delete("/{recordId}", accountingController.Delete)
 		})
+		rootRouter.Route("/internal", func(protectedRouter chi.Router) {
+			protectedRouter.Use(api.InternalMiddleware())
+			protectedRouter.Get("/", accountingController.GetInternal)
+		})
 	})
 	log.Printf("server is running on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))

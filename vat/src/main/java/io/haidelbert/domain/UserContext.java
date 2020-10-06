@@ -1,8 +1,6 @@
 package io.haidelbert.domain;
 
-import javax.enterprise.context.RequestScoped;
-
-public class UserContext {
+public class UserContext implements AuthContext {
     private final String userId;
     private final String accessToken;
 
