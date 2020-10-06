@@ -168,6 +168,7 @@
           <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.1.0</version>
             <configuration>
               <propertyFile>src/main/liquibase/liquibase.properties</propertyFile>
               <changeLogFile>src/main/liquibase/changelog.xml</changeLogFile>
@@ -201,6 +202,7 @@
           <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.1.0</version>
             <configuration>
               <propertyFile>src/main/liquibase/test_liquibase.properties</propertyFile>
               <changeLogFile>src/main/liquibase/changelog.xml</changeLogFile>
