@@ -12,28 +12,17 @@ services:
       - ./mongo-volume:/data/db
     ports:
       - '27017-27019:27017-27019'
-  accounting-postgres:
+  haidelbert-postgres:
     image: postgres
-    container_name: 'accounting-postgres'
+    container_name: 'haidelbert-postgres'
     environment:
       - POSTGRES_DB=accounting
       - POSTGRES_PASSWORD=root
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./postgres-volume:/var/lib/postgresql/data
+      - ./haidelbert-postgres-volume:/var/lib/postgresql/data
     ports:
-      - 5433:5432
-  vat-postgres:
-    image: postgres
-    container_name: 'vat-postgres'
-    environment:
-      - POSTGRES_DB=vat
-      - POSTGRES_PASSWORD=root
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - ./vat-volume:/var/lib/postgresql/data
-    ports:
-      - 5434:5432
+      - 5432:5432
   zoo1:
     image: zookeeper:3.4.9
     hostname: zoo1
