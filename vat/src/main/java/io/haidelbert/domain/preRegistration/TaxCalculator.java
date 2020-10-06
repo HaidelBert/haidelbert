@@ -1,4 +1,4 @@
-package io.haidelbert.domain;
+package io.haidelbert.domain.preRegistration;
 
 import io.haidelbert.backends.accounting.AccountingRecord;
 import io.haidelbert.backends.accounting.CategoryHelper;

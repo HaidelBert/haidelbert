@@ -1,4 +1,4 @@
-package io.haidelbert.domain.model;
+package io.haidelbert.domain.preRegistration.model;
 
 import io.haidelbert.persistence.Interval;
 

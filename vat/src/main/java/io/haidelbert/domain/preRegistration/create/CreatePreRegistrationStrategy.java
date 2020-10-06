@@ -1,8 +1,7 @@
-package io.haidelbert.domain.create;
+package io.haidelbert.domain.preRegistration.create;
 
 import io.haidelbert.backends.accounting.AccountingRecord;
 import io.haidelbert.domain.exception.ConflictException;
-import io.haidelbert.domain.model.CreatePreRegistration;
 
 import java.time.LocalDate;
 import java.util.List;

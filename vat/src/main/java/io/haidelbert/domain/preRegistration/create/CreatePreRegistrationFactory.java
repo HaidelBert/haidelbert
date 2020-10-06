@@ -1,8 +1,8 @@
-package io.haidelbert.domain.create;
+package io.haidelbert.domain.preRegistration.create;
 
 import io.haidelbert.backends.accounting.AccountingClient;
 import io.haidelbert.domain.UserContext;
-import io.haidelbert.domain.model.CreatePreRegistration;
+import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
 import io.haidelbert.persistence.Interval;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
