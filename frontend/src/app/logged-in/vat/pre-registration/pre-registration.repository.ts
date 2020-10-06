@@ -8,7 +8,7 @@ export enum VatPreRegistrationInterval {
 }
 
 export interface VatPreRegistration {
-  id: string;
+  id: number;
   grossRevenue: number;
   vat: number;
   inputTax: number;
@@ -21,10 +21,14 @@ export interface VatPreRegistration {
   year: number;
 }
 
-export interface VatPreRegistrationUpdate {
+export interface VatPreRegistrationCreate {
   year: number;
   interval: VatPreRegistrationInterval;
   intervalValue: number;
+  taxAuthoritySubmitted: boolean;
+}
+
+export interface VatPreRegistrationUpdate {
   taxAuthoritySubmitted: boolean;
 }
 
@@ -54,22 +58,23 @@ export class PreRegistrationRepository {
       .get<VatPreRegistration[]>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration?year=${year}`).toPromise();
   }
 
-  async add(add: VatPreRegistrationUpdate): Promise<VatPreRegistration> {
+  async add(add: VatPreRegistrationCreate): Promise<VatPreRegistration> {
     return await this.httpClient.post<VatPreRegistration>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration`, add).toPromise();
   }
 
   async simulate(
     year: number,
     interval: VatPreRegistrationInterval,
-    quarter: number,
-    month: number
+    intervalValue: number,
   ): Promise<VatPreRegistrationSimulation> {
-    return {
-      grossRevenue: 898623,
-      vat: 0,
-      inputTax: 7390,
-      reverseCharge: 898623,
-      vatPayable: -7390,
-    };
+    return await this.httpClient.post<VatPreRegistrationSimulation>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration/simulate`, {
+      year,
+      interval,
+      intervalValue,
+    }).toPromise();
+  }
+
+  async change(id: number, change: VatPreRegistrationUpdate): Promise<void> {
+    return await this.httpClient.patch<void>(`${getVatApiBaseUrl()}/vat/api/protected/pre-registration/${id}`, change).toPromise();
   }
 }

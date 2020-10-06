@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { formatMoney } from 'src/app/utils';
 import {Subject} from 'rxjs';
 import {
-  PreRegistrationRepository,
+  PreRegistrationRepository, VatPreRegistrationCreate,
   VatPreRegistrationInterval,
   VatPreRegistrationSimulation,
   VatPreRegistrationUpdate
@@ -46,7 +46,7 @@ export class NewPreRegistrationComponent implements OnInit{
     this.clearForm();
   }
 
-  fromForm(): VatPreRegistrationUpdate {
+  fromForm(): VatPreRegistrationCreate {
     return {
       year: this.newForm.controls.year.value,
       interval: this.newForm.controls.interval.value,
@@ -67,16 +67,24 @@ export class NewPreRegistrationComponent implements OnInit{
 
   async ngOnInit(): Promise<void> {
     this.selectedInterval$.subscribe(() => {
-      this.simulate();
+      if (this.isValidForSimulation()) {
+        this.simulate();
+      }
     });
     this.selectedQuarter$.subscribe(() => {
-      this.simulate();
+      if (this.isValidForSimulation()) {
+        this.simulate();
+      }
     });
     this.selectedMonth$.subscribe(() => {
-      this.simulate();
+      if (this.isValidForSimulation()) {
+        this.simulate();
+      }
     });
     this.newYear$.subscribe(() => {
-      this.simulate();
+      if (this.isValidForSimulation()) {
+        this.simulate();
+      }
     });
   }
 
@@ -85,8 +93,7 @@ export class NewPreRegistrationComponent implements OnInit{
       .simulate(
         this.newForm.controls.year.value,
         this.newForm.controls.interval.value,
-        this.newForm.controls.quarter.value,
-        this.newForm.controls.month.value
+        this.newForm.controls.interval.value === VatPreRegistrationInterval.QUARTER ? this.newForm.controls.quarter.value : this.newForm.controls.month.value
       );
   }
 
@@ -114,5 +121,15 @@ export class NewPreRegistrationComponent implements OnInit{
   handleCancel(): void {
     this.clearForm();
     this.cancel.emit();
+  }
+
+  private isValidForSimulation() {
+    if (this.newForm.controls.year.value && this.newForm.controls.interval.value) {
+      if (this.newForm.controls.interval.value === VatPreRegistrationInterval.QUARTER) {
+        return !!this.newForm.controls.quarter.value;
+      }
+      return !!this.newForm.controls.month.value;
+    }
+    return false;
   }
 }

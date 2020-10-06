@@ -49,6 +49,44 @@
             <column name="interval" type="varchar">
                 <constraints nullable="false"/>
             </column>
+            <column name="tax_authority_submitted" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet  id="2"  author="Alex">
+        <createTable  tableName="annual_completions">
+            <column  name="id"  type="bigserial" autoIncrement="true">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column  name="gross_revenue"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="gross_expenditure"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="vat"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="input_tax"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="reverse_charge"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column  name="vat_payable"  type="bigint">
+                <constraints  nullable="false"/>
+            </column>
+            <column name="year" type="int">
+                <constraints  nullable="false"/>
+            </column>
+            <column name="id_user" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tax_authority_submitted" type="boolean">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

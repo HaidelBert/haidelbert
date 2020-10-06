@@ -1,21 +1,28 @@
 import {Injectable} from '@angular/core';
-import {waitFor} from '../../../utils';
+import {getVatApiBaseUrl} from '../../../../config/config';
+import {HttpClient} from '@angular/common/http';
 
 export enum VatPreRegistrationInterval {
   QUARTER= 'QUARTER', MONTH = 'MONTH'
 }
 
-export interface VatAnnualCompletion extends VatAnnualCompletionUpdate {
-  id: string;
+export interface VatAnnualCompletion {
+  id: number;
   grossRevenue: number;
   vat: number;
   inputTax: number;
   reverseCharge: number;
   vatPayable: number;
+  year: number;
+  taxAuthoritySubmitted: boolean;
+}
+
+export interface VatAnnualCompletionCreate {
+  year: number;
+  taxAuthoritySubmitted: boolean;
 }
 
 export interface VatAnnualCompletionUpdate {
-  year: number;
   taxAuthoritySubmitted: boolean;
 }
 
@@ -32,73 +39,24 @@ export interface VatAnnualCompletionSimulation {
   providedIn: 'root'
 })
 export class AnnualCompletionRepository {
+
+
+  constructor(private httpClient: HttpClient) {}
+
   async findAll(): Promise<VatAnnualCompletion[]>{
-    await waitFor(200);
-    return [
-      {
-        id: '1',
-        year: 2020,
-        taxAuthoritySubmitted: true,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '2',
-        year: 2019,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '3',
-        year: 2018,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-      {
-        id: '4',
-        year: 2017,
-        taxAuthoritySubmitted: false,
-        grossRevenue: 898623,
-        vat: 0,
-        inputTax: 7390,
-        reverseCharge: 898623,
-        vatPayable: -7390
-      },
-    ];
+    return await this.httpClient
+      .get<VatAnnualCompletion[]>(`${getVatApiBaseUrl()}/vat/api/protected/annual-completion`).toPromise();
   }
 
-  async add(add: VatAnnualCompletionUpdate): Promise<VatAnnualCompletion> {
-    return {
-      id: '123123',
-      grossRevenue: 898623,
-      vat: 0,
-      inputTax: 7390,
-      reverseCharge: 898623,
-      vatPayable: -7390,
-      ...add
-    };
+  async add(add: VatAnnualCompletionCreate): Promise<VatAnnualCompletion> {
+    return await this.httpClient.post<VatAnnualCompletion>(`${getVatApiBaseUrl()}/vat/api/protected/annual-completion`, add).toPromise();
   }
 
-  async simulate(
-    year: number,
-  ): Promise<VatAnnualCompletionSimulation> {
-    return {
-      grossRevenue: 898623,
-      vat: 0,
-      inputTax: 7390,
-      reverseCharge: 898623,
-      vatPayable: -7390,
-    };
+  async simulate(year: number): Promise<VatAnnualCompletionSimulation> {
+    return await this.httpClient.post<VatAnnualCompletionSimulation>(`${getVatApiBaseUrl()}/vat/api/protected/annual-completion/simulate?year=${year}`, {}).toPromise();
+  }
+
+  async change(id: number, change: VatAnnualCompletionUpdate): Promise<void> {
+    return await this.httpClient.patch<void>(`${getVatApiBaseUrl()}/vat/api/protected/annual-completion/${id}`, change).toPromise();
   }
 }

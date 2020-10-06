@@ -1,14 +1,11 @@
 package io.haidelbert.persistence;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.haidelbert.domain.model.FinancialData;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
-@Entity(name = "pre_registrations")
-public class PreRegistration {
+@Entity(name = "annual_completions")
+public class AnnualCompletion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,55 +21,37 @@ public class PreRegistration {
     private Long reverseCharge;
     @Column(name = "vat_payable")
     private Long vatPayable;
-    @Column(name = "from_date")
-    private LocalDate from;
-    @Column(name = "to_date")
-    private LocalDate to;
     @Column(name = "year")
     private Integer year;
-    @Column(name = "quarter")
-    private Integer quarter;
-    @Column(name = "month")
-    private Integer month;
     @Column(name = "id_user")
     private String userId;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "interval")
-    private Interval interval;
     @Column(name = "tax_authority_submitted")
     private boolean taxAuthoritySubmitted;
 
-    public PreRegistration() {
-        super();
+    public AnnualCompletion() {
     }
 
-    public PreRegistration(Long grossRevenue,
-                           Long grossExpenditure,
-                           Long vat,
-                           Long inputTax,
-                           Long reverseCharge,
-                           Long vatPayable,
-                           LocalDate from,
-                           LocalDate to,
-                           Integer year,
-                           Integer quarter,
-                           Integer month,
-                           String userId,
-                           Interval interval,
-                           boolean taxAuthoritySubmitted) {
+    public AnnualCompletion(Long grossRevenue, Long grossExpenditure, Long vat, Long inputTax, Long reverseCharge, Long vatPayable, Integer year, String userId, boolean taxAuthoritySubmitted) {
         this.grossRevenue = grossRevenue;
         this.grossExpenditure = grossExpenditure;
         this.vat = vat;
         this.inputTax = inputTax;
         this.reverseCharge = reverseCharge;
         this.vatPayable = vatPayable;
-        this.from = from;
-        this.to = to;
         this.year = year;
-        this.quarter = quarter;
-        this.month = month;
         this.userId = userId;
-        this.interval = interval;
+        this.taxAuthoritySubmitted = taxAuthoritySubmitted;
+    }
+
+    public AnnualCompletion(FinancialData financialData, Integer year, String userId, boolean taxAuthoritySubmitted) {
+        this.grossRevenue = financialData.getGrossRevenue();
+        this.grossExpenditure = financialData.getGrossExpenditure();
+        this.vat = financialData.getVat();
+        this.inputTax = financialData.getInputTax();
+        this.reverseCharge = financialData.getReverseCharge();
+        this.vatPayable = financialData.getVatPayable();
+        this.year = year;
+        this.userId = userId;
         this.taxAuthoritySubmitted = taxAuthoritySubmitted;
     }
 
@@ -132,22 +111,6 @@ public class PreRegistration {
         this.vatPayable = vatPayable;
     }
 
-    public LocalDate getFrom() {
-        return from;
-    }
-
-    public void setFrom(LocalDate from) {
-        this.from = from;
-    }
-
-    public LocalDate getTo() {
-        return to;
-    }
-
-    public void setTo(LocalDate to) {
-        this.to = to;
-    }
-
     public Integer getYear() {
         return year;
     }
@@ -156,36 +119,12 @@ public class PreRegistration {
         this.year = year;
     }
 
-    public Integer getQuarter() {
-        return quarter;
-    }
-
-    public void setQuarter(Integer quarter) {
-        this.quarter = quarter;
-    }
-
-    public Integer getMonth() {
-        return month;
-    }
-
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
     }
 
     public boolean isTaxAuthoritySubmitted() {

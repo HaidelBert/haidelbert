@@ -31,4 +31,10 @@ export class AnnualCompletionComponent implements OnInit{
   async ngOnInit(): Promise<void> {
     this.annualCompletions = await this.annualCompletionRepository.findAll();
   }
+
+  async markDone(data: VatAnnualCompletion): Promise<void> {
+    await this.annualCompletionRepository.change(data.id, {
+      taxAuthoritySubmitted: true,
+    });
+  }
 }

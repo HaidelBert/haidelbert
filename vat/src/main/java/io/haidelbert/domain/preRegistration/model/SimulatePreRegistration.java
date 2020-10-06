@@ -3,20 +3,18 @@ package io.haidelbert.domain.preRegistration.model;
 import io.haidelbert.domain.preRegistration.create.TimeConstraints;
 import io.haidelbert.persistence.Interval;
 
-public class CreatePreRegistration implements TimeConstraints {
+public class SimulatePreRegistration implements TimeConstraints {
     private Integer year;
     private Interval interval;
     private Integer intervalValue;
-    private Boolean taxAuthoritySubmitted;
 
-    public CreatePreRegistration() {
+    public SimulatePreRegistration() {
     }
 
-    public CreatePreRegistration(Integer year, Interval interval, Integer intervalValue, Boolean taxAuthoritySubmitted) {
+    public SimulatePreRegistration(Integer year, Interval interval, Integer intervalValue) {
         this.year = year;
         this.interval = interval;
         this.intervalValue = intervalValue;
-        this.taxAuthoritySubmitted = taxAuthoritySubmitted;
     }
 
     public Integer getYear() {
@@ -43,11 +41,4 @@ public class CreatePreRegistration implements TimeConstraints {
         this.intervalValue = intervalValue;
     }
 
-    public Boolean getTaxAuthoritySubmitted() {
-        return taxAuthoritySubmitted;
-    }
-
-    public void setTaxAuthoritySubmitted(Boolean taxAuthoritySubmitted) {
-        this.taxAuthoritySubmitted = taxAuthoritySubmitted;
-    }
 }

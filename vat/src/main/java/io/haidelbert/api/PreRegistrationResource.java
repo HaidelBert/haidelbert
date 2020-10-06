@@ -2,8 +2,11 @@ package io.haidelbert.api;
 
 
 import io.haidelbert.domain.UserContext;
+import io.haidelbert.domain.model.FinancialData;
+import io.haidelbert.domain.preRegistration.model.ChangePreRegistration;
 import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
 import io.haidelbert.domain.preRegistration.Service;
+import io.haidelbert.domain.preRegistration.model.SimulatePreRegistration;
 import io.haidelbert.persistence.PreRegistration;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -49,5 +52,21 @@ public class PreRegistrationResource {
     public List<Integer> getYears() {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
         return service.listDistinctYears(context);
+    }
+
+    @PATCH
+    @Path("/protected/pre-registration/{id}")
+    @RolesAllowed({"User"})
+    public void patch(ChangePreRegistration change, @PathParam("id") Long id) {
+        var context = new UserContext(jwt.getName(), jwt.getRawToken());
+        service.change(context, id, change);
+    }
+
+    @POST
+    @Path("/protected/pre-registration/simulate")
+    @RolesAllowed({"User"})
+    public FinancialData post(SimulatePreRegistration simulate) {
+        var context = new UserContext(jwt.getName(), jwt.getRawToken());
+        return service.simulate(context, simulate);
     }
 }

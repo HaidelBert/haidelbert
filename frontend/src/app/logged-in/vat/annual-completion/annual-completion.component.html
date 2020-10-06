@@ -16,7 +16,7 @@
       <td>{{ data.year }}</td>
       <td>
         <span *ngIf="data.taxAuthoritySubmitted">Ja</span>
-        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary">erledigt</button>
+        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary" (click)="markDone(data)">erledigt</button>
       </td>
       <td><a (click)="showDetails(data)" class="save">Details</a></td>
     </tr>

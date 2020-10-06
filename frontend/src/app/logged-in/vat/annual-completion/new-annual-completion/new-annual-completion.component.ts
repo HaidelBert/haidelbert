@@ -21,7 +21,7 @@ export class NewAnnualCompletionComponent implements OnInit{
     });
   }
 
-  submitForm($event: any): void {
+  async submitForm($event: any): Promise<void> {
     $event.preventDefault();
     Object.keys(this.newForm.controls).forEach(key => {
       this.newForm.controls[key].markAsDirty();
@@ -30,12 +30,16 @@ export class NewAnnualCompletionComponent implements OnInit{
     if (!this.newForm.valid) {
       return;
     }
+    await this.annualCompletionRepository.add({
+      year: this.newForm.controls.year.value,
+      taxAuthoritySubmitted: false,
+    });
     this.clearForm();
   }
 
   async ngOnInit(): Promise<void> {
     this.newYear$.subscribe((value) => {
-      if (value.toString(10).length === 4) {
+      if (value && value.toString(10).length === 4) {
         this.simulate();
       }
     });

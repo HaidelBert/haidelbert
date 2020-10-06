@@ -6,20 +6,23 @@ import io.haidelbert.backends.accounting.AccountingRecord;
 import io.haidelbert.domain.exception.ConflictException;
 import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
 import io.haidelbert.persistence.PreRegistration;
+import io.haidelbert.persistence.PreRegistrationRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class MonthCreatePreRegistrationStrategy implements CreatePreRegistrationStrategy {
 
-    private final CreatePreRegistration create;
+    private final TimeConstraints timeConstrains;
     private final UserContext context;
     private final AccountingClient accountingClient;
+    private final PreRegistrationRepository repository;
 
-    public MonthCreatePreRegistrationStrategy(CreatePreRegistration create, UserContext context, AccountingClient accountingClient) {
-        this.create = create;
+    public MonthCreatePreRegistrationStrategy(TimeConstraints timeConstrains, UserContext context, AccountingClient accountingClient, PreRegistrationRepository repository) {
+        this.timeConstrains = timeConstrains;
         this.context = context;
         this.accountingClient = accountingClient;
+        this.repository = repository;
     }
 
     @Override
@@ -34,23 +37,23 @@ public class MonthCreatePreRegistrationStrategy implements CreatePreRegistration
 
     @Override
     public void checkExistingPreRegistration() throws ConflictException {
-        if (PreRegistration.countByQuarter(create.getYear(), create.getIntervalValue()) > 0) {
+        if (repository.countByQuarter(timeConstrains.getYear(), timeConstrains.getIntervalValue()) > 0) {
             throw new ConflictException("Pre registration already exists");
         }
     }
 
     @Override
     public List<AccountingRecord> listRecords() {
-        return accountingClient.listByMonth(context.getAuthHeader(), create.getYear(), create.getIntervalValue());
+        return accountingClient.listByMonth(context.getAuthHeader(), timeConstrains.getYear(), timeConstrains.getIntervalValue());
     }
 
     private LocalDate getMonthStart() {
-        LocalDate initial = LocalDate.of(create.getYear(), create.getIntervalValue(), 1);
+        LocalDate initial = LocalDate.of(timeConstrains.getYear(), timeConstrains.getIntervalValue(), 1);
         return initial.withDayOfMonth(1);
     }
 
     private LocalDate getMonthEnd() {
-        LocalDate initial = LocalDate.of(create.getYear(), create.getIntervalValue(), 1);
+        LocalDate initial = LocalDate.of(timeConstrains.getYear(), timeConstrains.getIntervalValue(), 1);
         return initial.withDayOfMonth(initial.lengthOfMonth());
     }
 }

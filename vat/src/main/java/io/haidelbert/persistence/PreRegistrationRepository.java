@@ -28,4 +28,8 @@ public class PreRegistrationRepository implements PanacheRepository<PreRegistrat
                 .createQuery("select DISTINCT(p.year) from pre_registrations p order by p.year", Integer.class)
                 .getResultList();
     }
+
+    public List<PreRegistration> listByYear(int year) {
+        return list("year", year);
+    }
 }

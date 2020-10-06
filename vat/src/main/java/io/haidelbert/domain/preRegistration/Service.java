@@ -2,8 +2,11 @@ package io.haidelbert.domain.preRegistration;
 
 import io.haidelbert.backends.accounting.AccountingRecord;
 import io.haidelbert.domain.UserContext;
+import io.haidelbert.domain.model.FinancialData;
 import io.haidelbert.domain.preRegistration.create.CreatePreRegistrationFactory;
+import io.haidelbert.domain.preRegistration.model.ChangePreRegistration;
 import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
+import io.haidelbert.domain.preRegistration.model.SimulatePreRegistration;
 import io.haidelbert.persistence.Interval;
 import io.haidelbert.persistence.PreRegistration;
 import io.haidelbert.persistence.PreRegistrationRepository;
@@ -44,7 +47,8 @@ public class Service {
                 create.getInterval().equals(Interval.QUARTER) ? create.getIntervalValue() : null,
                 create.getInterval().equals(Interval.MONTH) ? create.getIntervalValue() : null,
                 context.getUserId(),
-                create.getInterval()
+                create.getInterval(),
+                create.getTaxAuthoritySubmitted()
         );
 
         repository.persistAndFlush(newPreRegistration);
@@ -60,5 +64,26 @@ public class Service {
     @Transactional
     public List<Integer> listDistinctYears(UserContext context) {
         return repository.findDistinctYears(context.getUserId());
+    }
+
+    @Transactional
+    public void change(UserContext context, Long id, ChangePreRegistration change) {
+        var preRegistration = repository.findById(id);
+        preRegistration.setTaxAuthoritySubmitted(change.isTaxAuthoritySubmitted());
+    }
+
+    @Transactional
+    public FinancialData simulate(UserContext context, SimulatePreRegistration simulate) {
+        var createStrategy = createPreRegistrationFactory.createStrategy(simulate, context);
+        List<AccountingRecord> records = createStrategy.listRecords();
+        var calculator = new TaxCalculator(records);
+
+        return new FinancialData(
+                calculator.sumGrossRevenue(),
+                calculator.sumGrossExpenditures(),
+                calculator.calculateVat(),
+                calculator.calculateInputTax(),
+                calculator.sumReverseCharge(),
+                calculator.calculateVatPayable());
     }
 }

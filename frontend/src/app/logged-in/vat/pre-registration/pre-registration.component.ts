@@ -39,7 +39,9 @@ export class PreRegistrationComponent implements OnInit {
     }
   }
 
-
+  async refresh(): Promise<void> {
+    this.preRegistrations = await this.preRegistrationRepository.findByYear(this.selectedYear);
+  }
 
   formatInterval(data: VatPreRegistration): string {
     if (!data) {
@@ -77,5 +79,12 @@ export class PreRegistrationComponent implements OnInit {
       return '€0.00';
     }
     return formatMoney({amount: value, currency: 'EUR'});
+  }
+
+  async markDone(data: VatPreRegistration): Promise<void> {
+    await this.preRegistrationRepository.change(data.id, {
+      taxAuthoritySubmitted: true
+    });
+    await this.refresh();
   }
 }
