@@ -12,12 +12,10 @@ import static java.time.temporal.IsoFields.QUARTER_OF_YEAR;
 public class QuarterCreatePreRegistrationStrategy implements CreatePreRegistrationStrategy {
 
     private final TimeConstraints timeConstrains;
-    private final AuthContext context;
     private final PreRegistrationRepository repository;
 
-    public QuarterCreatePreRegistrationStrategy(TimeConstraints timeConstrains, AuthContext context, PreRegistrationRepository repository) {
+    public QuarterCreatePreRegistrationStrategy(TimeConstraints timeConstrains, PreRegistrationRepository repository) {
         this.timeConstrains = timeConstrains;
-        this.context = context;
         this.repository = repository;
     }
 

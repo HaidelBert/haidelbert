@@ -13,13 +13,19 @@ jobs:
         with:
           postgresql user: postgres
           postgresql password: root
-          postgresql db: vat
+          postgresql db: vat_test
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set up jdk11
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Migrate Test DB
+        working-directory: vat
+        run: ./mvnw resources:resources liquibase:update -Ptest
+      - name: Test
+        working-directory: vat
+        run: ./mvnw surefire:test -Dquarkus-profile=test -Ptest
       - name: Build Native
         working-directory: vat
         run: ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dliquibase.should.run=false

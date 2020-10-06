@@ -36,7 +36,7 @@ public class Service {
 
     @Transactional
     public PreRegistration addPreRegistration(UserContext context, CreatePreRegistration create) {
-        var createStrategy = createPreRegistrationFactory.createStrategy(create, context);
+        var createStrategy = createPreRegistrationFactory.createStrategy(create);
         createStrategy.checkExistingPreRegistration();
         List<AccountingRecord> records = accountingRecordListClient.list(context, create);
         var calculator = new TaxCalculator(records);
@@ -81,7 +81,7 @@ public class Service {
 
     @Transactional
     public FinancialData simulate(UserContext context, SimulatePreRegistration simulate) {
-        var createStrategy = createPreRegistrationFactory.createStrategy(simulate, context);
+        var createStrategy = createPreRegistrationFactory.createStrategy(simulate);
         List<AccountingRecord> records = accountingRecordListClient.list(context, simulate);
         var calculator = new TaxCalculator(records);
 

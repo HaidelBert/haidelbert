@@ -9,12 +9,10 @@ import java.time.LocalDate;
 public class MonthCreatePreRegistrationStrategy implements CreatePreRegistrationStrategy {
 
     private final TimeConstraints timeConstrains;
-    private final AuthContext context;
     private final PreRegistrationRepository repository;
 
-    public MonthCreatePreRegistrationStrategy(TimeConstraints timeConstrains, AuthContext context, PreRegistrationRepository repository) {
+    public MonthCreatePreRegistrationStrategy(TimeConstraints timeConstrains, PreRegistrationRepository repository) {
         this.timeConstrains = timeConstrains;
-        this.context = context;
         this.repository = repository;
     }
 

@@ -1,6 +1,5 @@
 package io.haidelbert.domain.preRegistration.create;
 
-import io.haidelbert.domain.AuthContext;
 import io.haidelbert.persistence.Interval;
 import io.haidelbert.persistence.PreRegistrationRepository;
 
@@ -15,11 +14,11 @@ public class CreatePreRegistrationFactory {
         this.repository = repository;
     }
 
-    public CreatePreRegistrationStrategy createStrategy(TimeConstraints timeConstraints, AuthContext authContext) {
+    public CreatePreRegistrationStrategy createStrategy(TimeConstraints timeConstraints) {
         if (timeConstraints.getInterval().equals(Interval.QUARTER)) {
-            return new QuarterCreatePreRegistrationStrategy(timeConstraints, authContext, repository);
+            return new QuarterCreatePreRegistrationStrategy(timeConstraints, repository);
         }
-        return new MonthCreatePreRegistrationStrategy(timeConstraints, authContext, repository);
+        return new MonthCreatePreRegistrationStrategy(timeConstraints, repository);
     }
 
 }
