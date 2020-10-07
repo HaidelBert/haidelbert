@@ -1,7 +1,7 @@
 import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {AssetDepreciation} from "./assetDepreciation";
 
-@Entity()
+@Entity({name: "year_depreciation"})
 export class YearDepreciation extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;

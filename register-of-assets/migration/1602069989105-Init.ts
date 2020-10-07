@@ -40,6 +40,11 @@ export class Init1602069989105 implements MigrationInterface {
                     name: "net_remaining_block_value",
                     type: "bigint",
                     isNullable: false
+                },
+                {
+                    name: "user_id",
+                    type: "varchar",
+                    isNullable: false
                 }
             ]
         }), true);
@@ -91,6 +96,11 @@ export class Init1602069989105 implements MigrationInterface {
                 {
                     name: "year",
                     type: "int",
+                    isNullable: false
+                },
+                {
+                    name: "user_id",
+                    type: "varchar",
                     isNullable: false
                 }
             ]

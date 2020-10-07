@@ -22,3 +22,11 @@ export function getVatApiBaseUrl(): string {
     return 'http://api-staging.haidelbert.io';
   }
 }
+
+export function getRegisterOfAssetsApiBaseUrl(): string {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:3000';
+  } else if (window.location.hostname === 'frontend-staging.haidelbert.io') {
+    return 'http://api-staging.haidelbert.io';
+  }
+}

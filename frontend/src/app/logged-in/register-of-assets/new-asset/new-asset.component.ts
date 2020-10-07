@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {clearForm} from '../../../utils';
+import {CreateAsset, RegisterOfAssetsRepository} from '../register-of-assets.repository';
+import currency from 'currency.js';
 
 @Component({
   selector: 'app-new-asset',
@@ -11,7 +13,7 @@ export class NewAssetComponent {
   @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
   saving: false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private registerOfAssetRepository: RegisterOfAssetsRepository) {
     this.newForm = this.fb.group({
       name: ['', [Validators.required]],
       purchaseDate: [undefined, [Validators.required]],
@@ -21,7 +23,7 @@ export class NewAssetComponent {
     });
   }
 
-  submitForm($event: any): void {
+  async submitForm($event: any): Promise<void> {
     $event.preventDefault();
     Object.keys(this.newForm.controls).forEach(key => {
       this.newForm.controls[key].markAsDirty();
@@ -30,7 +32,18 @@ export class NewAssetComponent {
     if (!this.newForm.valid) {
       return;
     }
+    await this.registerOfAssetRepository.add(this.mapFromForm());
     this.clearForm();
+  }
+
+  mapFromForm(): CreateAsset {
+    return {
+      name: this.newForm.controls.name.value.toString(),
+      depreciationDuration: parseInt(this.newForm.controls.depreciationDuration.value, 10),
+      grossAmount: currency(this.newForm.controls.grossAmount.value).intValue,
+      netAmount: currency(this.newForm.controls.netAmount.value).intValue,
+      purchaseDate: this.newForm.controls.purchaseDate.value
+    };
   }
 
   clearForm(): void {

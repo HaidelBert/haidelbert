@@ -2,18 +2,19 @@ import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typ
 import {Asset} from "./asset";
 import {YearDepreciation} from "./yearDepreciation";
 
-@Entity()
+@Entity({ name: "asset_depreciations" })
 export class AssetDepreciation extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;
     @Column()
     year: number = new Date().getFullYear();
-    @Column()
+    @Column({ name: "net_depreciation_amount" })
     netDepreciationAmount: number = 0;
-    @Column()
+    @Column({name: "net_remaining_block_value"})
     netRemainingBlockValue: number=0;
+
     @ManyToOne(() => Asset, asset => asset.depreciations)
-    asset?: Asset;
+    asset?: Promise<Asset>;
     @ManyToOne(() => YearDepreciation, yearDepreciation => yearDepreciation.depreciations)
-    yearDepreciation?: YearDepreciation;
+    yearDepreciation?: Promise<YearDepreciation>;
 }

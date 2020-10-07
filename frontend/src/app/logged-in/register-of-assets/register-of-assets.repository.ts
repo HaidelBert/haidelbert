@@ -1,4 +1,6 @@
 import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {getRegisterOfAssetsApiBaseUrl} from '../../../config/config';
 
 export interface Asset{
   id: string;
@@ -12,6 +14,14 @@ export interface Asset{
   active: boolean;
 }
 
+export interface CreateAsset {
+  name: string;
+  purchaseDate: Date;
+  grossAmount: number;
+  netAmount: number;
+  depreciationDuration: number;
+}
+
 export interface Depreciation {
   id: string;
   year: number;
@@ -23,26 +33,14 @@ export interface Depreciation {
   providedIn: 'root'
 })
 export class RegisterOfAssetsRepository {
-  findAll(): Promise<Asset[]> {
-    return Promise.resolve([
-      {
-        id: '1',
-        name: 'MacBook Pro 2020',
-        purchaseDate: 1601438408,
-        grossAmount: 1200000,
-        netAmount: 1000000,
-        depreciationDuration: 3,
-        netRemainingBlockValue: 666667,
-        depreciations: [
-          {
-            id: '123',
-            year: 2019,
-            netDepreciationAmount: 333333,
-            netRemainingBlockValue: 666667
-          }
-        ],
-        active: true,
-      }
-    ]);
+
+  constructor(private httpClient: HttpClient) {}
+
+  async findAll(): Promise<Asset[]> {
+    return await this.httpClient.get<Asset[]>(`${getRegisterOfAssetsApiBaseUrl()}/register-of-assets/api/protected/assets`).toPromise();
+  }
+
+  async add(add: CreateAsset): Promise<Asset> {
+    return await this.httpClient.post<Asset>(`${getRegisterOfAssetsApiBaseUrl()}/register-of-assets/api/protected/assets`, add).toPromise();
   }
 }
