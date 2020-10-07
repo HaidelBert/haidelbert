@@ -2,7 +2,6 @@ package io.haidelbert.domain.preRegistration;
 
 import io.haidelbert.backends.accounting.AccountingClientService;
 import io.haidelbert.backends.accounting.AccountingRecord;
-import io.haidelbert.config.ServiceCredentials;
 import io.haidelbert.domain.UserContext;
 import io.haidelbert.domain.model.FinancialData;
 import io.haidelbert.domain.preRegistration.create.PreRegistrationCreator;
@@ -21,13 +20,11 @@ import java.util.List;
 
 @ApplicationScoped
 public class Service {
-    private final ServiceCredentials serviceCredentials;
     private final AccountingClientService accountingClientService;
     private final PreRegistrationCreator preRegistrationCreator;
     private final PreRegistrationRepository repository;
 
-    public Service(ServiceCredentials serviceCredentials, AccountingClientService accountingClientService, PreRegistrationCreator preRegistrationCreator, PreRegistrationRepository repository) {
-        this.serviceCredentials = serviceCredentials;
+    public Service(AccountingClientService accountingClientService, PreRegistrationCreator preRegistrationCreator, PreRegistrationRepository repository) {
         this.accountingClientService = accountingClientService;
         this.preRegistrationCreator = preRegistrationCreator;
         this.repository = repository;
@@ -40,7 +37,7 @@ public class Service {
 
     @Transactional
     public List<PreRegistration> listPreRegistrations(UserContext context, int year) {
-        return repository.list("userId=?1 and year=?2", context.getUserId(), year);
+        return repository.listByUserAndYear(context.getUserId(), year);
     }
 
     @Transactional
@@ -86,13 +83,17 @@ public class Service {
                  records = accountingClientService.listByMonthInternal(preRegistration.getUserId(), preRegistration.getYear(), preRegistration.getMonth());
              }
             var calculator = new TaxCalculator(records);
-            preRegistration.setGrossExpenditure(calculator.sumGrossExpenditures());
-            preRegistration.setGrossRevenue(calculator.sumGrossRevenue());
-            preRegistration.setTaxAuthoritySubmitted(false);
-            preRegistration.setInputTax(calculator.calculateInputTax());
-            preRegistration.setReverseCharge(calculator.sumReverseCharge());
-            preRegistration.setVat(calculator.calculateVat());
-            preRegistration.setVatPayable(calculator.calculateVatPayable());
+            updatePreRegistrationByCalculator(preRegistration, calculator);
         });
+    }
+
+    private void updatePreRegistrationByCalculator(PreRegistration preRegistration, TaxCalculator calc) {
+        preRegistration.setGrossExpenditure(calc.sumGrossExpenditures());
+        preRegistration.setGrossRevenue(calc.sumGrossRevenue());
+        preRegistration.setTaxAuthoritySubmitted(false);
+        preRegistration.setInputTax(calc.calculateInputTax());
+        preRegistration.setReverseCharge(calc.sumReverseCharge());
+        preRegistration.setVat(calc.calculateVat());
+        preRegistration.setVatPayable(calc.calculateVatPayable());
     }
 }

@@ -35,6 +35,10 @@ public class PreRegistrationRepository implements PanacheRepository<PreRegistrat
         return list("year", year);
     }
 
+    public List<PreRegistration> listByUserAndYear(String userId, int year) {
+        return list("userId=?1 and year=?2", userId, year);
+    }
+
     public List<PreRegistration> listByBookingDate(LocalDate bookingDate){
         return em
                 .createQuery("select p from pre_registrations p where :bookingDate BETWEEN p.from and p.to", PreRegistration.class)
