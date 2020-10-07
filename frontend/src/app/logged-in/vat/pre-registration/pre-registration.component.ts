@@ -87,4 +87,11 @@ export class PreRegistrationComponent implements OnInit {
     });
     await this.refresh();
   }
+
+  async handleNewResult(result: boolean): Promise<void> {
+    this.newOpen = false;
+    if (result) {
+      await this.refresh();
+    }
+  }
 }

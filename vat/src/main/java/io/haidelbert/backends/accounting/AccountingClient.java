@@ -9,7 +9,7 @@ import java.util.List;
 @Path("/accounting/api")
 @RegisterRestClient(configKey = "accountingClient")
 @Produces(MediaType.APPLICATION_JSON)
-interface AccountingClient {
+public interface AccountingClient {
 
     @GET
     @Path("/protected/")

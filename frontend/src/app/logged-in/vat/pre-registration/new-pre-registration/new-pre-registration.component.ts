@@ -5,7 +5,6 @@ import {
   PreRegistrationRepository, VatPreRegistrationCreate,
   VatPreRegistrationInterval,
   VatPreRegistrationSimulation,
-  VatPreRegistrationUpdate
 } from '../pre-registration.repository';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
@@ -14,7 +13,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   templateUrl: './new-pre-registration.component.html',
 })
 export class NewPreRegistrationComponent implements OnInit{
-  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
+  @Output() done: EventEmitter<boolean> = new EventEmitter<boolean>();
   selectedInterval$ = new Subject<VatPreRegistrationInterval>();
   selectedQuarter$ = new Subject<number>();
   selectedMonth$ = new Subject<number>();
@@ -40,11 +39,11 @@ export class NewPreRegistrationComponent implements OnInit{
       this.newForm.controls[key].updateValueAndValidity();
     });
     if (!this.newForm.valid) {
-      debugger;
       console.error('Form is invalid');
       return;
     }
     await this.preRegistrationRepository.add(this.fromForm());
+    this.done.emit(true);
     this.clearForm();
   }
 
@@ -95,6 +94,7 @@ export class NewPreRegistrationComponent implements OnInit{
       .simulate(
         this.newForm.controls.year.value,
         this.newForm.controls.interval.value,
+        // tslint:disable-next-line:max-line-length
         this.newForm.controls.interval.value === VatPreRegistrationInterval.QUARTER ? this.newForm.controls.quarter.value : this.newForm.controls.month.value
       );
   }
@@ -113,19 +113,14 @@ export class NewPreRegistrationComponent implements OnInit{
 
   clearForm(): void {
     this.newForm.reset();
-    Object.keys(this.newForm.controls).forEach(key => {
-      this.newForm.controls[key].markAsUntouched();
-      this.newForm.controls[key].markAsPristine();
-      this.newForm.controls[key].updateValueAndValidity();
-    });
   }
 
   handleCancel(): void {
     this.clearForm();
-    this.cancel.emit();
+    this.done.emit(false);
   }
 
-  private isValidForSimulation() {
+  private isValidForSimulation(): boolean {
     if (this.newForm.controls.year.value && this.newForm.controls.interval.value) {
       if (this.newForm.controls.interval.value === VatPreRegistrationInterval.QUARTER) {
         return !!this.newForm.controls.quarter.value;

@@ -9,7 +9,7 @@ import {AnnualCompletionRepository, VatAnnualCompletionSimulation} from '../annu
   templateUrl: './new-annual-completion.component.html',
 })
 export class NewAnnualCompletionComponent implements OnInit{
-  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
+  @Output() done: EventEmitter<boolean> = new EventEmitter<boolean>();
   newYear$ = new Subject<number>();
   simulated: VatAnnualCompletionSimulation = undefined;
   newForm!: FormGroup;
@@ -34,6 +34,7 @@ export class NewAnnualCompletionComponent implements OnInit{
       year: this.newForm.controls.year.value,
       taxAuthoritySubmitted: false,
     });
+    this.done.emit(true);
     this.clearForm();
   }
 
@@ -58,15 +59,10 @@ export class NewAnnualCompletionComponent implements OnInit{
 
   clearForm(): void {
     this.newForm.reset();
-    Object.keys(this.newForm.controls).forEach(key => {
-      this.newForm.controls[key].markAsUntouched();
-      this.newForm.controls[key].markAsPristine();
-      this.newForm.controls[key].updateValueAndValidity();
-    });
   }
 
   handleCancel(): void {
     this.clearForm();
-    this.cancel.emit();
+    this.done.emit(false);
   }
 }

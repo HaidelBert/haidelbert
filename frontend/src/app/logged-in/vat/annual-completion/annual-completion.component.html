@@ -24,7 +24,7 @@
   </nz-table>
 </nz-card>
 <nz-drawer [nzVisible]="newOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNew()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
-  <app-vat-new-annual-completion (cancel)="newOpen=false"></app-vat-new-annual-completion>
+  <app-vat-new-annual-completion (done)="handleNewResult($event)"></app-vat-new-annual-completion>
 </nz-drawer>
 
 <nz-drawer [nzVisible]="detailsOpen" [nzWidth]="300" [nzClosable]="false" (nzOnClose)="closeDetails()">
