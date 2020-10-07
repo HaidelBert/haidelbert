@@ -1,12 +1,11 @@
 package io.haidelbert.domain.preRegistration;
 
+import io.haidelbert.backends.accounting.AccountingClientService;
 import io.haidelbert.backends.accounting.AccountingRecord;
 import io.haidelbert.config.ServiceCredentials;
-import io.haidelbert.domain.ServiceContext;
 import io.haidelbert.domain.UserContext;
 import io.haidelbert.domain.model.FinancialData;
-import io.haidelbert.domain.preRegistration.create.CreatePreRegistrationFactory;
-import io.haidelbert.domain.preRegistration.model.BaseTimeConstraints;
+import io.haidelbert.domain.preRegistration.create.PreRegistrationCreator;
 import io.haidelbert.domain.preRegistration.model.ChangePreRegistration;
 import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
 import io.haidelbert.domain.preRegistration.model.SimulatePreRegistration;
@@ -23,44 +22,20 @@ import java.util.List;
 @ApplicationScoped
 public class Service {
     private final ServiceCredentials serviceCredentials;
-    private final AccountingRecordListClient accountingRecordListClient;
-    private final CreatePreRegistrationFactory createPreRegistrationFactory;
+    private final AccountingClientService accountingClientService;
+    private final PreRegistrationCreator preRegistrationCreator;
     private final PreRegistrationRepository repository;
 
-    public Service(ServiceCredentials serviceCredentials, AccountingRecordListClient accountingRecordListClient, CreatePreRegistrationFactory createPreRegistrationFactory, PreRegistrationRepository repository) {
+    public Service(ServiceCredentials serviceCredentials, AccountingClientService accountingClientService, PreRegistrationCreator preRegistrationCreator, PreRegistrationRepository repository) {
         this.serviceCredentials = serviceCredentials;
-        this.accountingRecordListClient = accountingRecordListClient;
-        this.createPreRegistrationFactory = createPreRegistrationFactory;
+        this.accountingClientService = accountingClientService;
+        this.preRegistrationCreator = preRegistrationCreator;
         this.repository = repository;
     }
 
     @Transactional
     public PreRegistration addPreRegistration(UserContext context, CreatePreRegistration create) {
-        var createStrategy = createPreRegistrationFactory.createStrategy(create);
-        createStrategy.checkExistingPreRegistration();
-        List<AccountingRecord> records = accountingRecordListClient.list(context, create);
-        var calculator = new TaxCalculator(records);
-
-        var newPreRegistration = new PreRegistration(
-                calculator.sumGrossRevenue(),
-                calculator.sumGrossExpenditures(),
-                calculator.calculateVat(),
-                calculator.calculateInputTax(),
-                calculator.sumReverseCharge(),
-                calculator.calculateVatPayable(),
-                createStrategy.getFromDate(),
-                createStrategy.getToDate(),
-                create.getYear(),
-                create.getInterval().equals(Interval.QUARTER) ? create.getIntervalValue() : null,
-                create.getInterval().equals(Interval.MONTH) ? create.getIntervalValue() : null,
-                context.getUserId(),
-                create.getInterval(),
-                create.getTaxAuthoritySubmitted()
-        );
-
-        repository.persistAndFlush(newPreRegistration);
-
-        return newPreRegistration;
+       return preRegistrationCreator.create(context, create);
     }
 
     @Transactional
@@ -81,8 +56,12 @@ public class Service {
 
     @Transactional
     public FinancialData simulate(UserContext context, SimulatePreRegistration simulate) {
-        var createStrategy = createPreRegistrationFactory.createStrategy(simulate);
-        List<AccountingRecord> records = accountingRecordListClient.list(context, simulate);
+        List<AccountingRecord> records;
+        if (simulate.getInterval().equals(Interval.QUARTER)) {
+            records = accountingClientService.listByQuarter(context, simulate.getYear(), simulate.getIntervalValue());
+        } else {
+            records = accountingClientService.listByMonth(context, simulate.getYear(), simulate.getIntervalValue());
+        }
         var calculator = new TaxCalculator(records);
 
         return new FinancialData(
@@ -100,9 +79,12 @@ public class Service {
 
 
          preRegistrations.forEach(preRegistration -> {
-            var context = new ServiceContext(serviceCredentials, recordMessaging.getUserId());
-            var timeConstraints = new BaseTimeConstraints(preRegistration.getYear(), preRegistration.getInterval(), preRegistration.getInterval().equals(Interval.QUARTER) ? preRegistration.getQuarter() : preRegistration.getMonth());
-            List<AccountingRecord> records = accountingRecordListClient.list(context, timeConstraints);
+            List<AccountingRecord> records;
+             if (preRegistration.getInterval().equals(Interval.QUARTER)) {
+                 records = accountingClientService.listByQuarterInternal(preRegistration.getUserId(), preRegistration.getYear(), preRegistration.getQuarter());
+             } else {
+                 records = accountingClientService.listByMonthInternal(preRegistration.getUserId(), preRegistration.getYear(), preRegistration.getMonth());
+             }
             var calculator = new TaxCalculator(records);
             preRegistration.setGrossExpenditure(calculator.sumGrossExpenditures());
             preRegistration.setGrossRevenue(calculator.sumGrossRevenue());

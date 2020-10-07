@@ -1,9 +1,8 @@
 package io.haidelbert.domain.preRegistration.model;
 
-import io.haidelbert.domain.preRegistration.create.TimeConstraints;
 import io.haidelbert.persistence.Interval;
 
-public class CreatePreRegistration implements TimeConstraints {
+public class CreatePreRegistration {
     private Integer year;
     private Interval interval;
     private Integer intervalValue;

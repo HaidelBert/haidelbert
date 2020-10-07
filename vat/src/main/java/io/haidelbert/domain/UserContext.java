@@ -1,6 +1,6 @@
 package io.haidelbert.domain;
 
-public class UserContext implements AuthContext {
+public class UserContext {
     private final String userId;
     private final String accessToken;
 
@@ -9,8 +9,8 @@ public class UserContext implements AuthContext {
         this.accessToken = accessToken;
     }
 
-    public String getAuthHeader() {
-        return "Bearer " + this.accessToken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
     public String getUserId() {

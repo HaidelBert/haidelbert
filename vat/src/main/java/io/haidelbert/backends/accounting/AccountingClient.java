@@ -9,21 +9,21 @@ import java.util.List;
 @Path("/accounting/api")
 @RegisterRestClient(configKey = "accountingClient")
 @Produces(MediaType.APPLICATION_JSON)
-public interface AccountingClient {
+interface AccountingClient {
 
     @GET
     @Path("/protected/")
-    List<AccountingRecord> listByQuarter(@HeaderParam("Authorization") String bearer, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
+    List<AccountingRecord> listByQuarter(@HeaderParam("Authorization") String authHeader, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
 
     @GET
     @Path("/protected/")
-    List<AccountingRecord> listByMonth(@HeaderParam("Authorization") String bearer, @QueryParam("year") int year, @QueryParam("month") Integer month);
+    List<AccountingRecord> listByMonth(@HeaderParam("Authorization") String authHeader, @QueryParam("year") int year, @QueryParam("month") Integer month);
 
     @GET
     @Path("/internal/")
-    List<AccountingRecord> listByQuarterForService(@HeaderParam("Authorization") String bearer, @HeaderParam("User_Id") String userId, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
+    List<AccountingRecord> listByQuarterInternal(@HeaderParam("Authorization") String authHeader, @QueryParam("user_id") String userId, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
 
     @GET
     @Path("/internal/")
-    List<AccountingRecord> listByMonthForService(@HeaderParam("Authorization") String bearer, @HeaderParam("User_Id") String userId, @QueryParam("year") int year, @QueryParam("month") Integer month);
+    List<AccountingRecord> listByMonthInternal(@HeaderParam("Authorization") String authHeader, @QueryParam("user_id") String userId, @QueryParam("year") int year, @QueryParam("month") Integer month);
 }
