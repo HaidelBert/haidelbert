@@ -7,3 +7,5 @@ infra/dev/zk-single-kafka-single/
 *.iml
 
 user/jwtRS256.key
+
+*/node_modules/
