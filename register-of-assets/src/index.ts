@@ -16,13 +16,14 @@ import {withYearDepreciationsRouter} from "./routers/yearDepreciationsRouter";
 import {YearDepreciationsController} from "./controllers/yearDepreciationsController";
 import {AssetRepository} from "./repositories/assetsRepository";
 import {AssetDepreciationRepository} from "./repositories/assetDepreciationRepository";
+import {YearDepreciationRepository} from "./repositories/yearDepreciationRepository";
 
 config();
 
 connect().then(connection => {
     const assetRepository = connection.getCustomRepository(AssetRepository);
     const assetDepreciationRepository = connection.getCustomRepository(AssetDepreciationRepository);
-    const yearDepreciationRepository = connection.getRepository(YearDepreciation);
+    const yearDepreciationRepository = connection.getCustomRepository(YearDepreciationRepository);
 
     const assetController = new AssetsController(assetRepository, yearDepreciationRepository)
     const assetDepreciationsController = new AssetDepreciationsController(assetRepository, assetDepreciationRepository, yearDepreciationRepository);
