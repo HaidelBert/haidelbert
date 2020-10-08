@@ -9,7 +9,7 @@ export class YearDepreciation {
     id?: number;
     @Column()
     year: number = new Date().getFullYear();
-    @Column({name: "sum_depreciations"})
+    @Column("bigint",{name: "sum_depreciations", transformer: [bigint]})
     sumDepreciations: number = 0;
     @Column({name: "user_id"})
     userId: string = "";

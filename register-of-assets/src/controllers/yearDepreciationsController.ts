@@ -4,18 +4,32 @@ import {NextFunction, Request, Response} from "express";
 import {Asset} from "../entity/asset";
 import {AssetDepreciation} from "../entity/assetDepreciation";
 import {calculateDepreciations} from "../domain/depreciation";
+import {AssetRepository} from "../repositories/assetsRepository";
+import {YearDepreciationRepository} from "../repositories/yearDepreciationRepository";
+import {AssetDepreciationRepository} from "../repositories/assetDepreciationRepository";
 
 export class YearDepreciationsController {
 
-    private assetsRepository: Repository<Asset>;
-    private yearDepreciationsRepository: Repository<YearDepreciation>;
-    private assetDepreciationsRepository: Repository<AssetDepreciation>;
+    private assetsRepository: AssetRepository;
+    private yearDepreciationsRepository: YearDepreciationRepository;
+    private assetDepreciationsRepository: AssetDepreciationRepository;
 
 
-    constructor(assetsRepository: Repository<Asset>, yearDepreciationsRepository: Repository<YearDepreciation>, assetDepreciationsRepository: Repository<AssetDepreciation>) {
+    constructor(assetsRepository: AssetRepository, yearDepreciationsRepository: YearDepreciationRepository, assetDepreciationsRepository: AssetDepreciationRepository) {
         this.assetsRepository = assetsRepository;
         this.yearDepreciationsRepository = yearDepreciationsRepository;
         this.assetDepreciationsRepository = assetDepreciationsRepository;
+    }
+
+    list = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userId = res.locals.userId;
+            const years = await this.yearDepreciationsRepository.find({ where: { userId }})
+
+            res.json(years);
+        } catch(e) {
+            next(e);
+        }
     }
 
     add = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,24 +37,14 @@ export class YearDepreciationsController {
             const year = parseInt(req.query["year"] as string, 10);
             const userId = res.locals.userId;
 
-            const existing = await this.yearDepreciationsRepository
-                .createQueryBuilder("yd")
-                .where(
-                    "yd.user_id=:userId and yd.year=:year",
-                    { userId, year })
-                .getOne();
+            const existing = await this.yearDepreciationsRepository.findByYear(userId, year);
             if (existing) {
                 res.status(409);
                 res.send("forbidden");
                 return;
             }
 
-            const assets = await this.assetsRepository
-                .createQueryBuilder("asset")
-                .where(
-                    "user_id=:userId and asset.active=:active and EXTRACT(year FROM asset.purchase_date)<=:year",
-                    { active: true, year, userId })
-                .getMany();
+            const assets = await this.assetsRepository.findActive(userId, year);
             const depreciations = calculateDepreciations(assets);
             await this.assetsRepository.manager.transaction(async entityManager => {
                 let promises = depreciations.map(async depreciation => {

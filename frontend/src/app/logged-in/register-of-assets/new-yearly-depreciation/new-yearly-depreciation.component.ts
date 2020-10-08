@@ -41,6 +41,7 @@ export class NewYearlyDepreciationComponent {
 
   async executeDepreciations(): Promise<void> {
     await this.yearDepreciationRepository.add(this.yearSelectForm.controls.year.value);
+    this.done.emit(true);
   }
 
   formatMoney(netDepreciationAmount: number): string {

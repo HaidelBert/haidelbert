@@ -6,6 +6,7 @@ export function withYearDepreciationsRouter(controller: YearDepreciationsControl
     const router = Router();
 
     router.post("/protected/year-depreciations", checkJwt, controller.add)
+    router.get("/protected/year-depreciations", checkJwt, controller.list)
 
     return router;
 }

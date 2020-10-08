@@ -70,6 +70,21 @@
   <button nz-button nzType="primary" (click)="newYearlyOpen = true">Neu</button>
 </div>
 
+<nz-table nzBordered [nzData]="years" [nzShowPagination]="false">
+  <thead>
+    <tr>
+      <th>Jahr</th>
+      <th>Abschreibungsbetrag</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let yearData of years">
+      <td>{{ yearData.year }}</td>
+      <td>{{ formatMoney(yearData.sumDepreciations) }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+
 <nz-drawer [nzVisible]="newYearlyOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNewYearly()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
   <app-new-yearly-depreciation (done)="handleNewYearDone($event)"></app-new-yearly-depreciation>
 </nz-drawer>
