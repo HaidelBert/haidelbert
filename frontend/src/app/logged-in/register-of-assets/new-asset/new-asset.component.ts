@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {clearForm} from '../../../utils';
-import {CreateAsset, RegisterOfAssetsRepository} from '../register-of-assets.repository';
+import {CreateAsset, AssetsRepository} from '../assets.repository';
 import currency from 'currency.js';
 
 @Component({
@@ -13,7 +13,7 @@ export class NewAssetComponent {
   @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
   saving: false;
 
-  constructor(private fb: FormBuilder, private registerOfAssetRepository: RegisterOfAssetsRepository) {
+  constructor(private fb: FormBuilder, private registerOfAssetRepository: AssetsRepository) {
     this.newForm = this.fb.group({
       name: ['', [Validators.required]],
       purchaseDate: [undefined, [Validators.required]],

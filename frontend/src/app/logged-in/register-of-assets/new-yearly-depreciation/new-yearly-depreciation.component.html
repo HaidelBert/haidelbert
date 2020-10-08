@@ -1,0 +1,40 @@
+<nz-steps [nzCurrent]="currentStep">
+  <nz-step nzTitle="Jahr auswählen"></nz-step>
+  <nz-step nzTitle="Vorschau"></nz-step>
+</nz-steps>
+
+<form *ngIf="currentStep === 0" nz-form [formGroup]="yearSelectForm" (ngSubmit)="submitYearSelectForm($event)" class="space-top">
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="receiptType">Jahr</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Pflichtfeld!">
+      <input nz-input formControlName="year"/>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-table *ngIf="currentStep === 1" #table nzBordered [nzData]="previews" [nzShowPagination]="false" style="margin-top: 20px">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Abschreibungsbetrag</th>
+    <th>Restbuchwert</th>
+    <th>Vollständig abgeschrieben</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of table.data">
+      <td>{{ data.name }}</td>
+      <td>{{ formatMoney(data.netDepreciationAmount) }}</td>
+      <td>{{ formatMoney(data.netRemainingBlockValue) }}</td>
+      <td>{{ data.active ? 'Nein' : 'Ja' }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+
+<div class="button-container" style="margin-top: 20px">
+  <button *ngIf="currentStep === 0" nz-button nzType="danger" (click)="cancel()">Abbrechen</button>
+  <button *ngIf="currentStep === 1" nz-button nzType="danger" (click)="previous()">Zurück</button>
+  <button *ngIf="currentStep === 0" nz-button nzType="primary" (click)="next()">Weiter</button>
+  <button *ngIf="currentStep === 1" nz-button nzType="primary" (click)="executeDepreciations()">Durchführen</button>
+</div>

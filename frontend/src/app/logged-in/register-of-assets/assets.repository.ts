@@ -5,7 +5,7 @@ import {getRegisterOfAssetsApiBaseUrl} from '../../../config/config';
 export interface Asset{
   id: string;
   name: string;
-  purchaseDate: number;
+  purchaseDate: string;
   grossAmount: number;
   netAmount: number;
   depreciationDuration: number;
@@ -32,7 +32,7 @@ export interface Depreciation {
 @Injectable({
   providedIn: 'root'
 })
-export class RegisterOfAssetsRepository {
+export class AssetsRepository {
 
   constructor(private httpClient: HttpClient) {}
 

@@ -1,12 +1,18 @@
-import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 import {AssetDepreciation} from "./assetDepreciation";
+import {bigint} from "../helpers/dbHelpers";
 
-@Entity({name: "year_depreciation"})
-export class YearDepreciation extends BaseEntity {
+@Entity({name: "year_depreciations"})
+export class YearDepreciation {
+    @PrimaryColumn("bigint", { transformer: [bigint] })
     @PrimaryGeneratedColumn()
     id?: number;
     @Column()
     year: number = new Date().getFullYear();
+    @Column({name: "sum_depreciations"})
+    sumDepreciations: number = 0;
+    @Column({name: "user_id"})
+    userId: string = "";
     @OneToMany(() => AssetDepreciation, assetDepreciation => assetDepreciation.yearDepreciation)
     depreciations?: Promise<AssetDepreciation[]>;
 }

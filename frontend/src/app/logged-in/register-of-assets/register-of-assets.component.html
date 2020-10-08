@@ -3,7 +3,7 @@
   <button nz-button nzType="primary" (click)="newOpen = true">Neu</button>
 </div>
 
-<nz-card [nzBordered]="false" >
+<nz-card [nzBordered]="false">
   <nz-table #nestedTable [nzData]="registerOfAssets" [nzShowPagination]="false">
     <thead>
     <tr>
@@ -55,10 +55,21 @@
     </tbody>
   </nz-table>
 </nz-card>
+
 <nz-drawer [nzVisible]="newOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNew()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
   <app-new-asset (cancel)="newOpen=false"></app-new-asset>
 </nz-drawer>
 
 <nz-drawer [nzVisible]="!!sellAsset" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeSellAsset()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
   <app-sell-asset (cancel)="sellAsset=undefined"></app-sell-asset>
+</nz-drawer>
+
+
+<div class="flex-row space-between" style="margin-top: 20px">
+  <h1>Jährliche Abschreibungen</h1>
+  <button nz-button nzType="primary" (click)="newYearlyOpen = true">Neu</button>
+</div>
+
+<nz-drawer [nzVisible]="newYearlyOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNewYearly()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
+  <app-new-yearly-depreciation (done)="handleNewYearDone($event)"></app-new-yearly-depreciation>
 </nz-drawer>

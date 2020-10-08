@@ -25,6 +25,7 @@ export class AssetsController {
     listAssets = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const assets = await this.assetRepository.find();
+            assets.forEach(value => value.depreciations);
             res.json(assets);
         } catch(e) {
             next(e);

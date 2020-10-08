@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Asset, RegisterOfAssetsRepository} from './register-of-assets.repository';
+import {Asset, AssetsRepository} from './assets.repository';
 import moment from 'moment';
 import {formatMoney} from '../../utils';
 
@@ -16,8 +16,9 @@ export class RegisterOfAssetsComponent implements OnInit{
   newOpen = false;
   registerOfAssets: ExpandableRow<Asset>[] = [];
   sellAsset: Asset = undefined;
+  newYearlyOpen = false;
 
-  constructor(private registerOfAssetsRepository: RegisterOfAssetsRepository) {
+  constructor(private registerOfAssetsRepository: AssetsRepository) {
   }
 
   async ngOnInit(): Promise<void> {
@@ -29,8 +30,8 @@ export class RegisterOfAssetsComponent implements OnInit{
     });
   }
 
-  formatDate(purchaseDate: number): string {
-    return moment.unix(purchaseDate).format('DD.MM.YYYY');
+  formatDate(purchaseDate: string): string {
+    return moment(purchaseDate).format('DD.MM.YYYY');
   }
 
   formatMoney(amount: number): string {
@@ -47,5 +48,17 @@ export class RegisterOfAssetsComponent implements OnInit{
 
   closeSellAsset(): void {
     this.sellAsset = undefined;
+  }
+
+  openNewYearly(): void {
+    this.newYearlyOpen = true;
+  }
+
+  closeNewYearly(): void {
+    this.newYearlyOpen = false;
+  }
+
+  handleNewYearDone(result: boolean): void {
+    this.closeNewYearly();
   }
 }

@@ -22,7 +22,7 @@ import {
   NzInputNumberModule,
   NzPopconfirmModule,
   NzSelectModule,
-  NzSpinModule,
+  NzSpinModule, NzStepsModule,
   NzTableModule,
   NzTagModule
 } from 'ng-zorro-antd';
@@ -38,6 +38,7 @@ import {NewAnnualFinancialStatementComponent} from './annual-financial-statement
 import {RegisterOfAssetsComponent} from './register-of-assets/register-of-assets.component';
 import {NewAssetComponent} from './register-of-assets/new-asset/new-asset.component';
 import {SellAssetComponent} from './register-of-assets/sell-asset/sell-asset.component';
+import {NewYearlyDepreciationComponent} from './register-of-assets/new-yearly-depreciation/new-yearly-depreciation.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {SellAssetComponent} from './register-of-assets/sell-asset/sell-asset.com
     NewAnnualFinancialStatementComponent,
     RegisterOfAssetsComponent,
     NewAssetComponent,
-    SellAssetComponent
+    SellAssetComponent,
+    NewYearlyDepreciationComponent
   ],
   imports: [
     NzLayoutModule,
@@ -83,7 +85,8 @@ import {SellAssetComponent} from './register-of-assets/sell-asset/sell-asset.com
     NzDatePickerModule,
     NzSpinModule,
     NzDropDownModule,
-    NzBadgeModule
+    NzBadgeModule,
+    NzStepsModule
   ]
 })
 export class LoggedInModule {
