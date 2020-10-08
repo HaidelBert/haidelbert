@@ -2,8 +2,11 @@ FROM node:latest
 
 WORKDIR /usr/src/app
 
-COPY build/index.js /usr/src/app
+COPY . .
 
-EXPOSE 8080
+RUN npm install
+RUN npm run build
 
-CMD [ "node", "/usr/src/app/index.js" ]
+EXPOSE 3000
+
+CMD [ "node", "/usr/src/app/build/index.js" ]

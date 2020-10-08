@@ -22,5 +22,6 @@ module.exports = {
             }
         ]
     },
+    externals: [ nodeExternals() ],
     watch: false,
 }
