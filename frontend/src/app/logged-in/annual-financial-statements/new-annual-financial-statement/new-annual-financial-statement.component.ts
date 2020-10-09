@@ -10,7 +10,7 @@ import { formatMoney } from 'src/app/utils';
 })
 export class NewAnnualFinancialStatementComponent implements OnInit{
   newForm!: FormGroup;
-  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
+  @Output() done: EventEmitter<boolean> = new EventEmitter<boolean>();
   newYear$ = new Subject<number>();
   saving: false;
   simulated: Partial<AnnualFinancialStatement> = undefined;
@@ -23,7 +23,7 @@ export class NewAnnualFinancialStatementComponent implements OnInit{
 
   ngOnInit(): void {
     this.newYear$.subscribe((value) => {
-      if (value.toString(10).length === 4) {
+      if (value && value.toString(10).length === 4) {
         this.simulate();
       }
     });
@@ -43,20 +43,16 @@ export class NewAnnualFinancialStatementComponent implements OnInit{
       return;
     }
     this.clearForm();
+    this.done.emit(true);
   }
 
   clearForm(): void {
     this.newForm.reset();
-    Object.keys(this.newForm.controls).forEach(key => {
-      this.newForm.controls[key].markAsUntouched();
-      this.newForm.controls[key].markAsPristine();
-      this.newForm.controls[key].updateValueAndValidity();
-    });
   }
 
   handleCancel(): void {
     this.clearForm();
-    this.cancel.emit();
+    this.done.emit(false);
   }
 
   formatMoney(value: number): string {

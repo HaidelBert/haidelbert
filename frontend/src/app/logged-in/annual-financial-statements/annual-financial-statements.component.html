@@ -29,7 +29,7 @@
 </nz-card>
 
 <nz-drawer [nzVisible]="newOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNew()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
-  <app-new-annual-financial-statement (cancel)="newOpen=false"></app-new-annual-financial-statement>
+  <app-new-annual-financial-statement (done)="newOpen=false"></app-new-annual-financial-statement>
 </nz-drawer>
 
 <nz-drawer [nzVisible]="!!details" [nzWidth]="300" [nzClosable]="false" (nzOnClose)="closeDetails()">
