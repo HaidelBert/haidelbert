@@ -6,8 +6,8 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ServiceCredentials {
-    String serviceName;
-    String servicePassword;
+    private String serviceName;
+    private String servicePassword;
 
     public ServiceCredentials(@ConfigProperty(name = "vat.accounting.credentials.username") String serviceName, @ConfigProperty(name = "vat.accounting.credentials.password") String servicePassword) {
         this.serviceName = serviceName;

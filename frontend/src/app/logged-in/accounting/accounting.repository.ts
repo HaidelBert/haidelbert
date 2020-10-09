@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {waitFor} from '../../utils';
 import {HttpClient} from '@angular/common/http';
 import {getAccountingApiBaseUrl} from '../../../config/config';
 
@@ -28,7 +27,7 @@ export enum Category {
   INSURANCE = 'INSURANCE',
   LITERATURE = 'LITERATURE',
   REVENUE_SERVICES = 'REVENUE_SERVICES',
-  REVENUE_SELLS = 'REVENUE_SELLS',
+  REVENUE_DEPRECIATIONS = 'REVENUE_DEPRECIATIONS',
 }
 
 export const categoryTranslations = {
@@ -47,10 +46,10 @@ export const categoryTranslations = {
   [Category.INSURANCE]: 'Versicherung',
   [Category.LITERATURE]: 'Fachliteratur',
   [Category.REVENUE_SERVICES]: 'Einnahmen Dienstleistungen',
-  [Category.REVENUE_SELLS]: 'Einnahmen Verkäufe',
+  [Category.REVENUE_DEPRECIATIONS]: 'Einnahmen Abschreibungen',
 };
 
-export const revenueCategories: Category[] = [Category.REVENUE_SERVICES, Category.REVENUE_SELLS];
+export const revenueCategories: Category[] = [Category.REVENUE_SERVICES, Category.REVENUE_DEPRECIATIONS];
 
 export const isRevenueCategory = (category: Category) => revenueCategories.some(value => value === category);
 

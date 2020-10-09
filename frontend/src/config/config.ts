@@ -30,3 +30,11 @@ export function getRegisterOfAssetsApiBaseUrl(): string {
     return 'http://api-staging.haidelbert.io';
   }
 }
+
+export function getAnnualFinancialStatementsApiBaseUrl(): string {
+  if (window.location.hostname === 'localhost') {
+    return 'http://localhost:9095';
+  } else if (window.location.hostname === 'frontend-staging.haidelbert.io') {
+    return 'http://api-staging.haidelbert.io';
+  }
+}

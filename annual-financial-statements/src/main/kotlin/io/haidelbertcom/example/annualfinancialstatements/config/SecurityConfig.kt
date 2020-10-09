@@ -1,6 +1,7 @@
 package io.haidelbertcom.example.annualfinancialstatements.config
 
-import io.haidelbertcom.example.annualfinancialstatements.api.JWTAuthenticationFilter
+import io.haidelbertcom.example.annualfinancialstatements.infrastructure.JWTAuthenticationFilter
+import io.haidelbertcom.example.annualfinancialstatements.infrastructure.JwtDecoder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +23,7 @@ class SecurityConfig(@Value("\${JWT_PUBLIC_KEY}") private val base64JwtPublicKey
         http.cors().and().csrf().disable().authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(JWTAuthenticationFilter(base64JwtPublicKey, authenticationManager()))
+                .addFilter(JWTAuthenticationFilter(JwtDecoder(base64JwtPublicKey), authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 

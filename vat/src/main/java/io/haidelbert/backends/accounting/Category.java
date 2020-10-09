@@ -16,6 +16,6 @@ public enum Category {
     INSURANCE,
     LITERATURE,
     REVENUE_SERVICES,
-    REVENUE_SELLS,
+    REVENUE_DEPRECIATIONS,
 }
 

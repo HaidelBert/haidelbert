@@ -5,7 +5,7 @@ import java.util.EnumSet;
 public final class CategoryHelper {
     private CategoryHelper(){}
 
-    private static final EnumSet<Category> revenueCategories = EnumSet.of(Category.REVENUE_SELLS, Category.REVENUE_SERVICES);
+    private static final EnumSet<Category> revenueCategories = EnumSet.of(Category.REVENUE_DEPRECIATIONS, Category.REVENUE_SERVICES);
 
     public static boolean isRevenueCategory(Category c) {
         return revenueCategories.contains(c);

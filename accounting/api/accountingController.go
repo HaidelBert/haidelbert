@@ -91,7 +91,7 @@ func (c AccountingController) GetInternal(res http.ResponseWriter, req *http.Req
 	yearFilter, _ := strconv.ParseInt(req.URL.Query().Get("year"), 10, 64)
 	quarterFilter, _ := strconv.ParseInt(req.URL.Query().Get("quarter"), 10, 64)
 	monthFilter, _ := strconv.ParseInt(req.URL.Query().Get("month"), 10, 64)
-	newRecord, err := c.Service.ListRecords(req.Header.Get("User_ID"), accounting.Filter{
+	newRecord, err := c.Service.ListRecords(req.URL.Query().Get("user_id"), accounting.Filter{
 		Name: &nameFilter,
 		Year: &yearFilter,
 		Quarter: &quarterFilter,

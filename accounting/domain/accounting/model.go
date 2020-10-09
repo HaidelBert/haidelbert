@@ -17,7 +17,7 @@ const(
 	Insurance Category = "INSURANCE"
 	Literature Category = "LITERATURE"
 	RevenueServices Category = "REVENUE_SERVICES"
-	RevenueSells Category = "REVENUE_SELLS"
+	RevenueDepreciations Category = "REVENUE_DEPRECIATIONS"
 )
 
 func (e Category) String() string {
