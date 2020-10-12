@@ -11,8 +11,8 @@ import (
 
 type Repository struct {}
 
-func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId string) (*accounting.Record, error) {
-	newRecordEntity := Entity {
+func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId string, storageIdentifier string) (*accounting.Record, error) {
+	newRecordEntity := Entity{
 		BookingDate: time.Unix(newRecord.BookingDate, 0),
 		Name: newRecord.Name,
 		Category: newRecord.Category.String(),
@@ -21,8 +21,9 @@ func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId st
 		ReverseCharge: newRecord.ReverseCharge,
 		TaxRate: newRecord.TaxRate,
 		UserId: userId,
+		StorageIdentifier: storageIdentifier,
 	}
-	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge)`, newRecordEntity)
+	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge, :storage_identifier)`, newRecordEntity)
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +96,15 @@ func (r Repository) Delete(tx sqlx.Tx, userId string, id int64,) error {
 	_, err := tx.Exec(`DELETE from accounting_records WHERE id=$1 AND id_user=$2`,id, userId);
 
 	return err
+}
+
+func (r Repository) GetById(tx sqlx.Tx, userId string, id int64) (*Entity, error) {
+	tmp := Entity{}
+	err := tx.Get(&tmp, "SELECT * FROM accounting_records where id_user=$1 and id=$2", userId, id)
+	if err != nil {
+		return nil, err
+	}
+	return &tmp, nil
 }
 
 func fromEntitySlice(input []Entity) []accounting.Record {

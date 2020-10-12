@@ -1,6 +1,8 @@
 package accounting
 
-import "github.com/HaidelBert/accounting/domain/validation"
+import (
+	"github.com/HaidelBert/accounting/domain/validation"
+)
 
 type Service struct {
 	PersistencePort PersistencePort
@@ -31,6 +33,10 @@ func (s Service) DeleteRecord(userId string, id int64) error{
 	err := s.PersistencePort.DeleteRecord(userId, id)
 
 	return err
+}
+
+func (s Service) DownloadReceipt(userId string, id int64) (*ReceiptDownload, error) {
+	return s.PersistencePort.DownloadReceipt(userId, id)
 }
 
 func validateNewRecord(input NewRecord) error {

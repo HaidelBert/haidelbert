@@ -24,7 +24,7 @@ import {
   NzSelectModule,
   NzSpinModule, NzStepsModule,
   NzTableModule,
-  NzTagModule
+  NzTagModule, NzUploadModule
 } from 'ng-zorro-antd';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AccountingComponent } from './accounting/accounting.component';
@@ -86,7 +86,8 @@ import {NewYearlyDepreciationComponent} from './register-of-assets/new-yearly-de
     NzSpinModule,
     NzDropDownModule,
     NzBadgeModule,
-    NzStepsModule
+    NzStepsModule,
+    NzUploadModule
   ]
 })
 export class LoggedInModule {

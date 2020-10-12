@@ -51,4 +51,23 @@ export class AccountingTableComponent implements OnInit {
       this.filterForm.controls.selectedQuarter.value > 0 ? this.filterForm.controls.selectedQuarter.value : undefined
     );
   }
+
+  async startDownload(id: number): Promise<void> {
+    try {
+      const response = await this.accountingRecordRepository.downloadReceipt(id);
+      debugger;
+      const headers = response.headers;
+      const blob = new Blob([response.body], { type: headers.get('content-type') });
+      const windowUrl = (window.URL || window.webkitURL);
+      const downloadUrl = windowUrl.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = downloadUrl;
+      const fileNamePattern = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+      anchor.download = fileNamePattern.exec(headers.get('content-disposition'))[1];
+      document.body.appendChild(anchor);
+      anchor.click();
+    }catch (e) {
+      console.error(e);
+    }
+  }
 }

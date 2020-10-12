@@ -1,5 +1,7 @@
 package accounting
 
+import "io"
+
 type Category string
 const(
 	TaxAuthority Category = "TAX_AUTHORITY_PAYMENT"
@@ -81,6 +83,7 @@ type NewRecord struct {
 	Category 		Category 	`json:"category"`
 	ReverseCharge 	bool 		`json:"reverseCharge"`
 	IdUser			string		`json:"idUser"`
+	Receipt			string		`json:"receipt"`
 }
 
 type UpdateRecord struct {
@@ -111,4 +114,10 @@ type Filter struct {
 	Year *int64
 	Quarter *int64
 	Month *int64
+}
+
+type ReceiptDownload struct {
+	Filename string
+	MimeType string
+	Content io.ReadCloser
 }

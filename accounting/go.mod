@@ -3,6 +3,7 @@ module github.com/HaidelBert/accounting
 go 1.15
 
 require (
+	github.com/aws/aws-sdk-go v1.35.7
 	github.com/confluentinc/confluent-kafka-go v1.4.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
@@ -15,6 +16,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/thoas/go-funk v0.7.0
 	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae // indirect
+	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
 	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.4.2
 )

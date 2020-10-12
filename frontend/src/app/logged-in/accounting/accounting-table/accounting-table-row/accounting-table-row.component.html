@@ -16,6 +16,7 @@
     <nz-tag [nzColor]="getColorForTag(data)">{{ translateCategory(data.category) }}</nz-tag>
   </td>
   <td>
+    <a (click)="startDownload()">Rechnung</a>
     <a (click)="startEdit()">Ändern</a>
     <a nz-popconfirm nzCancelText="Abbrechen" nzTitle="Wirklich löschen?" (nzOnConfirm)="deleteRecord()" style="margin-left: 10px">Löschen</a>
   </td>

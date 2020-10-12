@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {Money, formatMoney, calculateNetAmount} from '../../../../utils';
 import currency from 'currency.js';
 import {
@@ -18,6 +18,7 @@ export class AccountingTableRowComponent implements OnChanges{
   @Input() data: AccountingRecord;
   @Input() onUpdate: (id: number, update: Partial<UpdateAccountingRecord>) => Promise<void>;
   @Input() onDelete: (id: number) => Promise<void>;
+  @Output() download = new EventEmitter<number>();
   editCache: AccountingRecord;
   editBookingDate: Date;
   editing  = false;
@@ -100,5 +101,9 @@ export class AccountingTableRowComponent implements OnChanges{
 
   async deleteRecord(): Promise<void> {
     await this.onDelete(this.data.id);
+  }
+
+  async startDownload(): Promise<void> {
+    this.download.emit(this.data.id);
   }
 }

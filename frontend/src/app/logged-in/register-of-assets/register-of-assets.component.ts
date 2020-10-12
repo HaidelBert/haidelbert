@@ -13,7 +13,7 @@ interface ExpandableRow<T> {
   selector: 'app-register-of-assets',
   templateUrl: './register-of-assets.component.html',
 })
-export class RegisterOfAssetsComponent implements OnInit{
+export class RegisterOfAssetsComponent implements OnInit {
   newOpen = false;
   registerOfAssets: ExpandableRow<Asset>[] = [];
   sellAsset: Asset = undefined;
@@ -23,16 +23,15 @@ export class RegisterOfAssetsComponent implements OnInit{
   constructor(private registerOfAssetsRepository: AssetsRepository, private yearDepreciationRepository: YearDepreciationRepository) {}
 
   async ngOnInit(): Promise<void> {
-    this.registerOfAssets = (await this.registerOfAssetsRepository.findAll()).map(value => {
-      return {
-        data: value,
-        expand: false,
-      };
+    this.registerOfAssetsRepository.findAll().then(assets => {
+      this.registerOfAssets = assets.map(value => {
+        return {
+          data: value,
+          expand: false,
+        };
+      });
     });
-    this.yearDepreciationRepository.list().then(value => {
-      debugger;
-       this.years = value;
-    });
+    this.years = await this.yearDepreciationRepository.list();
   }
 
   formatDate(purchaseDate: string): string {
@@ -40,7 +39,7 @@ export class RegisterOfAssetsComponent implements OnInit{
   }
 
   formatMoney(amount: number): string {
-    return formatMoney({ amount, currency: 'EUR' });
+    return formatMoney({amount, currency: 'EUR'});
   }
 
   closeNew(): void {

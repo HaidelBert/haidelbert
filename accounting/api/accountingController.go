@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/HaidelBert/accounting/domain/accounting"
 	"github.com/go-chi/chi"
+	"io"
 	"net/http"
 	"strconv"
 )
@@ -102,4 +103,23 @@ func (c AccountingController) GetInternal(res http.ResponseWriter, req *http.Req
 		return
 	}
 	respondWithJSON(res, http.StatusOK, newRecord)
+}
+
+func (c AccountingController) DownloadReceipt(res http.ResponseWriter, req *http.Request) {
+	claims := ForContext(req.Context())
+	recordId, err := strconv.ParseInt(chi.URLParam(req, "recordId"), 10, 64)
+	if err != nil {
+		respondWithError(res, req, err)
+		return
+	}
+	result, err := c.Service.DownloadReceipt(claims.UserId, recordId)
+	defer result.Content.Close()
+	if err != nil {
+		respondWithError(res, req, err)
+		return
+	}
+	res.Header().Set("Content-Disposition", "attachment; filename=" + result.Filename)
+	res.Header().Set("Content-Type", result.MimeType)
+	io.Copy(res, result.Content)
+
 }

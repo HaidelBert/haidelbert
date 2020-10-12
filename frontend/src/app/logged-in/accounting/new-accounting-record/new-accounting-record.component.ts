@@ -9,8 +9,9 @@ import {
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {calculateNetAmount, formatMoney} from '../../../utils';
 import currency from 'currency.js';
-import {NzAutocompleteOptionComponent} from 'ng-zorro-antd';
+import {NzAutocompleteOptionComponent, NzUploadFile} from 'ng-zorro-antd';
 import moment from 'moment';
+import {Observable, Observer} from 'rxjs';
 
 @Component({
   selector: 'app-new-accounting-record',
@@ -30,6 +31,7 @@ export class NewAccountingRecordComponent {
       label: categoryTranslations[key]
     };
   });
+  receipt: File[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -94,7 +96,7 @@ export class NewAccountingRecordComponent {
     });
   }
 
-  private mapFromForm(): UpdateAccountingRecord {
+  private async mapFromForm(): Promise<UpdateAccountingRecord> {
     return {
       bookingDate: moment(this.newForm.controls.bookingDate.value).unix(),
       name: this.newForm.controls.description.value,
@@ -103,6 +105,7 @@ export class NewAccountingRecordComponent {
       grossAmount: currency(this.newForm.controls.grossAmount.value).intValue,
       taxRate: parseInt(this.newForm.controls.taxRate.value, 10),
       category: this.newForm.controls.category.value,
+      receipt: await this.getBase64(this.receipt[0])
     };
   }
 
@@ -112,15 +115,14 @@ export class NewAccountingRecordComponent {
       this.newForm.controls[key].markAsDirty();
       this.newForm.controls[key].updateValueAndValidity();
     });
-    if (!this.newForm.valid) {
-      debugger;
+    if (!this.newForm.valid || this.receipt.length === 0) {
       console.error('Form is invalid');
       return;
     }
     this.saving = true;
     this.enableControls(false);
     try {
-      await this.accountingRecordRepository.post(this.mapFromForm());
+      await this.accountingRecordRepository.post(await this.mapFromForm());
       this.clearForm();
       this.successEmitter.emit();
     }finally {
@@ -132,5 +134,18 @@ export class NewAccountingRecordComponent {
   cancel(): void {
     this.clearForm();
     this.cancelEmitter.emit();
+  }
+
+  getBase64(img: File): Promise<string> {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => resolve(reader.result.toString()));
+      reader.readAsDataURL(img);
+    });
+  }
+
+  beforeUpload = (file: File): boolean => {
+    this.receipt = [file];
+    return false;
   }
 }

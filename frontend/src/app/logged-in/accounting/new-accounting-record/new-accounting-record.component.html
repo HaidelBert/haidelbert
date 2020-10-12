@@ -65,6 +65,15 @@
     </nz-form-control>
   </nz-form-item>
 
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24">Rechnung</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-upload [(nzFileList)]="receipt" [nzBeforeUpload]="beforeUpload" [nzMultiple]="false">
+        <button nz-button type="button"><i nz-icon nzType="upload"></i>Auswählen</button>
+      </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+
   <nz-form-item nz-row>
     <nz-form-control [nzSpan]="14" [nzOffset]="6">
       <div class="button-container">

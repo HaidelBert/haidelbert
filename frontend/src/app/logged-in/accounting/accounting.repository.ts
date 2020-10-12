@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {getAccountingApiBaseUrl} from '../../../config/config';
 
 
@@ -61,6 +61,7 @@ export interface UpdateAccountingRecord {
   receiptType: ReceiptType;
   category: Category;
   reverseCharge: boolean;
+  receipt: string;
 }
 
 export interface AccountingRecord {
@@ -106,5 +107,9 @@ export class AccountingRecordRepository {
 
   async delete(id: number): Promise<void> {
     await this.httpClient.delete<void>(`${getAccountingApiBaseUrl()}/accounting/api/protected/${id}`).toPromise();
+  }
+
+  async downloadReceipt(id: number): Promise<any> {
+    return await this.httpClient.get(`${getAccountingApiBaseUrl()}/accounting/api/protected/${id}/receipt`, {observe: 'events', responseType: 'blob'}).toPromise();
   }
 }

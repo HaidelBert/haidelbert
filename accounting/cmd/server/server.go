@@ -4,21 +4,48 @@ import (
 	"fmt"
 	"github.com/HaidelBert/accounting/api"
 	"github.com/HaidelBert/accounting/domain/accounting"
-	"github.com/HaidelBert/accounting/infrastructure"
+	random "github.com/HaidelBert/accounting/infrastructure"
 	"github.com/HaidelBert/accounting/infrastructure/config"
-	"github.com/HaidelBert/accounting/infrastructure/db"
-	dbAccounting "github.com/HaidelBert/accounting/infrastructure/db/accounting"
 	"github.com/HaidelBert/accounting/infrastructure/messaging"
+	"github.com/HaidelBert/accounting/infrastructure/persistence"
+	"github.com/HaidelBert/accounting/infrastructure/persistence/db"
+	dbAccounting "github.com/HaidelBert/accounting/infrastructure/persistence/db/accounting"
+	"github.com/HaidelBert/accounting/infrastructure/persistence/storage"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func main() {
-	config.Load();
+	random.Init()
+	config.Load()
+
+	s3Endpoint := os.Getenv("AWS_S3_ENDPOINT")
+	s3Region := os.Getenv("AWS_S3_REGION")
+	s3DisableSsl, err := strconv.ParseBool(os.Getenv("AWS_S3_DISABLE_SSL"))
+	s3ForcePathStyle, err := strconv.ParseBool(os.Getenv("AWS_S3_FORCE_PATH_STYLE"))
+	s3Config := &aws.Config{
+		Credentials:      credentials.NewStaticCredentials(os.Getenv("AWS_S3_ID"), os.Getenv("AWS_S3_SECRET"), ""),
+		Endpoint:         &s3Endpoint,
+		Region:           aws.String(s3Region),
+		DisableSSL:       aws.Bool(s3DisableSsl),
+		S3ForcePathStyle: aws.Bool(s3ForcePathStyle),
+	}
+	newSession, err := session.NewSession(s3Config)
+	s3Client := s3.New(newSession)
+	receiptBucket := os.Getenv("AWS_S3_RECEIPT_BUCKET")
+	receiptStorage := storage.ReceiptStorageS3{
+		Bucket: &receiptBucket,
+		S3Client: s3Client,
+	}
 
 	producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": os.Getenv("KAFKA_SERVERS")})
 	if err != nil {
@@ -58,10 +85,11 @@ func main() {
 	messagingService := messaging.Service{
 		Producer: producer,
 	}
-	accountingPersistenceAdapter := infrastructure.AccountingPersistenceAdapter{
+	accountingPersistenceAdapter := persistence.AccountingPersistenceAdapter{
 		DB: conn,
 		Repository: &accountingRepository,
 		MessagingService: &messagingService,
+		ReceiptStorage: receiptStorage,
 	}
 	accountingService := accounting.Service{
 		PersistencePort: accountingPersistenceAdapter,
@@ -80,6 +108,7 @@ func main() {
 			protectedRouter.Get("/", accountingController.Get)
 			protectedRouter.Patch("/{recordId}", accountingController.Patch)
 			protectedRouter.Delete("/{recordId}", accountingController.Delete)
+			protectedRouter.Get("/{recordId}/receipt", accountingController.DownloadReceipt)
 		})
 		rootRouter.Route("/internal", func(protectedRouter chi.Router) {
 			protectedRouter.Use(api.InternalMiddleware())

@@ -1,10 +1,11 @@
-package infrastructure
+package persistence
 
 import (
 	"github.com/HaidelBert/accounting/domain/accounting"
-	"github.com/HaidelBert/accounting/infrastructure/db"
-	db_accounting "github.com/HaidelBert/accounting/infrastructure/db/accounting"
 	"github.com/HaidelBert/accounting/infrastructure/messaging"
+	"github.com/HaidelBert/accounting/infrastructure/persistence/db"
+	db_accounting "github.com/HaidelBert/accounting/infrastructure/persistence/db/accounting"
+	"github.com/HaidelBert/accounting/infrastructure/persistence/storage"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,6 +15,7 @@ type AccountingPersistenceAdapter struct {
 	DB 	*sqlx.DB
 	Repository 	*db_accounting.Repository
 	MessagingService *messaging.Service
+	ReceiptStorage storage.ReceiptStorageS3
 }
 
 func (s AccountingPersistenceAdapter) PersistRecord(userId string, input accounting.NewRecord) (*accounting.Record, error) {
@@ -22,7 +24,11 @@ func (s AccountingPersistenceAdapter) PersistRecord(userId string, input account
 		return nil, err
 	}
 
-	newRecord, iErr := s.Repository.Insert(*tx, input, userId)
+	storageIdentifier, err := s.ReceiptStorage.Store(input.Receipt)
+	if err != nil {
+		return nil, err
+	}
+	newRecord, iErr := s.Repository.Insert(*tx, input, userId, *storageIdentifier)
 	iErr = rollbackOnError(tx, iErr)
 	if iErr != nil {
 		return nil, iErr
@@ -77,6 +83,29 @@ func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) erro
 	dbErr := db.HandleError(*tx, err)
 
 	return dbErr
+}
+
+func (s AccountingPersistenceAdapter) DownloadReceipt(userId string, id int64) (*accounting.ReceiptDownload, error) {
+	tx, err := s.DB.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	entity, err := s.Repository.GetById(*tx, userId, id)
+
+	if entity!= nil {
+		receipt, err := s.ReceiptStorage.Download(entity.StorageIdentifier)
+
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		tx.Commit()
+		return receipt, nil
+	}
+
+	dbErr := db.HandleError(*tx, err)
+	return nil, dbErr
 }
 
 func rollbackOnError(tx *sqlx.Tx, err error) error {
