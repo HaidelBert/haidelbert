@@ -44,7 +44,7 @@ public class TaxCalculatorTest {
         var record27 = new AccountingRecord(1L, 1L, 1L, "", 1490L, 20, ReceiptType.CASH, Category.POST_PHONE, false);
         var record28 = new AccountingRecord(1L, 1L, 1L, "", 3451L, 0, ReceiptType.CASH, Category.INTEREST_CHARGES, false);
         var record29 = new AccountingRecord(1L, 1L, 1L, "", 100000L, 0, ReceiptType.CASH, Category.REVENUE_SERVICES, true);
-        var record30 = new AccountingRecord(1L, 1L, 1L, "", 120000L, 20, ReceiptType.CASH, Category.REVENUE_SELLS, false);
+        var record30 = new AccountingRecord(1L, 1L, 1L, "", 120000L, 20, ReceiptType.CASH, Category.REVENUE_DEPRECIATIONS, false);
 
 
         var sut = new TaxCalculator(List.of(record1, record2, record3, record4, record5, record6, record7, record8, record9, record10, record11, record12, record13, record14, record15, record16, record17, record18, record19, record20, record21, record22, record23, record24, record25, record26, record27, record28, record29, record30));
