@@ -2,7 +2,7 @@ package messaging
 
 import (
 	"encoding/json"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
 )
 

@@ -1,7 +1,9 @@
 FROM golang:alpine
 
+RUN apk add build-base
+
 ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=1 \
     GOOS=linux \
     GOARCH=amd64
 
@@ -9,9 +11,9 @@ ENV GO111MODULE=on \
 COPY . /app
 WORKDIR /app
 
-RUN cd /app && go mod download
+RUN go mod download
 # Build the application
-RUN go build -o /bin/app /app/cmd/server/server.go
+RUN go build -tags musl -o /bin/app /app/cmd/server/server.go
 
 # Export necessary port
 EXPOSE 9091
