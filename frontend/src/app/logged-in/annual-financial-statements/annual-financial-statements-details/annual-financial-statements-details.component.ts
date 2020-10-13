@@ -14,14 +14,14 @@ export class AnnualFinancialStatementsDetailsComponent extends BaseComponent{
     if (!this.details) {
       return '';
     }
-    return formatMoney({ amount: this.details.sumGrossExpenditure, currency: 'EUR' });
+    return formatMoney({ amount: this.details.sumNetExpenditure, currency: 'EUR' });
   }
 
   formatTotalRevenue(): string {
     if (!this.details) {
       return '';
     }
-    return formatMoney({amount: this.details.sumGrossRevenue, currency: 'EUR'});
+    return formatMoney({amount: this.details.sumNetRevenue, currency: 'EUR'});
   }
 
   get positions(): any[] {

@@ -60,11 +60,11 @@ func (r Repository) Find(tx sqlx.Tx, userId string, filter accounting.Filter) ([
 	return fromEntitySlice(list), nil
 }
 
-func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting.UpdateRecord) error {
+func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting.UpdateRecord) (*accounting.Record, error) {
 	tmp := Entity{}
 	err := tx.Get(&tmp, "SELECT * FROM accounting_records WHERE id=$1 and id_user=$2",id, userId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if input.TaxRate != nil {
 		tmp.TaxRate = *input.TaxRate
@@ -89,13 +89,15 @@ func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting
 	}
 	_, err = tx.NamedExec("UPDATE accounting_records set booking_date=:booking_date, name=:name, receipt_type=:receipt_type, tax_rate=:tax_rate, gross_amount=:gross_amount, category=:category, reverse_charge=:reverse_charge, updated_ts=CURRENT_TIMESTAMP where id=:id and id_user=:id_user", tmp)
 
-	return err
+	return fromEntityToDomain(tmp), err
 }
 
-func (r Repository) Delete(tx sqlx.Tx, userId string, id int64,) error {
-	_, err := tx.Exec(`DELETE from accounting_records WHERE id=$1 AND id_user=$2`,id, userId);
+func (r Repository) Delete(tx sqlx.Tx, userId string, id int64) (*accounting.Record, error) {
+	tmp := Entity{}
+	err := tx.Get(&tmp, "SELECT * FROM accounting_records WHERE id=$1 and id_user=$2", id, userId)
+	_, err = tx.Exec(`DELETE from accounting_records WHERE id=$1 AND id_user=$2`,id, userId);
 
-	return err
+	return fromEntityToDomain(tmp), err
 }
 
 func (r Repository) GetById(tx sqlx.Tx, userId string, id int64) (*Entity, error) {

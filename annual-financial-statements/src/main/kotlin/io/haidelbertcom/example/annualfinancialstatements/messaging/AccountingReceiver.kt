@@ -1,5 +1,6 @@
 package io.haidelbertcom.example.annualfinancialstatements.messaging
 
+import io.haidelbertcom.example.annualfinancialstatements.domain.AnnualFinancialStatementService
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -15,7 +16,8 @@ import org.springframework.messaging.handler.annotation.Payload
 
 @Configuration
 class AccountingReceiver(
-        @Value("\${kafka.servers}") private val kafkaServers: String
+        @Value("\${kafka.servers}") private val kafkaServers: String,
+        private val annualFinancialStatementService: AnnualFinancialStatementService
 ) {
     @Bean
     fun accountingConsumer(): ConsumerFactory<String, AccountingRecordMessaging> {
@@ -33,7 +35,17 @@ class AccountingReceiver(
     }
 
     @KafkaListener(topics = ["accounting_record_created"], containerFactory = "greetingKafkaListenerContainerFactory")
-    fun listenWithHeaders(@Payload message: AccountingRecordMessaging) {
-        println("Received accounting_record_created")
+    fun onNewRecord(@Payload message: AccountingRecordMessaging) {
+        annualFinancialStatementService.handleAccountingRecordModified(message)
+    }
+
+    @KafkaListener(topics = ["accounting_record_changed"], containerFactory = "greetingKafkaListenerContainerFactory")
+    fun onRecordChanged(@Payload message: AccountingRecordMessaging) {
+        annualFinancialStatementService.handleAccountingRecordModified(message)
+    }
+
+    @KafkaListener(topics = ["accounting_record_deleted"], containerFactory = "greetingKafkaListenerContainerFactory")
+    fun onRecordDeleted(@Payload message: AccountingRecordMessaging) {
+        annualFinancialStatementService.handleAccountingRecordModified(message)
     }
 }

@@ -21,7 +21,21 @@ public class AccountingReceiver {
     @Incoming("accounting_record_created")
     @Blocking
     public void onAccountingRecordCreated(AccountingRecordMessaging recordFromMessaging) {
-        preRegistrationFacade.onNewAccountingRecord(recordFromMessaging);
-        annualCompletionFacade.onNewAccountingRecord(recordFromMessaging);
+        preRegistrationFacade.onAccountingRecordModified(recordFromMessaging);
+        annualCompletionFacade.onAccountingRecordModified(recordFromMessaging);
+    }
+
+    @Incoming("accounting_record_changed")
+    @Blocking
+    public void onAccountingRecordChanged(AccountingRecordMessaging recordFromMessaging) {
+        preRegistrationFacade.onAccountingRecordModified(recordFromMessaging);
+        annualCompletionFacade.onAccountingRecordModified(recordFromMessaging);
+    }
+
+    @Incoming("accounting_record_deleted")
+    @Blocking
+    public void onAccountingRecordDeleted(AccountingRecordMessaging recordFromMessaging) {
+        preRegistrationFacade.onAccountingRecordModified(recordFromMessaging);
+        annualCompletionFacade.onAccountingRecordModified(recordFromMessaging);
     }
 }

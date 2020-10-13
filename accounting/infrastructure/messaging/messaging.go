@@ -19,7 +19,7 @@ func (s *Service) Send(topic string, payload interface{}) error {
 	deliveryChan := make(chan kafka.Event)
 	pErr := s.Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          b,
+		Value: b,
 	}, deliveryChan)
 	e := <-deliveryChan
 	m := e.(*kafka.Message)

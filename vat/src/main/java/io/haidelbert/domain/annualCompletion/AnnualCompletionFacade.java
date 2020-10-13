@@ -89,7 +89,7 @@ public class AnnualCompletionFacade {
     }
 
     @Transactional
-    public void onNewAccountingRecord(AccountingRecordMessaging recordFromMessaging) {
+    public void onAccountingRecordModified(AccountingRecordMessaging recordFromMessaging) {
         var bookingDate = LocalDateTime.ofEpochSecond(recordFromMessaging.getBookingDate(), 0, ZoneOffset.UTC).toLocalDate();
         var year = bookingDate.getYear();
         var existingAnnualCompletion = this.repository.getByUserAndYear(recordFromMessaging.getUserId(), year);

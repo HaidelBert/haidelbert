@@ -10,6 +10,8 @@ import (
 )
 
 const RecordCreatedTopic = "accounting_record_created"
+const RecordChangedTopic = "accounting_record_changed"
+const RecordDeletedTopic = "accounting_record_deleted"
 
 type AccountingPersistenceAdapter struct {
 	DB 	*sqlx.DB
@@ -65,7 +67,17 @@ func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, inpu
 		return err
 	}
 
-	err = s.Repository.Update(*tx, userId, id, input)
+	changed, err := s.Repository.Update(*tx, userId, id, input)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return nil
+	}
+
+	err = s.MessagingService.Send(RecordChangedTopic, changed)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return err
+	}
 
 	dbErr := db.HandleError(*tx, err)
 
@@ -78,7 +90,16 @@ func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) erro
 		return err
 	}
 
-	err = s.Repository.Delete(*tx, userId, id)
+	deleted, err := s.Repository.Delete(*tx, userId, id)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return nil
+	}
+	err = s.MessagingService.Send(RecordDeletedTopic, deleted)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return err
+	}
 
 	dbErr := db.HandleError(*tx, err)
 

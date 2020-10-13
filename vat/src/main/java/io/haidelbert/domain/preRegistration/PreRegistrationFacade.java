@@ -71,7 +71,7 @@ public class PreRegistrationFacade {
     }
 
     @Transactional
-    public void onNewAccountingRecord(AccountingRecordMessaging recordMessaging) {
+    public void onAccountingRecordModified(AccountingRecordMessaging recordMessaging) {
         var preRegistrations = repository.listByBookingDate(recordMessaging.getUserId(), LocalDateTime.ofEpochSecond(recordMessaging.getBookingDate(), 0, ZoneOffset.UTC).toLocalDate());
          preRegistrations.forEach(preRegistration -> {
             List<AccountingRecord> records;

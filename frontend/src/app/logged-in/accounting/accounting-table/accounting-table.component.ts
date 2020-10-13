@@ -55,7 +55,6 @@ export class AccountingTableComponent implements OnInit {
   async startDownload(id: number): Promise<void> {
     try {
       const response = await this.accountingRecordRepository.downloadReceipt(id);
-      debugger;
       const headers = response.headers;
       const blob = new Blob([response.body], { type: headers.get('content-type') });
       const windowUrl = (window.URL || window.webkitURL);

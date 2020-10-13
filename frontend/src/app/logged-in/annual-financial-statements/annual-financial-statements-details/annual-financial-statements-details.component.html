@@ -5,5 +5,5 @@
 </nz-descriptions>
 <nz-divider></nz-divider>
 <nz-descriptions *ngIf="!!details" [nzColumn]="1" nzTitle="Details">
-  <nz-descriptions-item *ngFor="let position of positions" [nzTitle]="position.key" [nzSpan]="1">{{ formatMoney(position.gross) }}</nz-descriptions-item>
+  <nz-descriptions-item *ngFor="let position of positions" [nzTitle]="position.key" [nzSpan]="1">{{ formatMoney(position.net) }}</nz-descriptions-item>
 </nz-descriptions>
