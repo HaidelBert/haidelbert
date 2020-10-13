@@ -1,4 +1,4 @@
-package io.haidelbertcom.example.annualfinancialstatements.infrastructure
+package io.haidelbertcom.example.annualfinancialstatements.security
 
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts

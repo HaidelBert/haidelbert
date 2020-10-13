@@ -92,20 +92,19 @@ func (s AccountingPersistenceAdapter) DownloadReceipt(userId string, id int64) (
 	}
 
 	entity, err := s.Repository.GetById(*tx, userId, id)
-
-	if entity!= nil {
-		receipt, err := s.ReceiptStorage.Download(entity.StorageIdentifier)
-
-		if err != nil {
-			tx.Rollback()
-			return nil, err
-		}
-		tx.Commit()
-		return receipt, nil
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return nil, err
 	}
 
-	dbErr := db.HandleError(*tx, err)
-	return nil, dbErr
+	receipt, err := s.ReceiptStorage.Download(entity.StorageIdentifier)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.HandleError(*tx, err)
+	return receipt, err
 }
 
 func rollbackOnError(tx *sqlx.Tx, err error) error {

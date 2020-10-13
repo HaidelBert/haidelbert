@@ -3,6 +3,8 @@ package io.haidelbertcom.example.annualfinancialstatements.domain
 import io.haidelbertcom.example.annualfinancialstatements.backend.AccountingRecord
 import io.haidelbertcom.example.annualfinancialstatements.backend.Category
 import io.haidelbertcom.example.annualfinancialstatements.backend.ReceiptType
+import io.haidelbertcom.example.annualfinancialstatements.backend.YearDepreciation
+import io.haidelbertcom.example.annualfinancialstatements.domain.model.TaxAuthorityNumber
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -11,7 +13,8 @@ class TaxAuthorityNumberCalculatorTest {
     @Test
     fun `Test calculateFinancialSummary with an empty list`() {
         val accountingRecords = listOf<AccountingRecord>()
-        val sut = TaxAuthorityNumberCalculator(accountingRecords)
+        val depreciations = YearDepreciation(0, 2020, 0, "")
+        val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
 
         val actual = sut.calculateFinancialSummary()
 
@@ -24,11 +27,12 @@ class TaxAuthorityNumberCalculatorTest {
     @Test
     fun `Test calculateTaxAuthorityNumbers with an empty list`() {
         val accountingRecords = listOf<AccountingRecord>()
-        val sut = TaxAuthorityNumberCalculator(accountingRecords)
+        val depreciations = YearDepreciation(0, 2020, 0, "")
+        val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
 
         val actual = sut.calculateTaxAuthorityNumbers()
 
-        Assertions.assertEquals(0, actual.size)
+        Assertions.assertEquals(1, actual.size)
     }
 
     @Test
@@ -38,7 +42,8 @@ class TaxAuthorityNumberCalculatorTest {
                 AccountingRecord(0, 0, 0, "", 99999, 20, ReceiptType.BANK, Category.GWG, false, ""),
                 AccountingRecord(0, 0, 0, "", 10000, 20, ReceiptType.BANK, Category.GWG, false, "")
         )
-        val sut = TaxAuthorityNumberCalculator(accountingRecords)
+        val depreciations = YearDepreciation(0, 2020, 0, "")
+        val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
 
         val actual = sut.calculateFinancialSummary()
 
@@ -55,7 +60,8 @@ class TaxAuthorityNumberCalculatorTest {
                 AccountingRecord(0, 0, 0, "", 99999, 20, ReceiptType.BANK, Category.GWG, false, ""),
                 AccountingRecord(0, 0, 0, "", 10000, 20, ReceiptType.BANK, Category.GWG, false, "")
         )
-        val sut = TaxAuthorityNumberCalculator(accountingRecords)
+        val depreciations = YearDepreciation(0, 2020, 0, "")
+        val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
 
         val actual = sut.calculateTaxAuthorityNumbers()
 

@@ -1,7 +1,5 @@
-import {Repository} from "typeorm";
 import {YearDepreciation} from "../entity/yearDepreciation";
 import {NextFunction, Request, Response} from "express";
-import {Asset} from "../entity/asset";
 import {AssetDepreciation} from "../entity/assetDepreciation";
 import {calculateDepreciations} from "../domain/depreciation";
 import {AssetRepository} from "../repositories/assetsRepository";
@@ -81,6 +79,21 @@ export class YearDepreciationsController {
 
                 res.status(201);
             });
+        }catch(e) {
+            next(e);
+        }
+    }
+
+    listInternal = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const year = parseInt(req.query["year"] as string, 10);
+            const userId = req.query["user_id"] as string;
+            console.log(userId)
+            console.log(year)
+            const yearDepreciation = await this.yearDepreciationsRepository.findByYear(userId, year);
+
+            res.json(yearDepreciation);
+            res.status(200);
         }catch(e) {
             next(e);
         }

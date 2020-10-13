@@ -42,6 +42,7 @@ export class AnnualCompletionComponent implements OnInit{
     await this.annualCompletionRepository.change(data.id, {
       taxAuthoritySubmitted: true,
     });
+    await this.refresh();
   }
 
   async handleNewResult(result: boolean): Promise<void> {

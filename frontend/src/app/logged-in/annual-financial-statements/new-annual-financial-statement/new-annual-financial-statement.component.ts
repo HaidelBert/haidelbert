@@ -3,12 +3,13 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {AnnualFinancialStatement, AnnualFinancialStatementRepository} from '../annual-financial-statement.repository';
 import { formatMoney } from 'src/app/utils';
+import {BaseComponent} from '../../../common/base-component';
 
 @Component({
   selector: 'app-new-annual-financial-statement',
   templateUrl: './new-annual-financial-statement.component.html',
 })
-export class NewAnnualFinancialStatementComponent implements OnInit{
+export class NewAnnualFinancialStatementComponent extends BaseComponent implements OnInit{
   newForm!: FormGroup;
   @Output() done: EventEmitter<boolean> = new EventEmitter<boolean>();
   newYear$ = new Subject<number>();
@@ -16,6 +17,7 @@ export class NewAnnualFinancialStatementComponent implements OnInit{
   simulated: Partial<AnnualFinancialStatement> = undefined;
 
   constructor(private fb: FormBuilder, private annualFinancialRepository: AnnualFinancialStatementRepository) {
+    super();
     this.newForm = this.fb.group({
       year: ['', [Validators.required]],
     });
@@ -55,54 +57,32 @@ export class NewAnnualFinancialStatementComponent implements OnInit{
     this.done.emit(false);
   }
 
-  formatMoney(value: number): string {
-    if (!value) {
-      return '€0.00';
-    }
-    return formatMoney({amount: value, currency: 'EUR'});
-  }
-
   formatTotalExpenditure(): string {
     if (!this.simulated) {
       return '';
     }
-    const expenditures =  Object.keys(this.simulated.details.expenditure)
-      .map(key => this.simulated.details.expenditure[key])
-      .reduce((previousValue, currentValue) => previousValue + currentValue);
-
-    return formatMoney({ amount: expenditures, currency: 'EUR' });
+    return formatMoney({ amount: this.simulated.sumGrossExpenditure, currency: 'EUR' });
   }
 
   formatTotalRevenue(): string {
     if (!this.simulated) {
       return '';
     }
-    const revenues =  Object.keys(this.simulated.details.revenue)
-      .map(key => this.simulated.details.revenue[key])
-      .reduce((previousValue, currentValue) => previousValue + currentValue);
-
-    return formatMoney({ amount: revenues, currency: 'EUR' });
+    return formatMoney({amount: this.simulated.sumGrossRevenue, currency: 'EUR'});
   }
 
-  get revenues(): any[] {
-    return Object.keys(this.simulated.details.revenue)
-      .map(key => {
-        const value = this.simulated.details.revenue[key];
-        return {
-          key,
-          value
-        };
-      });
+  get positions(): any[] {
+    return Object.keys(this.simulated.details).map(key => {
+      return {
+        key,
+        gross: this.simulated.details[key].gross,
+        net: this.simulated.details[key].net,
+      };
+    });
   }
 
-  get expenditures(): any[] {
-    return Object.keys(this.simulated.details.expenditure)
-      .map(key => {
-        const value = this.simulated.details.expenditure[key];
-        return {
-          key,
-          value
-        };
-      });
+  async add(): Promise<void> {
+    await this.annualFinancialRepository.add(this.newForm.controls.year.value);
+    this.done.emit(true);
   }
 }

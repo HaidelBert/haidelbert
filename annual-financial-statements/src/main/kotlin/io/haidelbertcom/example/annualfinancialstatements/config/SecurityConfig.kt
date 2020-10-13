@@ -1,7 +1,7 @@
 package io.haidelbertcom.example.annualfinancialstatements.config
 
-import io.haidelbertcom.example.annualfinancialstatements.infrastructure.JWTAuthenticationFilter
-import io.haidelbertcom.example.annualfinancialstatements.infrastructure.JwtDecoder
+import io.haidelbertcom.example.annualfinancialstatements.security.JWTAuthenticationFilter
+import io.haidelbertcom.example.annualfinancialstatements.security.JwtDecoder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,8 +29,10 @@ class SecurityConfig(@Value("\${JWT_PUBLIC_KEY}") private val base64JwtPublicKey
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
+        val defaultCorsConfig = CorsConfiguration().applyPermitDefaultValues()
+        defaultCorsConfig.allowedMethods = listOf("GET", "POST", "GET", "DELETE", "OPTIONS", "PATCH")
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        source.registerCorsConfiguration("/**", defaultCorsConfig)
         return source
     }
 }

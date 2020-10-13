@@ -11,14 +11,17 @@ export class AnnualFinancialStatementsComponent implements OnInit{
   newOpen = false;
   details: AnnualFinancialStatement = undefined;
 
-  constructor(private annualFinancialStatementRepository: AnnualFinancialStatementRepository) {
-  }
+  constructor(private annualFinancialStatementRepository: AnnualFinancialStatementRepository) {}
 
   formatResult(data: AnnualFinancialStatement): string {
     return formatMoney({ amount: data.result, currency: 'EUR'  });
   }
 
   async ngOnInit(): Promise<void> {
+    await this.refresh();
+  }
+
+  async refresh(): Promise<void> {
     this.annualFinancialStatements = await this.annualFinancialStatementRepository.findAll();
   }
 
@@ -29,8 +32,8 @@ export class AnnualFinancialStatementsComponent implements OnInit{
     return 'green';
   }
 
-  async showDetails(data: AnnualFinancialStatement): Promise<void> {
-    this.details = await this.annualFinancialStatementRepository.findById(data.id);
+  showDetails(data: AnnualFinancialStatement): void {
+    this.details = data;
   }
 
   closeDetails(): void {
@@ -39,5 +42,17 @@ export class AnnualFinancialStatementsComponent implements OnInit{
 
   closeNew(): void {
     this.newOpen = false;
+  }
+
+  async handleDone($event: boolean): Promise<void> {
+    if ($event) {
+      await this.refresh();
+    }
+    this.newOpen = false;
+  }
+
+  async markDone(id: number): Promise<void> {
+    await this.annualFinancialStatementRepository.markTaxAuthoritySubmitted(id);
+    await this.refresh();
   }
 }

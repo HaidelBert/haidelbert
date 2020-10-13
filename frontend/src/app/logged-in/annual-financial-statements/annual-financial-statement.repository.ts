@@ -1,22 +1,20 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {getAccountingApiBaseUrl, getAnnualFinancialStatementsApiBaseUrl} from '../../../config/config';
-import {AccountingRecord} from '../accounting/accounting.repository';
+import {getAnnualFinancialStatementsApiBaseUrl} from '../../../config/config';
 
 export interface AnnualFinancialStatement {
-  id: string;
+  id: number;
   year: number;
+  sumGrossExpenditure: number;
+  sumNetExpenditure: number;
+  sumGrossRevenue: number;
+  sumNetRevenue: number;
   result: number;
-  details?: AnnualFinancialStatementDetails;
-  taxAuthoritySubmitted: boolean;
-}
-
-export interface AnnualFinancialStatementDetails {
-  expenditure: {
-    [key: string]: number;
-  };
-  revenue: {
-    [key: string]: number;
+  details: {
+    [key: string]: {
+      gross: number;
+      net: number;
+    };
   };
 }
 
@@ -30,39 +28,17 @@ export class AnnualFinancialStatementRepository {
     return await this.httpClient.get<AnnualFinancialStatement[]>(`${getAnnualFinancialStatementsApiBaseUrl()}/annual-financial-statements/api/protected/annual-financial-statements`).toPromise();
   }
 
-  findById(id: string): Promise<AnnualFinancialStatement> {
-    return Promise.resolve({
-      id: '123',
-      year: 2020,
-      result: 800000,
-      taxAuthoritySubmitted: false,
-      details: {
-        expenditure: {
-          9223: 90000,
-          9225: 100000
-        },
-        revenue: {
-          Einnahmen: 9990000,
-          Umsatzerlöse: 1000000
-        }
-      }
-    });
+  async simulate(year: number): Promise<Partial<AnnualFinancialStatement>> {
+    return await this.httpClient.post<Partial<AnnualFinancialStatement>>(`${getAnnualFinancialStatementsApiBaseUrl()}/annual-financial-statements/api/protected/annual-financial-statements/simulate?year=${year}`, {}).toPromise();
   }
 
-  async simulate(year: number): Promise<Partial<AnnualFinancialStatement>> {
-    return {
-      year,
-      result: 800000,
-      details: {
-        expenditure: {
-          9223: 90000,
-          9225: 100000
-        },
-        revenue: {
-          Einnahmen: 9990000,
-          Umsatzerlöse: 1000000
-        }
-      }
-    };
+  async add(year: number): Promise<AnnualFinancialStatement> {
+    return await this.httpClient.post<AnnualFinancialStatement>(`${getAnnualFinancialStatementsApiBaseUrl()}/annual-financial-statements/api/protected/annual-financial-statements?year=${year}`, {}).toPromise();
+  }
+
+  async markTaxAuthoritySubmitted(id: number): Promise<void> {
+    await this.httpClient.patch<void>(`${getAnnualFinancialStatementsApiBaseUrl()}/annual-financial-statements/api/protected/annual-financial-statements/${id}`, {
+      taxAuthoritySubmitted: true
+    }).toPromise();
   }
 }

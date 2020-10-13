@@ -60,4 +60,19 @@
                                  constraintName="tax_authority_positions_statements_fk" referencedTableName="statements"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet  id="2"  author="Alex">
+        <createIndex tableName="statements" indexName="uidx_statements_user_id_year" unique="true">
+            <column name="user_id"/>
+            <column name="year"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet  id="3"  author="Alex">
+        <addColumn tableName="statements">
+            <column name="tax_authority_submitted" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

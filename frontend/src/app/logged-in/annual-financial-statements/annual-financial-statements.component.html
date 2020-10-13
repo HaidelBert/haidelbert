@@ -20,7 +20,7 @@
       </td>
       <td>
         <span *ngIf="data.taxAuthoritySubmitted">Ja</span>
-        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary">erledigt</button>
+        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary" (click)="markDone(data.id)">erledigt</button>
       </td>
       <td><a (click)="showDetails(data)" class="save">Details</a></td>
     </tr>
@@ -29,7 +29,7 @@
 </nz-card>
 
 <nz-drawer [nzVisible]="newOpen" nzWidth="100%" [nzClosable]="false" [nzKeyboard]="false" (nzOnClose)="closeNew()" [nzCloseOnNavigation]="false" [nzMaskClosable]="false">
-  <app-new-annual-financial-statement (done)="newOpen=false"></app-new-annual-financial-statement>
+  <app-new-annual-financial-statement (done)="handleDone($event)"></app-new-annual-financial-statement>
 </nz-drawer>
 
 <nz-drawer [nzVisible]="!!details" [nzWidth]="300" [nzClosable]="false" (nzOnClose)="closeDetails()">

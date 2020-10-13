@@ -2,6 +2,8 @@ package io.haidelbertcom.example.annualfinancialstatements.domain
 
 import io.haidelbertcom.example.annualfinancialstatements.backend.AccountingRecord
 import io.haidelbertcom.example.annualfinancialstatements.backend.Category
+import io.haidelbertcom.example.annualfinancialstatements.backend.YearDepreciation
+import io.haidelbertcom.example.annualfinancialstatements.domain.model.TaxAuthorityNumber
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -16,23 +18,27 @@ private val categoryMapping = mapOf(
         Category.OFFICE_MATERIALS to TaxAuthorityNumber.EXPENDITURE,
         Category.POST_PHONE to TaxAuthorityNumber.EXPENDITURE,
         Category.REVENUE_DEPRECIATIONS to TaxAuthorityNumber.REVENUE_DEPRECIATIONS,
-        Category.REVENUE_SERVICES to TaxAuthorityNumber.REVENUE
+        Category.REVENUE_SERVICES to TaxAuthorityNumber.REVENUE,
+        Category.TAX_AUTHORITY_PAYMENT to TaxAuthorityNumber.EXPENDITURE
 )
 
 class FinancialSummary(
         val sumGrossExpenditure: Long,
         val sumNetExpenditure: Long,
         val sumGrossRevenue: Long,
-        val sumNetRevenue: Long
+        val sumNetRevenue: Long,
+        val result: Long
 )
 
 class FinancialAmount(var gross: Long, var net: BigDecimal)
 
-class TaxAuthorityNumberCalculator(private val accountingRecords: List<AccountingRecord>){
-
+class TaxAuthorityNumberCalculator(
+        private val accountingRecords: List<AccountingRecord>,
+        private val depreciations: YearDepreciation
+){
     fun calculateFinancialSummary(): FinancialSummary {
-        var sumGrossExpenditure: Long = 0
-        var sumNetExpenditure = BigDecimal(0)
+        var sumGrossExpenditure: Long = depreciations.sumDepreciations
+        var sumNetExpenditure = BigDecimal(depreciations.sumDepreciations)
         var sumGrossRevenue: Long = 0
         var sumNetRevenue = BigDecimal(0)
         accountingRecords.forEach {
@@ -49,7 +55,8 @@ class TaxAuthorityNumberCalculator(private val accountingRecords: List<Accountin
                 sumGrossExpenditure,
                 sumNetExpenditure.longValueExact(),
                 sumGrossRevenue,
-                sumNetRevenue.longValueExact()
+                sumNetRevenue.longValueExact(),
+                sumNetRevenue.longValueExact() - sumNetExpenditure.longValueExact()
         )
     }
 
@@ -64,6 +71,12 @@ class TaxAuthorityNumberCalculator(private val accountingRecords: List<Accountin
             }else {
                 sums[mappedTaxAuthNumber!!] = FinancialAmount(it.grossAmount, netAmount)
             }
+        }
+        if (sums.containsKey(TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS)) {
+            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross.plus(depreciations.sumDepreciations)
+            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net.plus(BigDecimal(depreciations.sumDepreciations))
+        } else {
+            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS] = FinancialAmount(depreciations.sumDepreciations, BigDecimal(depreciations.sumDepreciations))
         }
 
         return sums

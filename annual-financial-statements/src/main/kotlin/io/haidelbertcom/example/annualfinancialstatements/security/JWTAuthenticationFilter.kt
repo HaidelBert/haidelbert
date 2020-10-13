@@ -1,4 +1,4 @@
-package io.haidelbertcom.example.annualfinancialstatements.infrastructure
+package io.haidelbertcom.example.annualfinancialstatements.security
 
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

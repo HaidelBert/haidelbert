@@ -3,12 +3,13 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AssetDepreciationPreview, AssetDepreciationsRepository} from '../asset-depreciations.repository';
 import {formatMoney} from '../../../utils';
 import {YearDepreciationRepository} from '../year-depreciation.repository';
+import {BaseComponent} from '../../../common/base-component';
 
 @Component({
   selector: 'app-new-yearly-depreciation',
   templateUrl: './new-yearly-depreciation.component.html',
 })
-export class NewYearlyDepreciationComponent {
+export class NewYearlyDepreciationComponent extends BaseComponent{
   @Output() done = new EventEmitter<boolean>();
   yearSelectForm!: FormGroup;
   saving = false;
@@ -16,6 +17,7 @@ export class NewYearlyDepreciationComponent {
   private previews: AssetDepreciationPreview[];
 
   constructor(private fb: FormBuilder, private assetDepreciationsRepository: AssetDepreciationsRepository, private yearDepreciationRepository: YearDepreciationRepository) {
+    super();
     this.yearSelectForm = this.fb.group({
       year: [new Date().getFullYear() - 1, [Validators.required]],
     });
@@ -42,9 +44,5 @@ export class NewYearlyDepreciationComponent {
   async executeDepreciations(): Promise<void> {
     await this.yearDepreciationRepository.add(this.yearSelectForm.controls.year.value);
     this.done.emit(true);
-  }
-
-  formatMoney(netDepreciationAmount: number): string {
-    return formatMoney({ amount: netDepreciationAmount, currency: 'EUR' });
   }
 }
