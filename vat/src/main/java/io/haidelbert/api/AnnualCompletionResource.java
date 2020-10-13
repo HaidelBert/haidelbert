@@ -1,10 +1,9 @@
 package io.haidelbert.api;
 
 import io.haidelbert.domain.UserContext;
-import io.haidelbert.domain.annualCompletion.Service;
+import io.haidelbert.domain.annualCompletion.AnnualCompletionFacade;
 import io.haidelbert.domain.annualCompletion.model.ChangeAnnualCompletion;
 import io.haidelbert.domain.annualCompletion.model.CreateAnnualCompletion;
-import io.haidelbert.domain.annualCompletion.model.SimulatedAnnualCompletion;
 import io.haidelbert.domain.model.FinancialData;
 import io.haidelbert.persistence.AnnualCompletion;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -21,11 +20,11 @@ import java.util.List;
 @Path("/vat/api")
 public class AnnualCompletionResource {
 
-    private final Service service;
+    private final AnnualCompletionFacade annualCompletionFacade;
     private final JsonWebToken jwt;
 
-    public AnnualCompletionResource(Service service, JsonWebToken jwt) {
-        this.service = service;
+    public AnnualCompletionResource(AnnualCompletionFacade annualCompletionFacade, JsonWebToken jwt) {
+        this.annualCompletionFacade = annualCompletionFacade;
         this.jwt = jwt;
     }
 
@@ -34,7 +33,7 @@ public class AnnualCompletionResource {
     @RolesAllowed({"User"})
     public List<AnnualCompletion> get() {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.list(context);
+        return annualCompletionFacade.list(context);
     }
 
     @POST
@@ -42,7 +41,7 @@ public class AnnualCompletionResource {
     @RolesAllowed({"User"})
     public AnnualCompletion post(CreateAnnualCompletion create) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.add(context, create);
+        return annualCompletionFacade.add(context, create);
     }
 
     @POST
@@ -50,7 +49,7 @@ public class AnnualCompletionResource {
     @RolesAllowed({"User"})
     public FinancialData simulate(CreateAnnualCompletion create, @QueryParam("year") Integer year) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.simulate(context, year);
+        return annualCompletionFacade.simulate(context, year);
     }
 
     @PATCH
@@ -58,6 +57,6 @@ public class AnnualCompletionResource {
     @RolesAllowed({"User"})
     public void patch(ChangeAnnualCompletion change, @PathParam("id") Long id) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        service.change(context, id, change);
+        annualCompletionFacade.change(context, id, change);
     }
 }

@@ -15,4 +15,8 @@ public class AnnualCompletionRepository implements PanacheRepository<AnnualCompl
     public boolean alreadyExists(int year) {
         return count("year", year) > 0;
     }
+
+    public AnnualCompletion getByUserAndYear(String userId, int year) {
+        return find("userId=?1 and year=?2", userId, year).singleResult();
+    }
 }

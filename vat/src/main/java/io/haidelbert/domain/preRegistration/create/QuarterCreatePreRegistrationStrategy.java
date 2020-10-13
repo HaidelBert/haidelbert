@@ -47,7 +47,7 @@ public class QuarterCreatePreRegistrationStrategy implements CreatePreRegistrati
 
     @Override
     public void checkExistingPreRegistration() throws ConflictException {
-        if (repository.countByQuarter(create.getYear(), create.getIntervalValue()) > 0) {
+        if (repository.countByQuarter(context.getUserId(), create.getYear(), create.getIntervalValue()) > 0) {
             throw new ConflictException("Pre registration already exists");
         }
     }

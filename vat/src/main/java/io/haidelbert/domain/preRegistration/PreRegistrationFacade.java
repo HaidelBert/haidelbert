@@ -19,12 +19,12 @@ import java.time.*;
 import java.util.List;
 
 @ApplicationScoped
-public class Service {
+public class PreRegistrationFacade {
     private final AccountingClientService accountingClientService;
     private final PreRegistrationCreator preRegistrationCreator;
     private final PreRegistrationRepository repository;
 
-    public Service(AccountingClientService accountingClientService, PreRegistrationCreator preRegistrationCreator, PreRegistrationRepository repository) {
+    public PreRegistrationFacade(AccountingClientService accountingClientService, PreRegistrationCreator preRegistrationCreator, PreRegistrationRepository repository) {
         this.accountingClientService = accountingClientService;
         this.preRegistrationCreator = preRegistrationCreator;
         this.repository = repository;
@@ -72,9 +72,7 @@ public class Service {
 
     @Transactional
     public void onNewAccountingRecord(AccountingRecordMessaging recordMessaging) {
-        var preRegistrations = repository.listByBookingDate(LocalDateTime.ofEpochSecond(recordMessaging.getBookingDate(), 0, ZoneOffset.UTC).toLocalDate());
-
-
+        var preRegistrations = repository.listByBookingDate(recordMessaging.getUserId(), LocalDateTime.ofEpochSecond(recordMessaging.getBookingDate(), 0, ZoneOffset.UTC).toLocalDate());
          preRegistrations.forEach(preRegistration -> {
             List<AccountingRecord> records;
              if (preRegistration.getInterval().equals(Interval.QUARTER)) {

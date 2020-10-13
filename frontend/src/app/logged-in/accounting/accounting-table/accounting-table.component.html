@@ -13,19 +13,19 @@
     </nz-select>
   </nz-form-item>
 </form>
-<nz-table #editRowTable nzBordered [nzData]="records" nzTableLayout="fixed" nzPageSize="50" style="margin-top: 20px">
+<nz-table #editRowTable nzBordered [nzData]="records" nzTableLayout="fixed" [nzShowPagination]="false" style="margin-top: 20px">
   <thead>
   <tr>
     <th nzWidth="4%">lfd. Nr.</th>
     <th nzWidth="8%">Datum</th>
     <th nzWidth="6%">Beleg</th>
     <th nzWidth="8%">Rev. charge</th>
-    <th nzWidth="25%">Gegenstand</th>
+    <th nzWidth="23%">Gegenstand</th>
     <th nzWidth="9%">Steuersatz</th>
     <th nzWidth="10%">Brutto Betrag</th>
     <th nzWidth="10%">Netto Betrag</th>
-    <th nzWidth="20%">Kategorie</th>
-    <th nzWidth="10%">Action</th>
+    <th nzWidth="15%">Kategorie</th>
+    <th nzWidth="17%">Action</th>
   </tr>
   </thead>
   <tbody>

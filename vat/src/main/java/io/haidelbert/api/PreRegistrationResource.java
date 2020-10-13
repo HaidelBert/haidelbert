@@ -3,9 +3,9 @@ package io.haidelbert.api;
 
 import io.haidelbert.domain.UserContext;
 import io.haidelbert.domain.model.FinancialData;
+import io.haidelbert.domain.preRegistration.PreRegistrationFacade;
 import io.haidelbert.domain.preRegistration.model.ChangePreRegistration;
 import io.haidelbert.domain.preRegistration.model.CreatePreRegistration;
-import io.haidelbert.domain.preRegistration.Service;
 import io.haidelbert.domain.preRegistration.model.SimulatePreRegistration;
 import io.haidelbert.persistence.PreRegistration;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -22,11 +22,11 @@ import java.util.List;
 @Path("/vat/api")
 public class PreRegistrationResource {
 
-    private Service service;
+    private PreRegistrationFacade preRegistrationFacade;
     private JsonWebToken jwt;
 
-    public PreRegistrationResource(Service service, JsonWebToken jwt) {
-        this.service = service;
+    public PreRegistrationResource(PreRegistrationFacade preRegistrationFacade, JsonWebToken jwt) {
+        this.preRegistrationFacade = preRegistrationFacade;
         this.jwt = jwt;
     }
 
@@ -35,7 +35,7 @@ public class PreRegistrationResource {
     @RolesAllowed({"User"})
     public PreRegistration post(CreatePreRegistration create) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.addPreRegistration(context, create);
+        return preRegistrationFacade.addPreRegistration(context, create);
     }
 
     @GET
@@ -43,7 +43,7 @@ public class PreRegistrationResource {
     @RolesAllowed({"User"})
     public List<PreRegistration> get(@QueryParam("year") int year) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.listPreRegistrations(context, year);
+        return preRegistrationFacade.listPreRegistrations(context, year);
     }
 
     @GET
@@ -51,7 +51,7 @@ public class PreRegistrationResource {
     @RolesAllowed({"User"})
     public List<Integer> getYears() {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.listDistinctYears(context);
+        return preRegistrationFacade.listDistinctYears(context);
     }
 
     @PATCH
@@ -59,7 +59,7 @@ public class PreRegistrationResource {
     @RolesAllowed({"User"})
     public void patch(ChangePreRegistration change, @PathParam("id") Long id) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        service.change(context, id, change);
+        preRegistrationFacade.change(context, id, change);
     }
 
     @POST
@@ -67,6 +67,6 @@ public class PreRegistrationResource {
     @RolesAllowed({"User"})
     public FinancialData post(SimulatePreRegistration simulate) {
         var context = new UserContext(jwt.getName(), jwt.getRawToken());
-        return service.simulate(context, simulate);
+        return preRegistrationFacade.simulate(context, simulate);
     }
 }
