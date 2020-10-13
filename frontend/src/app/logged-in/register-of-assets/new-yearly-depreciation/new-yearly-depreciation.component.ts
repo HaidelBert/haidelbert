@@ -16,7 +16,10 @@ export class NewYearlyDepreciationComponent extends BaseComponent{
   currentStep = 0;
   private previews: AssetDepreciationPreview[];
 
-  constructor(private fb: FormBuilder, private assetDepreciationsRepository: AssetDepreciationsRepository, private yearDepreciationRepository: YearDepreciationRepository) {
+  constructor(
+    private fb: FormBuilder, private assetDepreciationsRepository: AssetDepreciationsRepository,
+    private yearDepreciationRepository: YearDepreciationRepository
+  ) {
     super();
     this.yearSelectForm = this.fb.group({
       year: [new Date().getFullYear() - 1, [Validators.required]],

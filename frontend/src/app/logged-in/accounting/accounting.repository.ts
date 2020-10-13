@@ -110,6 +110,9 @@ export class AccountingRecordRepository {
   }
 
   async downloadReceipt(id: number): Promise<any> {
-    return await this.httpClient.get(`${getAccountingApiBaseUrl()}/accounting/api/protected/${id}/receipt`, {observe: 'events', responseType: 'blob'}).toPromise();
+    return await this.httpClient.get(
+      `${getAccountingApiBaseUrl()}/accounting/api/protected/${id}/receipt`,
+      {observe: 'events', responseType: 'blob'
+      }).toPromise();
   }
 }
