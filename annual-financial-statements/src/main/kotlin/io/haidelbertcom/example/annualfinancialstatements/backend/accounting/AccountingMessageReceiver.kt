@@ -10,13 +10,15 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import org.springframework.kafka.support.serializer.JsonDeserializer
 import org.springframework.messaging.handler.annotation.Payload
 
 
 @Configuration
 class AccountingMessageReceiver(
         @Value("\${kafka.servers}") private val kafkaServers: String,
+        @Value("\${kafka.properties.security.protocol:}") private val kafkaSecurityProtocol: String?,
+        @Value("\${kafka.properties.sasl.mechanism:}") private val kafkaSaslMechanism: String?,
+        @Value("\${kafka.properties.sasl.jaas.config:}") private val kafkaSaslJaasConfig: String?,
         private val annualFinancialStatementFacade: AnnualFinancialStatementFacade
 ) {
     @Bean
@@ -24,6 +26,12 @@ class AccountingMessageReceiver(
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaServers
         configProps[ConsumerConfig.GROUP_ID_CONFIG] = "annualfinancialstatements-group"
+        if (kafkaSaslMechanism!="" || kafkaSecurityProtocol!="" || kafkaSaslJaasConfig!="") {
+            configProps["sasl.mechanism"] = kafkaSaslMechanism!!
+            configProps["security.protocol"] = kafkaSecurityProtocol!!
+            configProps["sasl.jaas.config"] = kafkaSaslJaasConfig!!
+        }
+
         return DefaultKafkaConsumerFactory<String, AccountingRecord>(configProps, StringDeserializer(), CustomJsonDeserializer(AccountingRecord::class.java))
     }
 
