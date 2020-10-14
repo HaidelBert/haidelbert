@@ -39,7 +39,7 @@ func (e Category) String() string {
 		"INSURANCE",
 		"LITERATURE",
 		"REVENUE_SERVICES",
-		"REVENUE_SELLS",
+		"REVENUE_DEPRECIATIONS",
 	}
 
 	x := string(e)

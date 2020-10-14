@@ -24,7 +24,7 @@ class AccountingMessageReceiver(
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaServers
         configProps[ConsumerConfig.GROUP_ID_CONFIG] = "annualfinancialstatements-group"
-        return DefaultKafkaConsumerFactory<String, AccountingRecord>(configProps, StringDeserializer(), JsonDeserializer(AccountingRecord::class.java))
+        return DefaultKafkaConsumerFactory<String, AccountingRecord>(configProps, StringDeserializer(), CustomJsonDeserializer(AccountingRecord::class.java))
     }
 
     @Bean

@@ -55,9 +55,9 @@ public class PreRegistrationFacade {
     public FinancialData simulate(UserContext context, SimulatePreRegistration simulate) {
         List<AccountingRecord> records;
         if (simulate.getInterval().equals(Interval.QUARTER)) {
-            records = accountingClientService.listByQuarter(context, simulate.getYear(), simulate.getIntervalValue());
+            records = accountingClientService.listByQuarterInternal(context.getUserId(), simulate.getYear(), simulate.getIntervalValue());
         } else {
-            records = accountingClientService.listByMonth(context, simulate.getYear(), simulate.getIntervalValue());
+            records = accountingClientService.listByMonthInternal(context.getUserId(), simulate.getYear(), simulate.getIntervalValue());
         }
         var calculator = new TaxCalculator(records);
 

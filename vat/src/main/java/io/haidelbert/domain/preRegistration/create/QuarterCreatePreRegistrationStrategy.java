@@ -32,7 +32,7 @@ public class QuarterCreatePreRegistrationStrategy implements CreatePreRegistrati
 
     @Override
     public List<AccountingRecord> listAccountingRecords() {
-        return accountingClientService.listByQuarter(context, create.getYear(), create.getIntervalValue());
+        return accountingClientService.listByQuarterInternal(context.getUserId(), create.getYear(), create.getIntervalValue());
     }
 
     @Override

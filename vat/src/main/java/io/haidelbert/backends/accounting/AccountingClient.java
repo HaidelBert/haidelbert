@@ -12,14 +12,6 @@ import java.util.List;
 public interface AccountingClient {
 
     @GET
-    @Path("/protected/")
-    List<AccountingRecord> listByQuarter(@HeaderParam("Authorization") String authHeader, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
-
-    @GET
-    @Path("/protected/")
-    List<AccountingRecord> listByMonth(@HeaderParam("Authorization") String authHeader, @QueryParam("year") int year, @QueryParam("month") Integer month);
-
-    @GET
     @Path("/internal/")
     List<AccountingRecord> listByQuarterInternal(@HeaderParam("Authorization") String authHeader, @QueryParam("user_id") String userId, @QueryParam("year") int year, @QueryParam("quarter") Integer quarter);
 

@@ -29,7 +29,7 @@ public class MonthCreatePreRegistrationStrategy implements CreatePreRegistration
 
     @Override
     public List<AccountingRecord> listAccountingRecords() {
-        return accountingClientService.listByMonth(context, create.getYear(), create.getIntervalValue());
+        return accountingClientService.listByMonthInternal(context.getUserId(), create.getYear(), create.getIntervalValue());
     }
 
 
