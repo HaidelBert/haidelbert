@@ -9,13 +9,11 @@ import (
 )
 
 type JwtGenerator struct {
-	secret          string
 	expiryInSeconds time.Duration
 }
 
-func NewJwtGenerator(secret string, expiryIndSeconds time.Duration) *JwtGenerator {
+func NewJwtGenerator(expiryIndSeconds time.Duration) *JwtGenerator {
 	return &JwtGenerator{
-		secret:          secret,
 		expiryInSeconds: expiryIndSeconds,
 	}
 }

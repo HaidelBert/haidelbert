@@ -40,14 +40,12 @@ func main() {
 		ExposedHeaders:   []string{"*"},
 		AllowCredentials: true,
 	}))
-	secret := os.Getenv("JWT_SECRET")
-
 
 	expiryInSeconds, expiryParseErr := strconv.ParseInt(os.Getenv("JWT_EXPIRY_SECONDS"), 10, 64)
 	if expiryParseErr != nil {
 		log.Fatal(expiryParseErr)
 	}
-	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(secret, time.Duration(expiryInSeconds)), userRepository, user.BcryptEncoder{})
+	authorizer := domain.NewAuthorizer(token.NewJwtGenerator(time.Duration(expiryInSeconds)), userRepository, user.BcryptEncoder{})
 	authController := api.NewAuthController(authorizer)
 
 	userController := api.NewUserController(userService)
