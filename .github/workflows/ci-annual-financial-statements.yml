@@ -28,7 +28,7 @@ jobs:
         run: ./mvnw surefire:test -Ptest
       - name: Build
         working-directory: annual-financial-statements
-        run: ./mvnw clean package -Dliquibase.should.run=false
+        run: ./mvnw clean package -Dliquibase.should.run=false -Dmaven.test.skip=true
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
