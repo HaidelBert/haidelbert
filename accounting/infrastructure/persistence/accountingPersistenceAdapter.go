@@ -67,7 +67,26 @@ func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, inpu
 		return err
 	}
 
-	changed, err := s.Repository.Update(*tx, userId, id, input)
+	var storageIdentifier *string
+	if input.Receipt != nil {
+		entity, err := s.Repository.GetById(*tx, userId, id)
+		err = rollbackOnError(tx, err)
+		if err != nil {
+			return err
+		}
+		storageIdentifier, err = s.ReceiptStorage.Store(*input.Receipt)
+		err = rollbackOnError(tx, err)
+		if err != nil {
+			return err
+		}
+
+		err = s.ReceiptStorage.Delete(entity.StorageIdentifier)
+		err = rollbackOnError(tx, err)
+		if err != nil {
+			return err
+		}
+	}
+	changed, err := s.Repository.Update(*tx, userId, id, input, storageIdentifier)
 	err = rollbackOnError(tx, err)
 	if err != nil {
 		return nil
@@ -86,6 +105,18 @@ func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, inpu
 
 func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) error {
 	tx, err := s.DB.Beginx()
+	if err != nil {
+		return err
+	}
+
+	entity, err := s.Repository.GetById(*tx, userId, id)
+	err = rollbackOnError(tx, err)
+	if err != nil {
+		return err
+	}
+
+	err = s.ReceiptStorage.Delete(entity.StorageIdentifier)
+	err = rollbackOnError(tx, err)
 	if err != nil {
 		return err
 	}

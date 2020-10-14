@@ -1,26 +1,25 @@
 package io.haidelbertcom.example.annualfinancialstatements.domain
 
-import io.haidelbertcom.example.annualfinancialstatements.backend.AccountingClient
-import io.haidelbertcom.example.annualfinancialstatements.backend.RegisterOfAssetsClient
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.AccountingClient
+import io.haidelbertcom.example.annualfinancialstatements.backend.registerOfAssets.RegisterOfAssetsClient
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.AccountingRecord
 import io.haidelbertcom.example.annualfinancialstatements.domain.exception.ConflictException
 import io.haidelbertcom.example.annualfinancialstatements.domain.exception.NotFoundException
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.AnnualFinancialStatementModel
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.AnnualFinancialStatementSimulation
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.ChangeAnnualFinancialStatement
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.FinalFinancialAmount
-import io.haidelbertcom.example.annualfinancialstatements.messaging.AccountingRecordMessaging
+import io.haidelbertcom.example.annualfinancialstatements.helpers.utcSecondsToLocalDate
 import io.haidelbertcom.example.annualfinancialstatements.persistence.AnnualFinancialStatement
 import io.haidelbertcom.example.annualfinancialstatements.persistence.AnnualFinancialStatementRepository
 import io.haidelbertcom.example.annualfinancialstatements.persistence.TaxAuthorityPosition
 import io.haidelbertcom.example.annualfinancialstatements.persistence.TaxAuthorityPositionRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import kotlin.streams.toList
 
 @Service
-class AnnualFinancialStatementService(
+class AnnualFinancialStatementFacade(
         private val annualFinancialStatementRepository: AnnualFinancialStatementRepository,
         private val accountingClient: AccountingClient,
         private val taxAuthorityPositionRepository: TaxAuthorityPositionRepository,
@@ -141,12 +140,10 @@ class AnnualFinancialStatementService(
     }
 
     @Transactional
-    fun handleAccountingRecordModified(message: AccountingRecordMessaging) {
-        val year = LocalDateTime.ofEpochSecond(message.bookingDate!!, 0, ZoneOffset.UTC).toLocalDate().year
-        val existingStatement = this.annualFinancialStatementRepository.findByUserIdAndYear(message.userId!!, year)
-        if (existingStatement == null) {
-            return;
-        }
-        executeAnnualFinancialStatement(existingStatement!!, message.userId!!, existingStatement.year)
+    fun handleAccountingRecordModified(message: AccountingRecord) {
+        val year = utcSecondsToLocalDate(message.bookingDate).year
+        val existingStatement = this.annualFinancialStatementRepository.findByUserIdAndYear(message.userId, year)
+                ?: return
+        executeAnnualFinancialStatement(existingStatement, message.userId, existingStatement.year)
     }
 }

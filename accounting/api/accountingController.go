@@ -113,11 +113,11 @@ func (c AccountingController) DownloadReceipt(res http.ResponseWriter, req *http
 		return
 	}
 	result, err := c.Service.DownloadReceipt(claims.UserId, recordId)
-	defer result.Content.Close()
 	if err != nil {
 		respondWithError(res, req, err)
 		return
 	}
+	defer result.Content.Close()
 	res.Header().Set("Content-Disposition", "attachment; filename=" + result.Filename)
 	res.Header().Set("Content-Type", result.MimeType)
 	io.Copy(res, result.Content)

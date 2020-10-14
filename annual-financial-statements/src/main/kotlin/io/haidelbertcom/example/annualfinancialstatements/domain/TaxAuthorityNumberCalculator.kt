@@ -1,8 +1,8 @@
 package io.haidelbertcom.example.annualfinancialstatements.domain
 
-import io.haidelbertcom.example.annualfinancialstatements.backend.AccountingRecord
-import io.haidelbertcom.example.annualfinancialstatements.backend.Category
-import io.haidelbertcom.example.annualfinancialstatements.backend.YearDepreciation
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.AccountingRecord
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.Category
+import io.haidelbertcom.example.annualfinancialstatements.backend.registerOfAssets.YearDepreciation
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.TaxAuthorityNumber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -63,23 +63,27 @@ class TaxAuthorityNumberCalculator(
     fun calculateTaxAuthorityNumbers(): MutableMap<TaxAuthorityNumber, FinancialAmount> {
         val sums: MutableMap<TaxAuthorityNumber, FinancialAmount> = mutableMapOf()
         accountingRecords.forEach {
-            val mappedTaxAuthNumber = categoryMapping[it.category]
+            val mappedTaxAuthNumber = categoryMapping[it.category] ?: throw IllegalStateException()
             val netAmount = calculateNetAmount(it)
             if (sums.containsKey(mappedTaxAuthNumber)) {
                 sums[mappedTaxAuthNumber]!!.gross = sums[mappedTaxAuthNumber]!!.gross.plus(it.grossAmount)
                 sums[mappedTaxAuthNumber]!!.net = sums[mappedTaxAuthNumber]!!.net.plus(netAmount)
             }else {
-                sums[mappedTaxAuthNumber!!] = FinancialAmount(it.grossAmount, netAmount)
+                sums[mappedTaxAuthNumber] = FinancialAmount(it.grossAmount, netAmount)
             }
         }
+        setDepreciations(sums)
+
+        return sums
+    }
+
+    private fun setDepreciations(sums: MutableMap<TaxAuthorityNumber, FinancialAmount>) {
         if (sums.containsKey(TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS)) {
             sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross.plus(depreciations.sumDepreciations)
             sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net.plus(BigDecimal(depreciations.sumDepreciations))
         } else {
             sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS] = FinancialAmount(depreciations.sumDepreciations, BigDecimal(depreciations.sumDepreciations))
         }
-
-        return sums
     }
 
     private fun calculateNetAmount (accountingRecord: AccountingRecord): BigDecimal {

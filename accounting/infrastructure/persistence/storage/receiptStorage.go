@@ -51,3 +51,17 @@ func (rs ReceiptStorageS3) Download(key string) (*accounting.ReceiptDownload, er
 
 	return &receiptDownload, nil
 }
+
+func (rs ReceiptStorageS3) Delete(key string) error {
+	request := s3.DeleteObjectInput{
+		Bucket: rs.Bucket,
+		Key:    &key,
+	}
+	_, err := rs.S3Client.DeleteObject(&request)
+	if err != nil {
+		fmt.Printf("Failed to delete %s/%s, %s\n", *rs.Bucket, key, err.Error())
+		return err
+	}
+
+	return nil
+}

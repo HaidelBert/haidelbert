@@ -1,9 +1,9 @@
 package io.haidelbertcom.example.annualfinancialstatements.domain
 
-import io.haidelbertcom.example.annualfinancialstatements.backend.AccountingRecord
-import io.haidelbertcom.example.annualfinancialstatements.backend.Category
-import io.haidelbertcom.example.annualfinancialstatements.backend.ReceiptType
-import io.haidelbertcom.example.annualfinancialstatements.backend.YearDepreciation
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.AccountingRecord
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.Category
+import io.haidelbertcom.example.annualfinancialstatements.backend.accounting.ReceiptType
+import io.haidelbertcom.example.annualfinancialstatements.backend.registerOfAssets.YearDepreciation
 import io.haidelbertcom.example.annualfinancialstatements.domain.model.TaxAuthorityNumber
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

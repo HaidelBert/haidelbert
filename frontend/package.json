@@ -35,6 +35,7 @@
     "@angular/cli": "~10.0.8",
     "@angular/compiler-cli": "~10.0.14",
     "@types/jasminewd2": "~2.0.3",
+    "@types/jest": "^26.0.14",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
     "cypress": "^5.2.0",

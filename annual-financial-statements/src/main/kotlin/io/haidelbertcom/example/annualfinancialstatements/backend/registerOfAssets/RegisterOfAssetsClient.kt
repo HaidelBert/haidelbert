@@ -1,16 +1,17 @@
-package io.haidelbertcom.example.annualfinancialstatements.backend
+package io.haidelbertcom.example.annualfinancialstatements.backend.registerOfAssets
 
 import io.haidelbertcom.example.annualfinancialstatements.config.ServiceCredentials
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class AccountingClient(
+class RegisterOfAssetsClient(
         private val serviceCredentials: ServiceCredentials,
-        private val accountingClientDefinition: AccountingClientDefinition
+        private val registerOfAssetsClientDefinition: RegisterOfAssetsClientDefinition
+
 ) {
-    fun listInternal(userId: String, year: Int): List<AccountingRecord>{
-        return this.accountingClientDefinition.listInternal(userId, year, getAuthHeader())
+    fun getYearDepreciationInternal(userId: String, year: Int): YearDepreciation? {
+        return registerOfAssetsClientDefinition.getYearDepreciationInternal(userId, year, getAuthHeader())
     }
 
     private fun getAuthHeader(): String {

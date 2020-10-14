@@ -1,4 +1,4 @@
-package io.haidelbertcom.example.annualfinancialstatements.backend
+package io.haidelbertcom.example.annualfinancialstatements.backend.accounting
 
 enum class ReceiptType {
     CASH, BANK

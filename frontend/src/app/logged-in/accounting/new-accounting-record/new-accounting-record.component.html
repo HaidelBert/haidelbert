@@ -40,28 +40,28 @@
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="receiptType">Reverse Charge</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
-      <label nz-checkbox formControlName="reverseCharge"></label>
+      <label nz-checkbox formControlName="reverseCharge" (ngModelChange)="handleReverseChargeChanged()"></label>
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="grossAmount">Brutto Betrag</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
-      <input type="text" nz-input formControlName="grossAmount">
+      <input type="text" nz-input formControlName="grossAmount" (ngModelChange)="handleGrossAmountChanged()">
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="taxRate">Steuersatz</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
-      <input type="text" nz-input formControlName="taxRate">
+      <input type="text" nz-input formControlName="taxRate" (ngModelChange)="handleTaxRateChanged()">
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
-    <nz-form-label [nzSm]="6" [nzXs]="24">Netto Betrag</nz-form-label>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="netAmount">Netto Betrag</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24">
-      <span>{{ netAmount }}</span>
+      <input type="text" nz-input formControlName="netAmount">
     </nz-form-control>
   </nz-form-item>
 

@@ -7,11 +7,12 @@ import {
   UpdateAccountingRecord
 } from '../accounting.repository';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {calculateNetAmount, formatMoney} from '../../../utils';
+import {calculateNetAmount, formatMoney, getBase64, isValidNumber, numberRegEx} from '../../../utils';
 import currency from 'currency.js';
 import {NzAutocompleteOptionComponent, NzUploadFile} from 'ng-zorro-antd';
 import moment from 'moment';
 import {Observable, Observer} from 'rxjs';
+import Dinero from 'dinero.js';
 
 @Component({
   selector: 'app-new-accounting-record',
@@ -42,8 +43,9 @@ export class NewAccountingRecordComponent {
       description: ['', [Validators.required]],
       receiptType: [undefined, [Validators.required]],
       reverseCharge: [false, [Validators.required]],
-      grossAmount: [undefined, [Validators.required]],
-      taxRate: [undefined, [Validators.required]],
+      grossAmount: [undefined, [Validators.required, Validators.pattern(numberRegEx)]],
+      netAmount: [undefined, [Validators.required, Validators.pattern(numberRegEx)]],
+      taxRate: [undefined, [Validators.required, Validators.pattern(numberRegEx)]],
       category: [undefined, [Validators.required]],
     });
   }
@@ -56,17 +58,11 @@ export class NewAccountingRecordComponent {
     this.descriptionSuggestions = await this.accountingRecordRepository.findByDescription(value);
   }
 
-  get netAmount(): string {
-    if (!this.newForm.controls.grossAmount.value || !this.newForm.controls.taxRate.value) {
-      return formatMoney({ amount: 0, currency: 'EUR' });
-    }
-    return formatMoney({
-      amount: calculateNetAmount(
+  calculateNetAmount(): number {
+    return calculateNetAmount(
         currency(this.newForm.controls.grossAmount.value).intValue,
         parseInt(this.newForm.controls.taxRate.value, 10)
-      ),
-      currency: 'EUR'
-    });
+    );
   }
 
   descriptionSelected($event: NzAutocompleteOptionComponent): void {
@@ -104,8 +100,9 @@ export class NewAccountingRecordComponent {
       reverseCharge: this.newForm.controls.reverseCharge.value,
       grossAmount: currency(this.newForm.controls.grossAmount.value).intValue,
       taxRate: parseInt(this.newForm.controls.taxRate.value, 10),
+      netAmount: currency(this.newForm.controls.netAmount.value).intValue,
       category: this.newForm.controls.category.value,
-      receipt: await this.getBase64(this.receipt[0])
+      receipt: await getBase64(this.receipt[0])
     };
   }
 
@@ -136,16 +133,31 @@ export class NewAccountingRecordComponent {
     this.cancelEmitter.emit();
   }
 
-  getBase64(img: File): Promise<string> {
-    return new Promise(resolve => {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => resolve(reader.result.toString()));
-      reader.readAsDataURL(img);
-    });
-  }
-
   beforeUpload = (file: File): boolean => {
     this.receipt = [file];
     return false;
+  }
+
+  handleGrossAmountChanged(): void {
+    this.reCalculateNetAmount();
+  }
+
+  handleTaxRateChanged(): void {
+    this.reCalculateNetAmount();
+  }
+
+  private reCalculateNetAmount(): void {
+    if (!isValidNumber(this.newForm.controls.grossAmount.value) || !isValidNumber(this.newForm.controls.taxRate.value)){
+      return;
+    }
+    const netAmount = this.calculateNetAmount();
+    const netAmountFormatted = Dinero({ amount: netAmount, currency: 'EUR' }).toFormat('0.00');
+    this.newForm.controls.netAmount.setValue(netAmountFormatted);
+  }
+
+  handleReverseChargeChanged(): void {
+    if (this.newForm.controls.reverseCharge.value) {
+      this.newForm.controls.taxRate.setValue(0);
+    }
   }
 }

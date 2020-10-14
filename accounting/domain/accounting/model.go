@@ -78,6 +78,7 @@ type NewRecord struct {
 	BookingDate 	int64 		`json:"bookingDate"`
 	Name 			string 		`json:"name"`
 	GrossAmount 	int64  		`json:"grossAmount"`
+	NetAmount 		int64  		`json:"netAmount"`
 	TaxRate 		uint16 		`json:"taxRate"`
 	ReceiptType 	ReceiptType `json:"receiptType"`
 	Category 		Category 	`json:"category"`
@@ -90,10 +91,12 @@ type UpdateRecord struct {
 	BookingDate 	*int64 			`json:"bookingDate"`
 	Name 			*string 		`json:"name"`
 	GrossAmount 	*int64  		`json:"grossAmount"`
+	NetAmount 		*int64  		`json:"netAmount"`
 	TaxRate 		*uint16			`json:"taxRate"`
 	ReceiptType 	*ReceiptType	`json:"receiptType"`
 	Category 		*Category 		`json:"category"`
 	ReverseCharge 	*bool 			`json:"reverseCharge"`
+	Receipt 		*string 		`json:"receipt"`
 }
 
 type Record struct {
@@ -107,6 +110,7 @@ type Record struct {
 	Category      	Category 	`json:"category"`
 	ReverseCharge 	bool     	`json:"reverseCharge"`
 	UserId			string		`json:"userId"`
+	NetAmount   	int64       `json:"netAmount"`
 }
 
 type Filter struct {

@@ -1,6 +1,6 @@
-package io.haidelbertcom.example.annualfinancialstatements.messaging
+package io.haidelbertcom.example.annualfinancialstatements.backend.accounting
 
-import io.haidelbertcom.example.annualfinancialstatements.domain.AnnualFinancialStatementService
+import io.haidelbertcom.example.annualfinancialstatements.domain.AnnualFinancialStatementFacade
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -15,37 +15,37 @@ import org.springframework.messaging.handler.annotation.Payload
 
 
 @Configuration
-class AccountingReceiver(
+class AccountingMessageReceiver(
         @Value("\${kafka.servers}") private val kafkaServers: String,
-        private val annualFinancialStatementService: AnnualFinancialStatementService
+        private val annualFinancialStatementFacade: AnnualFinancialStatementFacade
 ) {
     @Bean
-    fun accountingConsumer(): ConsumerFactory<String, AccountingRecordMessaging> {
+    fun accountingConsumer(): ConsumerFactory<String, AccountingRecord> {
         val configProps: MutableMap<String, Any> = HashMap()
         configProps[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaServers
         configProps[ConsumerConfig.GROUP_ID_CONFIG] = "annualfinancialstatements-group"
-        return DefaultKafkaConsumerFactory<String, AccountingRecordMessaging>(configProps, StringDeserializer(), JsonDeserializer(AccountingRecordMessaging::class.java))
+        return DefaultKafkaConsumerFactory<String, AccountingRecord>(configProps, StringDeserializer(), JsonDeserializer(AccountingRecord::class.java))
     }
 
     @Bean
-    fun greetingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, AccountingRecordMessaging>? {
-        val factory: ConcurrentKafkaListenerContainerFactory<String, AccountingRecordMessaging> = ConcurrentKafkaListenerContainerFactory()
+    fun greetingKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, AccountingRecord>? {
+        val factory: ConcurrentKafkaListenerContainerFactory<String, AccountingRecord> = ConcurrentKafkaListenerContainerFactory()
         factory.consumerFactory = accountingConsumer()
         return factory
     }
 
     @KafkaListener(topics = ["accounting_record_created"], containerFactory = "greetingKafkaListenerContainerFactory")
-    fun onNewRecord(@Payload message: AccountingRecordMessaging) {
-        annualFinancialStatementService.handleAccountingRecordModified(message)
+    fun onNewRecord(@Payload message: AccountingRecord) {
+        annualFinancialStatementFacade.handleAccountingRecordModified(message)
     }
 
     @KafkaListener(topics = ["accounting_record_changed"], containerFactory = "greetingKafkaListenerContainerFactory")
-    fun onRecordChanged(@Payload message: AccountingRecordMessaging) {
-        annualFinancialStatementService.handleAccountingRecordModified(message)
+    fun onRecordChanged(@Payload message: AccountingRecord) {
+        annualFinancialStatementFacade.handleAccountingRecordModified(message)
     }
 
     @KafkaListener(topics = ["accounting_record_deleted"], containerFactory = "greetingKafkaListenerContainerFactory")
-    fun onRecordDeleted(@Payload message: AccountingRecordMessaging) {
-        annualFinancialStatementService.handleAccountingRecordModified(message)
+    fun onRecordDeleted(@Payload message: AccountingRecord) {
+        annualFinancialStatementFacade.handleAccountingRecordModified(message)
     }
 }

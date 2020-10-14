@@ -57,6 +57,7 @@ export interface UpdateAccountingRecord {
   bookingDate: number;
   name: string;
   grossAmount: number;
+  netAmount: number;
   taxRate: number;
   receiptType: ReceiptType;
   category: Category;
@@ -70,6 +71,7 @@ export interface AccountingRecord {
   bookingDate: number;
   name: string;
   grossAmount: number;
+  netAmount: number;
   taxRate: number;
   receiptType: ReceiptType;
   category: Category;
@@ -102,6 +104,7 @@ export class AccountingRecordRepository {
   }
 
   public async post(post: UpdateAccountingRecord): Promise<AccountingRecord> {
+    debugger;
     return await this.httpClient.post<AccountingRecord>(`${getAccountingApiBaseUrl()}/accounting/api/protected/`, post).toPromise();
   }
 

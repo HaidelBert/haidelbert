@@ -17,13 +17,14 @@ func (r Repository) Insert(tx sqlx.Tx, newRecord accounting.NewRecord, userId st
 		Name: newRecord.Name,
 		Category: newRecord.Category.String(),
 		GrossAmount: newRecord.GrossAmount,
+		NetAmount: newRecord.NetAmount,
 		ReceiptType: newRecord.ReceiptType.String(),
 		ReverseCharge: newRecord.ReverseCharge,
 		TaxRate: newRecord.TaxRate,
 		UserId: userId,
 		StorageIdentifier: storageIdentifier,
 	}
-	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge, :storage_identifier)`, newRecordEntity)
+	result, err := tx.NamedExec(`INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier, net_amount) VALUES(:booking_date,:name,:receipt_type, :tax_rate, :gross_amount, :category, :id_user, :reverse_charge, :storage_identifier, :net_amount)`, newRecordEntity)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +61,7 @@ func (r Repository) Find(tx sqlx.Tx, userId string, filter accounting.Filter) ([
 	return fromEntitySlice(list), nil
 }
 
-func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting.UpdateRecord) (*accounting.Record, error) {
+func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting.UpdateRecord, storageIdentifier *string) (*accounting.Record, error) {
 	tmp := Entity{}
 	err := tx.Get(&tmp, "SELECT * FROM accounting_records WHERE id=$1 and id_user=$2",id, userId)
 	if err != nil {
@@ -81,13 +82,19 @@ func (r Repository) Update(tx sqlx.Tx, userId string, id int64, input accounting
 	if input.GrossAmount != nil {
 		tmp.GrossAmount = *input.GrossAmount
 	}
+	if input.NetAmount != nil {
+		tmp.NetAmount = *input.NetAmount
+	}
 	if input.ReverseCharge != nil {
 		tmp.ReverseCharge = *input.ReverseCharge
 	}
-	if input.BookingDate!= nil {
+	if input.BookingDate != nil {
 		tmp.BookingDate = time.Unix(*input.BookingDate, 0)
 	}
-	_, err = tx.NamedExec("UPDATE accounting_records set booking_date=:booking_date, name=:name, receipt_type=:receipt_type, tax_rate=:tax_rate, gross_amount=:gross_amount, category=:category, reverse_charge=:reverse_charge, updated_ts=CURRENT_TIMESTAMP where id=:id and id_user=:id_user", tmp)
+	if storageIdentifier != nil {
+		tmp.StorageIdentifier = *storageIdentifier
+	}
+	_, err = tx.NamedExec("UPDATE accounting_records set booking_date=:booking_date, name=:name, receipt_type=:receipt_type, tax_rate=:tax_rate, gross_amount=:gross_amount, category=:category, reverse_charge=:reverse_charge, updated_ts=CURRENT_TIMESTAMP, storage_identifier=:storage_identifier where id=:id and id_user=:id_user", tmp)
 
 	return fromEntityToDomain(tmp), err
 }
@@ -121,6 +128,7 @@ func fromEntityToDomain(e Entity) *accounting.Record {
 		BookingDate: e.BookingDate.Unix(),
 		Category: accounting.Category(e.Category),
 		GrossAmount: e.GrossAmount,
+		NetAmount: e.NetAmount,
 		Name: e.Name,
 		ReceiptType: accounting.ReceiptType(e.ReceiptType),
 		ReverseCharge: e.ReverseCharge,

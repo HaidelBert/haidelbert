@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {Money, formatMoney, calculateNetAmount} from '../../../../utils';
+import {Money, formatMoney, calculateNetAmount, getBase64} from '../../../../utils';
 import currency from 'currency.js';
 import {
   AccountingRecord,
@@ -28,6 +28,7 @@ export class AccountingTableRowComponent implements OnChanges{
       label: categoryTranslations[key]
     };
   });
+  receipt: File[] = [];
 
   formatMoney(money: Money): string {
     return formatMoney(money);
@@ -76,11 +77,17 @@ export class AccountingTableRowComponent implements OnChanges{
   }
 
   async saveEdit(): Promise<void> {
+    if (!this.validateEditCache()) {
+      return;
+    }
     this.editCache.bookingDate = moment(this.editBookingDate).unix();
     const {
       id,
       ...rest
     } = this.editCache;
+    if (this.receipt.length > 0) {
+      (rest as any).receipt = await getBase64(this.receipt[0]);
+    }
     await this.onUpdate(id, rest);
     this.data = this.editCache;
     this.editing = false;
@@ -105,5 +112,27 @@ export class AccountingTableRowComponent implements OnChanges{
 
   async startDownload(): Promise<void> {
     this.download.emit(this.data.id);
+  }
+
+  handleGrossAmountChanged($event: FocusEvent): void {
+    this.editCache.grossAmount = this.parseMoney($event);
+    this.editCache.netAmount = this.calculateNetAmount(this.editCache.grossAmount, this.editCache.taxRate);
+  }
+
+  handleTaxRateChanged($event: FocusEvent): void {
+    this.editCache.taxRate = parseInt(($event.target as any).value, 10);
+    this.editCache.netAmount = this.calculateNetAmount(this.editCache.grossAmount, this.editCache.taxRate);
+  }
+
+  private validateEditCache(): boolean {
+    if (!this.editCache) {
+      return false;
+    }
+    return true;
+  }
+
+  beforeUpload = (file: File): boolean => {
+    this.receipt = [file];
+    return false;
   }
 }

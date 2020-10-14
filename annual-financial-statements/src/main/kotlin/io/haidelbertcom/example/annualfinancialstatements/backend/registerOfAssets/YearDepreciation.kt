@@ -1,4 +1,4 @@
-package io.haidelbertcom.example.annualfinancialstatements.backend
+package io.haidelbertcom.example.annualfinancialstatements.backend.registerOfAssets
 
 class YearDepreciation(
         var id: Long,

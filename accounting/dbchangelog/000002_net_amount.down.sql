@@ -1,0 +1,1 @@
+ALTER TABLE accounting_records DROP COLUMN net_amount;
