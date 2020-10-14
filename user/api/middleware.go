@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -19,6 +20,7 @@ func Middleware(d tokenDecoder) func(http.Handler) http.Handler {
 				claims, err := d.decode(authHeader)
 
 				if err != nil {
+					log.Print(err.Error())
 					http.Error(w, http.StatusText(401), 401)
 					return
 				}
