@@ -7,14 +7,10 @@ import (
 	"os"
 )
 
-type JwtDecoder struct {
-	secret string
-}
+type JwtDecoder struct {}
 
-func NewJwtDecoder(secret string) *JwtDecoder {
-	return &JwtDecoder{
-		secret: secret,
-	}
+func NewJwtDecoder() *JwtDecoder {
+	return &JwtDecoder{}
 }
 
 func (d JwtDecoder) decode(tokenString string) (*Claims, error) {

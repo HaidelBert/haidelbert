@@ -55,7 +55,7 @@ func main() {
 			publicRouter.Post("/token", authController.Login)
 		})
 		rootRouter.Route("/protected", func(protectedRouter chi.Router) {
-			protectedRouter.Use(api.Middleware(api.NewJwtDecoder(secret)))
+			protectedRouter.Use(api.Middleware(api.NewJwtDecoder()))
 			protectedRouter.Get("/me", userController.Me)
 		})
 	})
