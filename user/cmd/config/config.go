@@ -10,7 +10,7 @@ func Load() {
 	env := os.Getenv("ENV")
 	var envErr error
 	if env != "" {
-		log.Print("Try to load " + ".env." + env + "file!")
+		log.Print("Try to load " + ".env." + env + " file!")
 		envErr = godotenv.Load(".env." + env)
 	} else {
 		log.Print("Try to load " + ".env.local file!")

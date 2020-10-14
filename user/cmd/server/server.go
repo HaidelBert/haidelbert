@@ -18,6 +18,8 @@ import (
 
 func main() {
 	config.Load()
+	log.Print(os.Getenv("JWT_PUBLIC_KEY"))
+	log.Print(os.Getenv("JWT_PRIVATE_KEY"))
 	port := os.Getenv("PORT")
 	session, err := db.Connect()
 	defer session.Close()
