@@ -25,7 +25,7 @@ jobs:
         run: ./mvnw resources:resources liquibase:update -Ptest
       - name: Test
         working-directory: annual-financial-statements
-        run: ./mvnw surefire:test -Ptest
+        run: ./mvnw surefire:test -Dliquibase.should.run=false
       - name: Build
         working-directory: annual-financial-statements
         run: ./mvnw clean package -Dliquibase.should.run=false -Dmaven.test.skip=true
