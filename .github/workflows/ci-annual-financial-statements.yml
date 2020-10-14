@@ -25,10 +25,10 @@ jobs:
         run: ./mvnw resources:resources liquibase:update -Ptest
       - name: Test
         working-directory: annual-financial-statements
-        run: ./mvnw surefire:test -Dquarkus-profile=test -Ptest
-      - name: Build Native
+        run: ./mvnw surefire:test -Ptest
+      - name: Build
         working-directory: annual-financial-statements
-        run: ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dliquibase.should.run=false
+        run: ./mvnw clean package -Dliquibase.should.run=false
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
