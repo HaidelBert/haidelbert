@@ -251,6 +251,7 @@
 							<url>jdbc:postgresql://staging.haidelbert.io:31028/annual-financial-statements</url>
 							<username>${postgres.username}</username>
 							<password>${postgres.password}</password>
+							<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 						</configuration>
 						<executions>
 							<execution>
