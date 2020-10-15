@@ -60,7 +60,7 @@ jobs:
           java-version: 11
       - name: Migrate Staging DB
         working-directory: vat
-        run: POSTGRES_USERNAME=postgres POSTGRES_USERNAME=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
+        run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
