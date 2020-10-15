@@ -50,6 +50,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: NPM CI
+        run: npm ci
+        working-directory: register-of-assets
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Migrate Staging DB
