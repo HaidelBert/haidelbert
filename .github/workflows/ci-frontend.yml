@@ -40,7 +40,9 @@ jobs:
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
-          tags: haidelbert/frontend:${{ github.sha }}
+          tags: |
+            haidelbert/frontend:${{ github.sha }}
+            haidelbert/frontend:latest
           push: true
   deploy-frontend-staging:
     runs-on: ubuntu-latest
