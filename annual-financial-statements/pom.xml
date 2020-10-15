@@ -248,7 +248,7 @@
 						<version>4.1.0</version>
 						<configuration>
 							<changeLogFile>src/main/liquibase/changelog.xml</changeLogFile>
-							<url>jdbc:postgresql://postgresql.postgresql:5432/annual-financial-statements</url>
+							<url>jdbc:postgresql://staging.haidelbert.io:31028/annual-financial-statements</url>
 							<username>${postgres.username}</username>
 							<password>${postgres.password}</password>
 						</configuration>
