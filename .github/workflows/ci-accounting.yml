@@ -56,7 +56,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Migrate staging DB
-        run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=31028 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
+        run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=30621 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
         working-directory: accounting
       - name: deploy to cluster
         uses: steebchen/kubectl@master
