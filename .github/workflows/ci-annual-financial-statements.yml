@@ -54,6 +54,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Migrate Staging DB
+        working-directory: annual-financial-statements
+        run: POSTGRES_USERNAME=postgres POSTGRES_USERNAME=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:

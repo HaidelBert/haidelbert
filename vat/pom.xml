@@ -230,9 +230,6 @@
     </profile>
     <profile>
       <id>staging</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <plugins>
           <plugin>
