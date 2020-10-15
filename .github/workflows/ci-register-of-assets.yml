@@ -50,11 +50,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: NPM CI
         run: npm ci
         working-directory: register-of-assets
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Migrate Staging DB
         working-directory: register-of-assets
         run: TYPEORM_HOST=staging.haidelbert.io TYPEORM_PORT=31028 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} npm run migrate
