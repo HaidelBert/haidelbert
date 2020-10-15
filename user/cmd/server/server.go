@@ -9,6 +9,7 @@ import (
 	"github.com/HaidelBert/user/infrastructure/user"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"gopkg.in/mgo.v2"
 	"log"
 	"net/http"
 	"os"
@@ -16,15 +17,26 @@ import (
 	"time"
 )
 
+func checkMongo(session *mgo.Session) {
+	for {
+		time.Sleep(5000 * time.Millisecond)
+		err := session.Ping()
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func main() {
 	config.Load()
 	port := os.Getenv("PORT")
 	session, err := db.Connect()
-	defer session.Close()
 
 	if err != nil {
 		panic(err)
 	}
+	go checkMongo(session)
+	defer session.Close()
 
 	userRepository := user.RepositoryMongo{
 		Collection: session.DB("user").C("users"),
