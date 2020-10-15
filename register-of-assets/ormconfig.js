@@ -1,9 +1,9 @@
-{
+module.exports ={
   "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "postgres",
-  "password": "root",
+  "host": process.env.TYPEORM_HOST || "localhost",
+  "port": process.env.TYPEORM_PORT || 5432,
+  "username": process.env.TYPEORM_USERNAME || "postgres",
+  "password": process.env.TYPEORM_PASSWORD || "root",
   "database": "register-of-assets",
   "synchronize": true,
   "logging": true,
@@ -19,4 +19,4 @@
   "cli": {
     "migrationsDir": "migration"
   }
-}
+};
