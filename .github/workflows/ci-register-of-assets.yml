@@ -57,7 +57,7 @@ jobs:
         working-directory: register-of-assets
       - name: Migrate Staging DB
         working-directory: register-of-assets
-        run: TYPEORM_HOST=staging.haidelbert.io TYPEORM_PORT=31028 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} npm run migrate
+        run: TYPEORM_HOST=staging.haidelbert.io TYPEORM_PORT=30621 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} npm run migrate
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
