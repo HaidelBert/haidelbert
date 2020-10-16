@@ -27,7 +27,7 @@ export class TokenInterceptor implements HttpInterceptor {
       if (error.error instanceof ErrorEvent) {
         console.error(error);
       } else if (error.status === 401 || error.status === 403){
-        localStorage.removeItem('accessToken');
+        debugger;
         this.sessionService.logout();
         this.router.navigate([`/login?redirectTo=${window.location.pathname}`]);
       }
