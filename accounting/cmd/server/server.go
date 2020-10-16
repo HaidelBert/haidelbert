@@ -17,12 +17,24 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"github.com/jmoiron/sqlx"
 	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
+
+func checkDb(connection *sqlx.DB) {
+	for {
+		time.Sleep(5000 * time.Millisecond)
+		err := connection.Ping()
+		if err != nil {
+			panic(err)
+		}
+	}
+}
 
 func main() {
 	random.Init()
@@ -67,6 +79,7 @@ func main() {
 	defer producer.Close()
 
 	conn := db.Connect()
+	go checkDb(conn)
 	defer conn.Close()
 
 	port := os.Getenv("PORT")
