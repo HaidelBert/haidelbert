@@ -104,7 +104,6 @@ export class AccountingRecordRepository {
   }
 
   public async post(post: UpdateAccountingRecord): Promise<AccountingRecord> {
-    debugger;
     return await this.httpClient.post<AccountingRecord>(`${getAccountingApiBaseUrl()}/accounting/api/protected/`, post).toPromise();
   }
 
