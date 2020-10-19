@@ -7,6 +7,7 @@ on:
     - 'register-of-assets/**'
     - 'frontend/**'
     - 'annual-financial-statements/**'
+    - 'e2e/**'
     - '.github/workflows/ci-cd.yml'
 name: CI/CD
 jobs:
