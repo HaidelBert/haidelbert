@@ -396,7 +396,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Prepare
-      run: npm run ci
+      run: npm ci
       working-directory: e2e
     - name: Test
       run: CYPRESS_BASE_URL=http://frontend-staging.haidelbert.io npm run cypress:run
