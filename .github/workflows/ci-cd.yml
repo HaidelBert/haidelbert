@@ -99,36 +99,48 @@ jobs:
   build-annual-financial-statements:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: marceloprado/has-changed-path@v1
+        id: changed-annual-financial-statements
+        with:
+          paths: annual-financial-statements
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
           postgresql user: postgres
           postgresql password: root
           postgresql db: annual-financial-statements_test
-      - name: Checkout code
-        uses: actions/checkout@v2
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Set up jdk11
         uses: actions/setup-java@v1
         with:
           java-version: 11
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Migrate Test DB
         working-directory: annual-financial-statements
         run: ./mvnw resources:resources liquibase:update -Ptest
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Test
         working-directory: annual-financial-statements
         run: ./mvnw surefire:test -Dliquibase.should.run=false
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Build
         working-directory: annual-financial-statements
         run: ./mvnw clean package -Dliquibase.should.run=false -Dmaven.test.skip=true
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -139,21 +151,28 @@ jobs:
             haidelbert/annual-financial-statements:${{ github.sha }}
             haidelbert/annual-financial-statements:latest
           push: true
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
   deploy-annual-financial-statements-staging:
     runs-on: ubuntu-latest
     needs: build-annual-financial-statements
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - uses: marceloprado/has-changed-path@v1
+        id: changed-annual-financial-statements
+        with:
+          paths: annual-financial-statements
       - name: Migrate Staging DB
         working-directory: annual-financial-statements
         run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: set image deployment/annual-financial-statements annual-financial-statements=haidelbert/annual-financial-statements:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: verify deployment
         uses: steebchen/kubectl@master
         env:
@@ -161,6 +180,7 @@ jobs:
           KUBECTL_VERSION: "1.15"
         with:
           args: rollout status deployment/annual-financial-statements --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
   build-frontend:
     runs-on: ubuntu-latest
     steps:
