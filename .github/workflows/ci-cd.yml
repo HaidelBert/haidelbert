@@ -399,5 +399,5 @@ jobs:
       run: npm run ci
       working-directory: e2e
     - name: Test
-      run: npm run cypress:run
+      run: CYPRESS_BASE_URL=http://frontend-staging.haidelbert.io npm run cypress:run
       working-directory: e2e

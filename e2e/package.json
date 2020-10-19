@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cypress:run": "cypress run",
+    "cypress:run": "cypress run --spec 'cypress/integration/e2e/**/*'",
     "cypress:open": "cypress open"
   },
   "author": "Alexander Haider",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "cypress": "^5.4.0"
   }
 }
