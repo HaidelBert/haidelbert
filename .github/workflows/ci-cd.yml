@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-accounting
         with:
@@ -69,6 +71,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-accounting
         with:
@@ -102,6 +106,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-annual-financial-statements
         with:
@@ -159,6 +165,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-annual-financial-statements
         with:
@@ -187,6 +195,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-frontend
         with:
@@ -238,6 +248,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-frontend
         with:
@@ -262,6 +274,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-register-of-assets
         with:
@@ -311,6 +325,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-register-of-assets
         with:
@@ -348,6 +364,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-user
         with:
@@ -390,6 +408,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-user
         with:
@@ -423,6 +443,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-vat
         with:
@@ -480,6 +502,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - uses: marceloprado/has-changed-path@v1
         id: changed-vat
         with:
