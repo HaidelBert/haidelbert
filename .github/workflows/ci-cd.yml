@@ -67,12 +67,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-accounting
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: marceloprado/has-changed-path@v1
+        id: changed-accounting
+        with:
+          paths: accounting
       - name: Install Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.15
-      - name: Checkout code
-        uses: actions/checkout@v2
+        if: steps.changed-accounting.outputs.changed == 'true'
       - name: Migrate staging DB
         run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=30621 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
         working-directory: accounting
@@ -82,6 +87,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         with:
           args: set image deployment/accounting accounting=haidelbert/accounting:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+        if: steps.changed-accounting.outputs.changed == 'true'
       - name: verify deployment
         uses: steebchen/kubectl@master
         env:
@@ -89,6 +95,7 @@ jobs:
           KUBECTL_VERSION: "1.15"
         with:
           args: rollout status deployment/accounting --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+        if: steps.changed-accounting.outputs.changed == 'true'
   build-annual-financial-statements:
     runs-on: ubuntu-latest
     steps:
