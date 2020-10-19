@@ -20,13 +20,18 @@ const { MongoClient } = require("mongodb");
 module.exports = (on) => {
     on('task', {
         'db:teardown': async (mongoUrl) => {
-            const client = new MongoClient(mongoUrl);
-            await client.connect();
-            const database = client.db('user');
-            const collection = database.collection('users');
-            await collection.deleteMany({});
+            try {
+                const client = new MongoClient(mongoUrl);
+                await client.connect();
+                const database = client.db('user');
+                const collection = database.collection('users');
+                await collection.deleteMany({});
 
-            return "Test";
+                return "Test";
+            }catch(e) {
+                console.error(e);
+                throw e;
+            }
         },
         'db:seed': async (mongoUrl) => {
             const client = new MongoClient(mongoUrl);
