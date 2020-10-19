@@ -15,13 +15,32 @@
 /**
  * @type {Cypress.PluginConfig}
  */
+const { MongoClient } = require("mongodb");
+
 module.exports = (on) => {
     on('task', {
-        'db:teardown': () => {
-            return null;
+        'db:teardown': async (mongoUrl) => {
+            const client = new MongoClient(mongoUrl);
+            await client.connect();
+            const database = client.db('user');
+            const collection = database.collection('users');
+            await collection.deleteMany({});
+
+            return "Test";
         },
-        'db:seed': () => {
-            return null;
+        'db:seed': async (mongoUrl) => {
+            const client = new MongoClient(mongoUrl);
+            await client.connect();
+            const database = client.db('user');
+            const collection = database.collection('users');
+
+            await collection.insertOne({
+                username: 'HaidelBert',
+                email: 'alexander_haider@hotmail.com',
+                password: '$2y$10$pd6TLjgQo2L3A6i6iXnnDO7XbWtAJJb2KXoogKcGTnKYXDxMZ95B6'
+
+            });
+            return "Test";
         },
     })
 }

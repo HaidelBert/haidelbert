@@ -17,6 +17,13 @@
 import './commands'
 
 beforeEach(() => {
-    cy.task('db:teardown')
-    cy.task('db:seed')
-})
+    const mongoUrl = Cypress.env('MONGO_URL') || 'mongodb://root:root@localhost:27017';
+    cy.task('db:teardown', mongoUrl);
+    cy.task('db:seed', mongoUrl);
+});
+
+afterEach(() => {
+    const mongoUrl = Cypress.env('MONGO_URL') || 'mongodb://root:root@localhost:27017';
+    cy.task('db:teardown', mongoUrl);
+    cy.task('db:seed', mongoUrl);
+});
