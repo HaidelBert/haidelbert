@@ -173,13 +173,63 @@ module.exports = (on) => {
                     reverseCharge: false
                 });
                 accountingRecords.push({
-                    bookingDate: `06.04.${lastYear}`,
+                    bookingDate: `03.01.${lastYear}`,
+                    name: 'Hausverwaltung. ant. Büro (20 %)',
+                    receiptType: 'BANK',
+                    taxRate: 20,
+                    grossAmount: 2145,
+                    netAmount: 1788,
+                    category: 'OFFICE_EXPENDITURE',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `07.01.${lastYear}`,
                     name: 'Microsoft, Office',
                     receiptType: 'BANK',
                     taxRate: 20,
                     grossAmount: 1000,
-                    netAmount: 833,
+                    netAmount: 834,
                     category: 'MISC_EXPENDITURE',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `08.01.${lastYear}`,
+                    name: 'Wiener Linien',
+                    receiptType: 'BANK',
+                    taxRate: 10,
+                    grossAmount: 3300,
+                    netAmount: 3000,
+                    category: 'TRAVELLING',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `08.01.${lastYear}`,
+                    name: 'Phantasy Gmbh',
+                    receiptType: 'BANK',
+                    taxRate: 0,
+                    grossAmount: 1260000,
+                    netAmount: 1260000,
+                    category: 'REVENUE_SERVICES',
+                    reverseCharge: true
+                });
+                accountingRecords.push({
+                    bookingDate: `04.03.${lastYear}`,
+                    name: 'SVA, Beitragszahlung',
+                    receiptType: 'BANK',
+                    taxRate: 0,
+                    grossAmount: 711330,
+                    netAmount: 711330,
+                    category: 'SVA',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `31.03.${lastYear}`,
+                    name: 'Bankspesen, Sollzinsen',
+                    receiptType: 'BANK',
+                    taxRate: 0,
+                    grossAmount: 3642,
+                    netAmount: 3642,
+                    category: 'INTEREST_CHARGES',
                     reverseCharge: false
                 });
 

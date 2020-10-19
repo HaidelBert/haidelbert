@@ -20,5 +20,7 @@ describe('Main Usecase', () => {
 
         cy.wait("@token");
         cy.wait("@me");
+
+        cy.get('a[href="/accounting"]').click();
     });
 });
