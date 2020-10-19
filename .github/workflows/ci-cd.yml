@@ -1,0 +1,403 @@
+on:
+  push:
+    paths:
+    - 'accounting/**'
+    - 'vat/**'
+    - 'user/**'
+    - 'register-of-assets/**'
+    - 'frontend/**'
+    - 'annual-financial-statements/**'
+    - '.github/workflows/ci-cd.yml'
+name: CI/CD
+jobs:
+  build-accounting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql user: postgres
+          postgresql password: root
+          postgresql db: accounting
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Migrate test DB
+        run: ENV=ci go run ./cmd/migration/migrate.go
+        working-directory: accounting
+      - name: Test
+        run: ENV=ci go test ./...
+        working-directory: accounting
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: ./accounting/Dockerfile
+          context: ./accounting
+          tags: |
+            haidelbert/accounting:${{ github.sha }}
+            haidelbert/accounting:latest
+          push: true
+  deploy-accounting-staging:
+    runs-on: ubuntu-latest
+    needs: build-accounting
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Migrate staging DB
+        run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=30621 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
+        working-directory: accounting
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/accounting accounting=haidelbert/accounting:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/accounting --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  build-annual-financial-statements:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql user: postgres
+          postgresql password: root
+          postgresql db: annual-financial-statements_test
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up jdk11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Migrate Test DB
+        working-directory: annual-financial-statements
+        run: ./mvnw resources:resources liquibase:update -Ptest
+      - name: Test
+        working-directory: annual-financial-statements
+        run: ./mvnw surefire:test -Dliquibase.should.run=false
+      - name: Build
+        working-directory: annual-financial-statements
+        run: ./mvnw clean package -Dliquibase.should.run=false -Dmaven.test.skip=true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: ./annual-financial-statements/src/main/docker/Dockerfile
+          context: ./annual-financial-statements
+          tags: |
+            haidelbert/annual-financial-statements:${{ github.sha }}
+            haidelbert/annual-financial-statements:latest
+          push: true
+  deploy-annual-financial-statements-staging:
+    runs-on: ubuntu-latest
+    needs: build-annual-financial-statements
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Migrate Staging DB
+        working-directory: annual-financial-statements
+        run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/annual-financial-statements annual-financial-statements=haidelbert/annual-financial-statements:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/annual-financial-statements --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Prepare CI
+        run: chmod +x ./infra/ci/waitForPort.sh
+      - name: Test Frontend
+        run: |
+          npm ci
+          (npm run start&)
+          npm run lint
+          npm run test
+          ./../infra/ci/waitForPort.sh 4200
+          npm run cypress:run
+        working-directory: frontend
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          tags: |
+            haidelbert/frontend:${{ github.sha }}
+            haidelbert/frontend:latest
+          push: true
+  deploy-frontend-staging:
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    steps:
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/frontend frontend=haidelbert/frontend:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/frontend --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  build-register-of-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql user: postgres
+          postgresql password: root
+          postgresql db: register-of-assets_test
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Test
+        run: npm ci && npm run test
+        working-directory: register-of-assets
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: ./register-of-assets/Dockerfile
+          context: ./register-of-assets
+          tags: |
+            haidelbert/register-of-assets:${{ github.sha }}
+            haidelbert/register-of-assets:latest
+          push: true
+  deploy-register-of-assets-staging:
+    runs-on: ubuntu-latest
+    needs: build-register-of-assets
+    steps:
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: NPM CI
+        run: npm ci
+        working-directory: register-of-assets
+      - name: Migrate Staging DB
+        working-directory: register-of-assets
+        run: TYPEORM_HOST=staging.haidelbert.io TYPEORM_PORT=30621 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} npm run migrate
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/register-of-assets register-of-assets=haidelbert/register-of-assets:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/register-of-assets --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  build-user:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Test
+        run: ENV=ci go test ./...
+        working-directory: user
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: ./user/Dockerfile
+          context: ./user
+          tags: |
+            haidelbert/user:${{ github.sha }}
+            haidelbert/user:latest
+          push: true
+  deploy-user-staging:
+    runs-on: ubuntu-latest
+    needs: build-user
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Migrate staging DB
+        run: ENV=staging mongoUrl=${{ secrets.MONGOURL_STAGING }} go run ./cmd/migration/migration.go
+        working-directory: user
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/user user=haidelbert/user:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/user --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  build-vat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql user: postgres
+          postgresql password: root
+          postgresql db: vat_test
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up jdk11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Migrate Test DB
+        working-directory: vat
+        run: ./mvnw resources:resources liquibase:update -Ptest
+      - name: Test
+        working-directory: vat
+        run: ./mvnw surefire:test -Dquarkus-profile=test -Ptest
+      - name: Build Native
+        working-directory: vat
+        run: ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dliquibase.should.run=false
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: ./vat/src/main/docker/Dockerfile.native
+          context: ./vat
+          tags: |
+            haidelbert/vat:${{ github.sha }}
+            haidelbert/vat:latest
+          push: true
+  deploy-vat-staging:
+    runs-on: ubuntu-latest
+    needs: build-vat
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up jdk11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Migrate Staging DB
+        working-directory: vat
+        run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
+      - name: deploy to cluster
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: set image deployment/vat vat=haidelbert/vat:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+      - name: verify deployment
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: rollout status deployment/vat --namespace haidelbert --context staging --insecure-skip-tls-verify=true
+  e2e:
+    runs-on: ubuntu-latest
+    needs: deploy-vat-staging,deploy-user-staging,deploy-register-of-assets-staging,deploy-annual-financial-statements-staging,deploy-accounting-staging
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Prepare
+      run: npm run ci
+      working-directory: e2e
+    - name: Test
+      run: npm run cypress:run
+      working-directory: e2e

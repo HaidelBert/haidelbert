@@ -1,0 +1,15 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:run": "cypress run",
+    "cypress:open": "cypress open"
+  },
+  "author": "Alexander Haider",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^5.4.0"
+  }
+}
