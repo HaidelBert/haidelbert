@@ -29,5 +29,9 @@ func (c UserController) Me(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	respondwithJSON(res, http.StatusOK, me)
+	respondwithJSON(res, http.StatusOK, User{
+		ID: me.ID,
+		Email: me.Email,
+		Username: me.Username,
+	})
 }

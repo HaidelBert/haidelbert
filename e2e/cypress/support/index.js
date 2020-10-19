@@ -18,12 +18,20 @@ import './commands'
 
 beforeEach(() => {
     const mongoUrl = Cypress.env('MONGO_URL') || 'mongodb://root:root@localhost:27017';
-    cy.task('db:teardown', mongoUrl);
-    cy.task('db:seed', mongoUrl);
+    const pgUser = Cypress.env('POSTGRES_USERNAME') || 'postgres';
+    const pgHost = Cypress.env('POSTGRES_HOST') || 'localhost';
+    const pgPassword = Cypress.env('POSTGRES_PASSWORD') || 'root';
+    const pgPort = Cypress.env('POSTGRES_PORT') || '5432';
+    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
+    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
 });
 
 afterEach(() => {
     const mongoUrl = Cypress.env('MONGO_URL') || 'mongodb://root:root@localhost:27017';
-    cy.task('db:teardown', mongoUrl);
-    cy.task('db:seed', mongoUrl);
+    const pgUser = Cypress.env('POSTGRES_USERNAME') || 'postgres';
+    const pgHost = Cypress.env('POSTGRES_HOST') || 'localhost';
+    const pgPassword = Cypress.env('POSTGRES_PASSWORD') || 'root';
+    const pgPort = Cypress.env('POSTGRES_PORT') || '5432';
+    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
+    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
 });
