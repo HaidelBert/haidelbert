@@ -81,6 +81,7 @@ jobs:
       - name: Migrate staging DB
         run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=30621 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
         working-directory: accounting
+        if: steps.changed-accounting.outputs.changed == 'true'
       - name: deploy to cluster
         uses: steebchen/kubectl@master
         env:
