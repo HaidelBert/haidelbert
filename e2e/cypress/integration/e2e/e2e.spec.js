@@ -8,6 +8,10 @@ describe('Main Usecase', () => {
         cy.route('PATCH', '/vat/api/protected/pre-registration/*').as('patchPreRegistration');
         cy.route('POST', '/vat/api/protected/pre-registration').as('postPreRegistration');
         cy.route('GET', '/vat/api/protected/pre-registration*').as('getPreRegistration');
+        cy.route('POST', '/vat/api/protected/annual-completion').as('postAnnualCompletion');
+        cy.route('POST', '/vat/api/protected/annual-completion/simulate*').as('postSimulateAnnualCompletion');
+        cy.route('GET', '/vat/api/protected/annual-completion').as('getAnnualCompletions');
+        cy.route('PATCH', '/vat/api/protected/annual-completion/*').as('patchAnnualCompletion');
         cy.visit("");
         cy.location('pathname').should('eq', '/login');
         cy.get('input[placeholder="Username"]').type('HaidelBert');
@@ -51,5 +55,18 @@ describe('Main Usecase', () => {
                 cy.wait("@patchPreRegistration");
                 cy.wait("@getPreRegistration");
             });
+
+        cy.get('button[cy-data="new-annual-completion"]').click();
+        cy.wait(10);
+        cy.get('input[formcontrolname="year"]').should('be.visible');
+        cy.get('input[formcontrolname="year"]').eq(1).type(lastYear);
+        cy.contains('Speichern').focus();
+        cy.wait("@postSimulateAnnualCompletion");
+        cy.get('button[cy-data="save-annual-completion"]').click();
+        cy.wait("@postAnnualCompletion");
+        cy.wait("@getAnnualCompletions");
+        cy.get('button[cy-data="mark-tx-authority-done"]').eq(0).click();
+        cy.wait("@patchAnnualCompletion");
+        cy.wait("@getAnnualCompletions");
     });
 });

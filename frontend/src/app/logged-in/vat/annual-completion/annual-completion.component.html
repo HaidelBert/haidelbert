@@ -1,6 +1,6 @@
 <div class="flex-row space-between">
   <h1>Erklärung</h1>
-  <button nz-button nzType="primary" (click)="newOpen = true">Neu</button>
+  <button nz-button nzType="primary" (click)="newOpen = true" cy-data="new-annual-completion">Neu</button>
 </div>
 <nz-card [nzBordered]="false" >
   <nz-table #annualCompletionTable nzBordered [nzData]="annualCompletions" nzTableLayout="fixed" nzPageSize="50" style="margin-top: 20px" [nzShowPagination]="false">
@@ -16,7 +16,7 @@
       <td>{{ data.year }}</td>
       <td>
         <span *ngIf="data.taxAuthoritySubmitted">Ja</span>
-        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary" (click)="markDone(data)">erledigt</button>
+        <button *ngIf="!data.taxAuthoritySubmitted" nz-button nz-button nzType="primary" (click)="markDone(data)" cy-data="mark-tx-authority-done">erledigt</button>
       </td>
       <td><a (click)="showDetails(data)" class="save">Details</a></td>
     </tr>
