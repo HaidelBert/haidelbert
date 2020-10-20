@@ -26,8 +26,14 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		os.Exit(1)
 	}
+	connection := db.Connect()
+	_, err = connection.Exec("DELETE FROM accounting_records")
+	if err != nil {
+		os.Exit(1)
+	}
 	code := m.Run()
 	log.Println("... tearing down tests!")
+	_, err = connection.Exec("DELETE FROM accounting_records")
 	os.Exit(code)
 }
 
