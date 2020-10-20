@@ -207,7 +207,7 @@ module.exports = (on) => {
                 accountingRecords.push({
                     bookingDate: `6.07.${lastYear}`,
                     name: 'Amanzon GA',
-                    receiptType: 'KASSA',
+                    receiptType: 'CASH',
                     taxRate: 20,
                     grossAmount: 12000,
                     netAmount: 10000,
@@ -217,7 +217,7 @@ module.exports = (on) => {
                 accountingRecords.push({
                     bookingDate: `12.12.${lastYear}`,
                     name: 'Verkauf Laptop',
-                    receiptType: 'KASSA',
+                    receiptType: 'CASH',
                     taxRate: 20,
                     grossAmount: 120000,
                     netAmount: 100000,
