@@ -12,6 +12,7 @@ describe('Main Usecase', () => {
         cy.route('POST', '/vat/api/protected/annual-completion/simulate*').as('postSimulateAnnualCompletion');
         cy.route('GET', '/vat/api/protected/annual-completion').as('getAnnualCompletions');
         cy.route('PATCH', '/vat/api/protected/annual-completion/*').as('patchAnnualCompletion');
+        cy.route('POST', '/annual-financial-statements/api/protected/annual-financial-statements*').as('postAfs');
         cy.visit("");
         cy.location('pathname').should('eq', '/login');
         cy.get('input[placeholder="Username"]').type('HaidelBert');
@@ -34,7 +35,7 @@ describe('Main Usecase', () => {
 
         [1, 2, 3, 4].forEach(quarter => {
             cy.get('button[cy-data="new-pre-registration"]').click();
-            cy.wait(10);
+            cy.wait(100);
             cy.get('input[formcontrolname="year"]').eq(0).should('be.visible');
             cy.get('input[formcontrolname="year"]').eq(0).type(lastYear.toString(10));
             cy.get('nz-select[formcontrolname="interval"]').eq(0).click()
@@ -57,7 +58,7 @@ describe('Main Usecase', () => {
             });
 
         cy.get('button[cy-data="new-annual-completion"]').click();
-        cy.wait(10);
+        cy.wait(100);
         cy.get('input[formcontrolname="year"]').should('be.visible');
         cy.get('input[formcontrolname="year"]').eq(1).type(lastYear);
         cy.contains('Speichern').focus();
@@ -68,5 +69,17 @@ describe('Main Usecase', () => {
         cy.get('button[cy-data="mark-tx-authority-done"]').eq(0).click();
         cy.wait("@patchAnnualCompletion");
         cy.wait("@getAnnualCompletions");
+
+        cy.get('a[href="/register-of-assets"]').click();
+        cy.get('button[cy-data="new-yearly-depreciations"]').click();
+        cy.contains('Weiter').click();
+        cy.contains('Durchführen').click();
+
+        cy.get('a[href="/annual-financial-statements"]').click();
+        cy.get('button[cy-data="new-afs"]').click();
+        cy.wait(100);
+        cy.get('input[formcontrolname="year"]').type(lastYear);
+        cy.get('button[cy-data="save-afs"]').click();
+        cy.wait('@postAfs');
     });
 });

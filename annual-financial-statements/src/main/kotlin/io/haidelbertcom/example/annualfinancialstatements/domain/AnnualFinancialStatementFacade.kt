@@ -83,7 +83,7 @@ class AnnualFinancialStatementFacade(
                     taxAuthorityNumber = taxAuthNumber.number,
                     annualFinancialStatement = statement,
                     grossAmunt = sums.gross,
-                    netAmount = sums.net.longValueExact()
+                    netAmount = sums.net
             )
             taxAuthorityPositionRepository.save(newTaxAuthPosition)
         }
@@ -127,7 +127,7 @@ class AnnualFinancialStatementFacade(
                 financialSummary.sumGrossRevenue,
                 financialSummary.sumNetRevenue,
                 financialSummary.result,
-                sums.entries.associate { it.key.number to FinalFinancialAmount(it.value.gross, it.value.net.longValueExact())}
+                sums.entries.associate { it.key.number to FinalFinancialAmount(it.value.gross, it.value.net)}
         )
     }
 

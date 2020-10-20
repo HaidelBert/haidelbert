@@ -29,6 +29,7 @@ data class AccountingRecord(
         val bookingDate: Long,
         val name: String,
         val grossAmount: Long,
+        val netAmount: Long,
         val taxRate: Long,
         val receiptType: ReceiptType,
         val category: Category,

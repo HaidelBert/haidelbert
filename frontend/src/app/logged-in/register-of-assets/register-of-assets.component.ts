@@ -23,15 +23,7 @@ export class RegisterOfAssetsComponent implements OnInit {
   constructor(private registerOfAssetsRepository: AssetsRepository, private yearDepreciationRepository: YearDepreciationRepository) {}
 
   async ngOnInit(): Promise<void> {
-    this.registerOfAssetsRepository.findAll().then(assets => {
-      this.registerOfAssets = assets.map(value => {
-        return {
-          data: value,
-          expand: false,
-        };
-      });
-    });
-    this.years = await this.yearDepreciationRepository.list();
+    await this.refresh();
   }
 
   formatDate(purchaseDate: string): string {
@@ -62,7 +54,20 @@ export class RegisterOfAssetsComponent implements OnInit {
     this.newYearlyOpen = false;
   }
 
-  handleNewYearDone(result: boolean): void {
+  async refresh(): Promise<void> {
+    this.registerOfAssetsRepository.findAll().then(assets => {
+      this.registerOfAssets = assets.map(value => {
+        return {
+          data: value,
+          expand: false,
+        };
+      });
+    });
+    this.years = await this.yearDepreciationRepository.list();
+  }
+
+  async handleNewYearDone(result: boolean): Promise<void> {
     this.closeNewYearly();
+    await this.refresh();
   }
 }

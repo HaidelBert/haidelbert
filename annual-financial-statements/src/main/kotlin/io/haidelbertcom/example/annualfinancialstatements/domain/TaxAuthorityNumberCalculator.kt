@@ -19,7 +19,9 @@ private val categoryMapping = mapOf(
         Category.POST_PHONE to TaxAuthorityNumber.EXPENDITURE,
         Category.REVENUE_DEPRECIATIONS to TaxAuthorityNumber.REVENUE_DEPRECIATIONS,
         Category.REVENUE_SERVICES to TaxAuthorityNumber.REVENUE,
-        Category.TAX_AUTHORITY_PAYMENT to TaxAuthorityNumber.EXPENDITURE
+        Category.TAX_AUTHORITY_PAYMENT to TaxAuthorityNumber.EXPENDITURE,
+        Category.SVA to TaxAuthorityNumber.EXPENDITURE_INSURANCE,
+        Category.TRAVELLING to TaxAuthorityNumber.EXPENDITURE_TRAVELLING
 )
 
 class FinancialSummary(
@@ -30,7 +32,7 @@ class FinancialSummary(
         val result: Long
 )
 
-class FinancialAmount(var gross: Long, var net: BigDecimal)
+class FinancialAmount(var gross: Long, var net: Long)
 
 class TaxAuthorityNumberCalculator(
         private val accountingRecords: List<AccountingRecord>,
@@ -38,25 +40,24 @@ class TaxAuthorityNumberCalculator(
 ){
     fun calculateFinancialSummary(): FinancialSummary {
         var sumGrossExpenditure: Long = depreciations.sumDepreciations
-        var sumNetExpenditure = BigDecimal(depreciations.sumDepreciations)
+        var sumNetExpenditure: Long = depreciations.sumDepreciations
         var sumGrossRevenue: Long = 0
-        var sumNetRevenue = BigDecimal(0)
+        var sumNetRevenue: Long = 0
         accountingRecords.forEach {
-            val netAmount = calculateNetAmount(it)
             if (it.category.revenue) {
                 sumGrossRevenue+=it.grossAmount
-                sumNetRevenue+=netAmount
+                sumNetRevenue+=it.netAmount
             }else {
                 sumGrossExpenditure+=it.grossAmount
-                sumNetExpenditure+=netAmount
+                sumNetExpenditure+=it.netAmount
             }
         }
         return FinancialSummary(
                 sumGrossExpenditure,
-                sumNetExpenditure.longValueExact(),
+                sumNetExpenditure,
                 sumGrossRevenue,
-                sumNetRevenue.longValueExact(),
-                sumNetRevenue.longValueExact() - sumNetExpenditure.longValueExact()
+                sumNetRevenue,
+                sumNetRevenue - sumNetExpenditure
         )
     }
 
@@ -64,12 +65,11 @@ class TaxAuthorityNumberCalculator(
         val sums: MutableMap<TaxAuthorityNumber, FinancialAmount> = mutableMapOf()
         accountingRecords.forEach {
             val mappedTaxAuthNumber = categoryMapping[it.category] ?: throw IllegalStateException()
-            val netAmount = calculateNetAmount(it)
             if (sums.containsKey(mappedTaxAuthNumber)) {
                 sums[mappedTaxAuthNumber]!!.gross = sums[mappedTaxAuthNumber]!!.gross.plus(it.grossAmount)
-                sums[mappedTaxAuthNumber]!!.net = sums[mappedTaxAuthNumber]!!.net.plus(netAmount)
+                sums[mappedTaxAuthNumber]!!.net = sums[mappedTaxAuthNumber]!!.net.plus(it.netAmount)
             }else {
-                sums[mappedTaxAuthNumber] = FinancialAmount(it.grossAmount, netAmount)
+                sums[mappedTaxAuthNumber] = FinancialAmount(it.grossAmount, it.netAmount)
             }
         }
         setDepreciations(sums)
@@ -80,15 +80,9 @@ class TaxAuthorityNumberCalculator(
     private fun setDepreciations(sums: MutableMap<TaxAuthorityNumber, FinancialAmount>) {
         if (sums.containsKey(TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS)) {
             sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross.plus(depreciations.sumDepreciations)
-            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net.plus(BigDecimal(depreciations.sumDepreciations))
+            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net = sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net.plus(depreciations.sumDepreciations)
         } else {
-            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS] = FinancialAmount(depreciations.sumDepreciations, BigDecimal(depreciations.sumDepreciations))
+            sums[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS] = FinancialAmount(depreciations.sumDepreciations, depreciations.sumDepreciations)
         }
-    }
-
-    private fun calculateNetAmount (accountingRecord: AccountingRecord): BigDecimal {
-        val grossAmount = BigDecimal(accountingRecord.grossAmount)
-        val ratio = BigDecimal(accountingRecord.taxRate + 100).divide(BigDecimal(100))
-        return grossAmount.subtract(grossAmount.divide(ratio, RoundingMode.HALF_EVEN))
     }
 }

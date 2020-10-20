@@ -38,9 +38,9 @@ class TaxAuthorityNumberCalculatorTest {
     @Test
     fun `Test rounding of calculateFinancialSummary`() {
         val accountingRecords = listOf(
-                AccountingRecord(0, 0, 0, "", 33333, 20, ReceiptType.BANK, Category.GWG, false, ""),
-                AccountingRecord(0, 0, 0, "", 99999, 20, ReceiptType.BANK, Category.GWG, false, ""),
-                AccountingRecord(0, 0, 0, "", 10000, 20, ReceiptType.BANK, Category.GWG, false, "")
+                AccountingRecord(0, 0, 0, "", 33333, 27778, 20, ReceiptType.BANK, Category.GWG, false, ""),
+                AccountingRecord(0, 0, 0, "", 99999, 83333, 20, ReceiptType.BANK, Category.GWG, false, ""),
+                AccountingRecord(0, 0, 0, "", 10000, 8333, 20, ReceiptType.BANK, Category.GWG, false, "")
         )
         val depreciations = YearDepreciation(0, 2020, 0, "")
         val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
@@ -48,7 +48,7 @@ class TaxAuthorityNumberCalculatorTest {
         val actual = sut.calculateFinancialSummary()
 
         Assertions.assertEquals(143332, actual.sumGrossExpenditure)
-        Assertions.assertEquals(23889, actual.sumNetExpenditure)
+        Assertions.assertEquals(119444, actual.sumNetExpenditure)
         Assertions.assertEquals(0, actual.sumGrossRevenue)
         Assertions.assertEquals(0, actual.sumNetRevenue)
     }
@@ -56,9 +56,9 @@ class TaxAuthorityNumberCalculatorTest {
     @Test
     fun `Test rounding of calculateTaxAuthorityNumbers`() {
         val accountingRecords = listOf(
-                AccountingRecord(0, 0, 0, "", 33333, 20, ReceiptType.BANK, Category.GWG, false, ""),
-                AccountingRecord(0, 0, 0, "", 99999, 20, ReceiptType.BANK, Category.GWG, false, ""),
-                AccountingRecord(0, 0, 0, "", 10000, 20, ReceiptType.BANK, Category.GWG, false, "")
+                AccountingRecord(0, 0, 0, "", 33333, 27778, 20, ReceiptType.BANK, Category.GWG, false, ""),
+                AccountingRecord(0, 0, 0, "", 99999, 83333, 20, ReceiptType.BANK, Category.GWG, false, ""),
+                AccountingRecord(0, 0, 0, "", 10000, 8333, 20, ReceiptType.BANK, Category.GWG, false, "")
         )
         val depreciations = YearDepreciation(0, 2020, 0, "")
         val sut = TaxAuthorityNumberCalculator(accountingRecords, depreciations)
@@ -66,6 +66,6 @@ class TaxAuthorityNumberCalculatorTest {
         val actual = sut.calculateTaxAuthorityNumbers()
 
         Assertions.assertEquals(143332, actual[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.gross);
-        Assertions.assertEquals(23889, actual[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net.intValueExact());
+        Assertions.assertEquals(119444, actual[TaxAuthorityNumber.EXPENDITURE_DEPRECIATIONS]!!.net);
     }
 }

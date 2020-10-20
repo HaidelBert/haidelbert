@@ -38,8 +38,18 @@
 const { MongoClient } = require("mongodb");
 const { Client } = require('pg')
 
-function insertAccountingRecord(client, record, idUser) {
-    return client.query("INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier, net_amount) values(TO_DATE('"+record.bookingDate+"', 'DD.MM.YYYY'), '"+record.name+"', '"+record.receiptType+"', "+record.taxRate+", "+record.grossAmount+", '"+record.category+"', '"+idUser+"', "+record.reverseCharge+", 'asdf', "+record.netAmount+")");
+function insertAccountingRecord(client, record, userId) {
+    return client.query("INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier, net_amount) values(TO_DATE('"+record.bookingDate+"', 'DD.MM.YYYY'), '"+record.name+"', '"+record.receiptType+"', "+record.taxRate+", "+record.grossAmount+", '"+record.category+"', '"+userId+"', "+record.reverseCharge+", 'asdf', "+record.netAmount+")");
+}
+
+async function insertAsset(client, asset, userId) {
+    const result = await client.query("SELECT nextval('assets_id_seq')");
+    await client.query("INSERT INTO assets(id, name, purchase_date, gross_amount, net_amount, depreciation_duration, net_remaining_block_value, user_id, active) values("+result.rows[0].nextval+", '"+asset.name+"', TO_DATE('"+asset.purchaseDate+"', 'DD.MM.YYYY'), "+asset.grossAmount+", "+asset.netAmount+", "+asset.depreciationDuration+", "+asset.netRemainingBlockValue+", '"+userId+"', "+asset.active+")");
+    return result.rows[0].nextval
+}
+
+async function insertDepreciation(client, assetId, year, netDepreciation, netRemainingBlockValue) {
+    return await client.query("INSERT INTO asset_depreciations(year, net_depreciation_amount, net_remaining_block_value, asset_id) values("+year+", "+netDepreciation+", "+netRemainingBlockValue+", "+assetId+")");
 }
 
 function buildPgClient(pgUser, pgHost, pgPassword, pgPort, pgDb) {
@@ -228,6 +238,49 @@ module.exports = (on) => {
                     promises.push(insertAccountingRecord(accountingClient, record, user._id.toString()));
                 });
                 await Promise.all(promises);
+
+                const iMacId = await insertAsset(roaClient, {
+                    name: 'iMac',
+                    purchaseDate: `01.01.${(lastYear-3)}`,
+                    grossAmount: 120000,
+                    netAmount: 100000,
+                    depreciationDuration: 3,
+                    netRemainingBlockValue: 0,
+                    active: false
+                }, user._id.toString())
+                await insertDepreciation(roaClient, iMacId, lastYear-3, 33333, 66667)
+                await insertDepreciation(roaClient, iMacId, lastYear-2, 33333, 33334)
+                await insertDepreciation(roaClient, iMacId, lastYear-1, 33334, 0)
+
+                const iPhoneId = await insertAsset(roaClient, {
+                    name: 'iPhone',
+                    purchaseDate: `01.07.${(lastYear-3)}`,
+                    grossAmount: 80000,
+                    netAmount: 66667,
+                    depreciationDuration: 3,
+                    netRemainingBlockValue: 11112,
+                    active: true
+                }, user._id.toString())
+                await insertDepreciation(roaClient, iPhoneId, lastYear-3, 11111, 55556)
+                await insertDepreciation(roaClient, iPhoneId, lastYear-2, 22222, 33334)
+                await insertDepreciation(roaClient, iPhoneId, lastYear-1, 22222, 11112)
+
+                const iPadId = await insertAsset(roaClient, {
+                    name: 'iPad',
+                    purchaseDate: `01.01.${(lastYear-2)}`,
+                    grossAmount: 90000,
+                    netAmount: 75000,
+                    depreciationDuration: 3,
+                    netRemainingBlockValue: 25000,
+                    active: true
+                }, user._id.toString())
+                await insertDepreciation(roaClient, iPadId, lastYear-2, 25000, 50000)
+                await insertDepreciation(roaClient, iPadId, lastYear-1, 25000, 25000)
+
+                await roaClient.query("INSERT INTO year_depreciations(year, user_id, sum_depreciations) values("+(lastYear-3)+", '"+user._id.toString()+"', (SELECT sum(net_depreciation_amount) from asset_depreciations WHERE year="+(lastYear-3)+"))");
+                await roaClient.query("INSERT INTO year_depreciations(year, user_id, sum_depreciations) values("+(lastYear-2)+", '"+user._id.toString()+"', (SELECT sum(net_depreciation_amount) from asset_depreciations WHERE year="+(lastYear-2)+"))");
+                await roaClient.query("INSERT INTO year_depreciations(year, user_id, sum_depreciations) values("+(lastYear-1)+", '"+user._id.toString()+"', (SELECT sum(net_depreciation_amount) from asset_depreciations WHERE year="+(lastYear-1)+"))");
+                await roaClient.query("UPDATE asset_depreciations ad set year_depreciation_id=(SELECT id from year_depreciations where year=ad.year)");
                 return "Test";
             }catch(e) {
                 console.error(e);
