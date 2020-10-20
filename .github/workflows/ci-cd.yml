@@ -544,3 +544,11 @@ jobs:
     - name: Test
       run: CYPRESS_POSTGRES_HOST=staging.haidelbert.io CYPRESS_POSTGRES_PORT=30621 CYPRESS_POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} CYPRESS_MONGO_URL=${{ secrets.MONGOURL_STAGING }} CYPRESS_BASE_URL=http://frontend-staging.haidelbert.io npm run cypress:run
       working-directory: e2e
+    - name: Archive e2e artifacts
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: cypress-artifacts
+        path: |
+          e2e/cypress/screenhsots
+          e2e/cypress/videos
