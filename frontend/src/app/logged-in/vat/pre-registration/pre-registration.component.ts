@@ -91,6 +91,7 @@ export class PreRegistrationComponent implements OnInit {
   async handleNewResult(result: boolean): Promise<void> {
     this.newOpen = false;
     if (result) {
+      this.selectableYears = await this.preRegistrationRepository.findYears();
       await this.refresh();
     }
   }
