@@ -18,8 +18,9 @@ func main() {
 		os.Exit(1)
 	}
 	err = migration.Run()
-
-	log.Printf("Unable to migrate database: %v\n", err)
-	os.Exit(1)
+	if err != nil {
+		log.Printf("Unable to migrate database: %v\n", err)
+		os.Exit(1)
+	}
 }
 
