@@ -194,7 +194,36 @@ module.exports = (on) => {
                     category: 'INTEREST_CHARGES',
                     reverseCharge: false
                 });
-
+                accountingRecords.push({
+                    bookingDate: `1.04.${lastYear}`,
+                    name: 'Phantasy Gmbh',
+                    receiptType: 'BANK',
+                    taxRate: 20,
+                    grossAmount: 1200000,
+                    netAmount: 1000000,
+                    category: 'REVENUE_SERVICES',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `6.07.${lastYear}`,
+                    name: 'Amanzon GA',
+                    receiptType: 'KASSA',
+                    taxRate: 20,
+                    grossAmount: 12000,
+                    netAmount: 10000,
+                    category: 'GWG',
+                    reverseCharge: false
+                });
+                accountingRecords.push({
+                    bookingDate: `12.12.${lastYear}`,
+                    name: 'Verkauf Laptop',
+                    receiptType: 'KASSA',
+                    taxRate: 20,
+                    grossAmount: 120000,
+                    netAmount: 100000,
+                    category: 'REVENUE_DEPRECIATIONS',
+                    reverseCharge: false
+                });
                 accountingRecords.forEach(record => {
                     promises.push(insertAccountingRecord(accountingClient, record, user._id.toString()));
                 });
