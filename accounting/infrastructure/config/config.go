@@ -1,24 +1,28 @@
 package config
 
 import (
+	"github.com/HaidelBert/accounting/internal/projectpath"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
 
-func Load() {
+func Load() error {
 	env := os.Getenv("ENV")
 	var envErr error
 	if env != "" {
-		envErr = godotenv.Load(".env." + env)
+		envErr = godotenv.Load(projectpath.Root+"/.env." + env)
 	} else {
-		envErr = godotenv.Load(".env.local")
+		envErr = godotenv.Load(projectpath.Root+"/.env.local")
 	}
 	if envErr != nil {
-		log.Fatal("Error loading .env" + env + " file")
+		log.Printf("Error loading .env." + env + " file")
+		return envErr
 	}
-	envErr = godotenv.Load()
+	envErr = godotenv.Load(projectpath.Root+"/.env")
 	if envErr != nil {
-		log.Fatal("Error loading .env file")
+		log.Printf("Error loading .env file")
+		return envErr
 	}
+	return nil
 }

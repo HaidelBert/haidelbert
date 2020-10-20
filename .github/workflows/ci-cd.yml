@@ -27,7 +27,7 @@ jobs:
         with:
           postgresql user: postgres
           postgresql password: root
-          postgresql db: accounting
+          postgresql db: accounting_test
         if: steps.changed-accounting.outputs.changed == 'true'
       - name: Install Go
         uses: actions/setup-go@v2

@@ -37,6 +37,10 @@ func checkDb(connection *sqlx.DB) {
 }
 
 func main() {
+	Run()
+}
+
+func Run() {
 	random.Init()
 	config.Load()
 
@@ -95,13 +99,13 @@ func main() {
 	}))
 
 	accountingRepository := dbAccounting.Repository{}
-	messagingService := messaging.Service{
+	messagingService := messaging.KafkaService{
 		Producer: producer,
 	}
 	accountingPersistenceAdapter := persistence.AccountingPersistenceAdapter{
 		DB: conn,
 		Repository: &accountingRepository,
-		MessagingService: &messagingService,
+		MessagingService: messagingService,
 		ReceiptStorage: receiptStorage,
 	}
 	accountingService := accounting.Service{

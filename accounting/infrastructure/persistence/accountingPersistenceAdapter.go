@@ -3,7 +3,6 @@ package persistence
 import (
 	"github.com/HaidelBert/accounting/domain/accounting"
 	"github.com/HaidelBert/accounting/infrastructure/messaging"
-	"github.com/HaidelBert/accounting/infrastructure/persistence/db"
 	db_accounting "github.com/HaidelBert/accounting/infrastructure/persistence/db/accounting"
 	"github.com/HaidelBert/accounting/infrastructure/persistence/storage"
 	"github.com/jmoiron/sqlx"
@@ -16,11 +15,14 @@ const RecordDeletedTopic = "accounting_record_deleted"
 type AccountingPersistenceAdapter struct {
 	DB 	*sqlx.DB
 	Repository 	*db_accounting.Repository
-	MessagingService *messaging.Service
-	ReceiptStorage storage.ReceiptStorageS3
+	MessagingService messaging.Service
+	ReceiptStorage storage.ReceiptStorage
 }
 
 func (s AccountingPersistenceAdapter) PersistRecord(userId string, input accounting.NewRecord) (*accounting.Record, error) {
+	var err error
+	var newRecord *accounting.Record
+
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return nil, err
@@ -30,35 +32,33 @@ func (s AccountingPersistenceAdapter) PersistRecord(userId string, input account
 	if err != nil {
 		return nil, err
 	}
-	newRecord, iErr := s.Repository.Insert(*tx, input, userId, *storageIdentifier)
-	iErr = rollbackOnError(tx, iErr)
-	if iErr != nil {
-		return nil, iErr
+	newRecord, err = s.Repository.Insert(*tx, input, userId, *storageIdentifier)
+	if err != nil {
+		return nil, err
 	}
-	mErr := s.MessagingService.Send(RecordCreatedTopic, newRecord)
-	mErr = rollbackOnError(tx, mErr)
-	if mErr != nil {
-		return nil, mErr
-	}
-	commitErr := tx.Commit()
-	if commitErr != nil {
-		return nil, commitErr
+	err = s.MessagingService.Send(RecordCreatedTopic, newRecord)
+	if err != nil {
+		return nil, err
 	}
 
-	return newRecord, nil
+	defer handleTx(tx, err)
+
+	return newRecord, err
 }
 
 func (s AccountingPersistenceAdapter) ListRecords(userId string, filter accounting.Filter) ([]accounting.Record, error){
+
 	tx, err := s.DB.Beginx()
 	if err != nil {
 		return nil, err
 	}
 
 	records, err := s.Repository.Find(*tx, userId, filter)
-
-	dbErr := db.HandleError(*tx, err)
-
-	return records, dbErr
+	if err != nil {
+		return nil, err
+	}
+	defer handleTx(tx, err)
+	return records, err
 }
 
 func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, input accounting.UpdateRecord) error {
@@ -70,37 +70,31 @@ func (s AccountingPersistenceAdapter) ChangeRecord(userId string, id int64, inpu
 	var storageIdentifier *string
 	if input.Receipt != nil {
 		entity, err := s.Repository.GetById(*tx, userId, id)
-		err = rollbackOnError(tx, err)
 		if err != nil {
 			return err
 		}
 		storageIdentifier, err = s.ReceiptStorage.Store(*input.Receipt)
-		err = rollbackOnError(tx, err)
 		if err != nil {
 			return err
 		}
 
 		err = s.ReceiptStorage.Delete(entity.StorageIdentifier)
-		err = rollbackOnError(tx, err)
 		if err != nil {
 			return err
 		}
 	}
 	changed, err := s.Repository.Update(*tx, userId, id, input, storageIdentifier)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return nil
 	}
 
 	err = s.MessagingService.Send(RecordChangedTopic, changed)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return err
 	}
 
-	dbErr := db.HandleError(*tx, err)
-
-	return dbErr
+	defer handleTx(tx, err)
+	return err
 }
 
 func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) error {
@@ -110,31 +104,26 @@ func (s AccountingPersistenceAdapter) DeleteRecord(userId string, id int64) erro
 	}
 
 	entity, err := s.Repository.GetById(*tx, userId, id)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return err
 	}
 
 	err = s.ReceiptStorage.Delete(entity.StorageIdentifier)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return err
 	}
 
 	deleted, err := s.Repository.Delete(*tx, userId, id)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return nil
 	}
 	err = s.MessagingService.Send(RecordDeletedTopic, deleted)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return err
 	}
 
-	dbErr := db.HandleError(*tx, err)
-
-	return dbErr
+	defer handleTx(tx, err)
+	return err
 }
 
 func (s AccountingPersistenceAdapter) DownloadReceipt(userId string, id int64) (*accounting.ReceiptDownload, error) {
@@ -144,28 +133,24 @@ func (s AccountingPersistenceAdapter) DownloadReceipt(userId string, id int64) (
 	}
 
 	entity, err := s.Repository.GetById(*tx, userId, id)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return nil, err
 	}
 
 	receipt, err := s.ReceiptStorage.Download(entity.StorageIdentifier)
-	err = rollbackOnError(tx, err)
 	if err != nil {
 		return nil, err
 	}
-
-	err = db.HandleError(*tx, err)
+	defer handleTx(tx, err)
 	return receipt, err
 }
 
-func rollbackOnError(tx *sqlx.Tx, err error) error {
-	if err != nil {
-		rollbackErr := tx.Rollback()
-		if rollbackErr != nil {
-			return rollbackErr
+func handleTx(tx *sqlx.Tx, err error) {
+	if tx != nil {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
 		}
-		return err
 	}
-	return nil
 }

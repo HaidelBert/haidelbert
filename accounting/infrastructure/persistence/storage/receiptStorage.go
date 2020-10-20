@@ -10,6 +10,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+type ReceiptStorage interface{
+	Store(receipt string) (*string, error)
+	Download(key string) (*accounting.ReceiptDownload, error)
+	Delete(key string) error
+}
+
 type ReceiptStorageS3 struct{
 	S3Client *s3.S3
 	Bucket *string

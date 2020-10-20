@@ -22,8 +22,8 @@ beforeEach(() => {
     const pgHost = Cypress.env('POSTGRES_HOST') || 'localhost';
     const pgPassword = Cypress.env('POSTGRES_PASSWORD') || 'root';
     const pgPort = Cypress.env('POSTGRES_PORT') || '5432';
-    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
-    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
+    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort}, {log: true});
+    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort}, {log: true});
 });
 
 afterEach(() => {
@@ -32,6 +32,6 @@ afterEach(() => {
     const pgHost = Cypress.env('POSTGRES_HOST') || 'localhost';
     const pgPassword = Cypress.env('POSTGRES_PASSWORD') || 'root';
     const pgPort = Cypress.env('POSTGRES_PORT') || '5432';
-    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
-    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort});
+    cy.task('db:teardown', {mongoUrl, pgUser, pgHost, pgPassword, pgPort}, {log: true});
+    cy.task('db:seed', {mongoUrl, pgUser, pgHost, pgPassword, pgPort}, {log: true});
 });

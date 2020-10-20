@@ -17,19 +17,3 @@ func Connect() *sqlx.DB {
 	db.SetMaxOpenConns(50)
 	return db
 }
-
-func HandleError(tx sqlx.Tx, err error) error {
-	if err != nil {
-		rollbackErr := tx.Rollback()
-		if rollbackErr != nil {
-			return rollbackErr
-		}
-		return err
-	}
-	commitErr := tx.Commit()
-	if commitErr != nil {
-		return commitErr
-	}
-
-	return nil
-}

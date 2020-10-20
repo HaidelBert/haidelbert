@@ -42,39 +42,25 @@ function insertAccountingRecord(client, record, idUser) {
     return client.query("INSERT INTO accounting_records(booking_date, name, receipt_type, tax_rate, gross_amount, category, id_user, reverse_charge, storage_identifier, net_amount) values(TO_DATE('"+record.bookingDate+"', 'DD.MM.YYYY'), '"+record.name+"', '"+record.receiptType+"', "+record.taxRate+", "+record.grossAmount+", '"+record.category+"', '"+idUser+"', "+record.reverseCharge+", 'asdf', "+record.netAmount+")");
 }
 
+function buildPgClient(pgUser, pgHost, pgPassword, pgPort, pgDb) {
+    return new Client({
+        user: pgUser,
+        host: pgHost,
+        database: pgDb,
+        password: pgPassword,
+        port: pgPort,
+    });
+}
+
 module.exports = (on) => {
     on('task', {
         'db:teardown': async (args) => {
             const {pgUser, pgHost, pgPassword, pgPort, mongoUrl} = args;
             const client = new MongoClient(mongoUrl);
-            const vatClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'vat',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const accountingClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'accounting',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const afsClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'annual-financial-statements',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const roaClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'register-of-assets',
-                password: pgPassword,
-                port: pgPort,
-            });
+            const vatClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'vat');
+            const accountingClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'accounting');
+            const afsClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'annual-financial-statements');
+            const roaClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'register-of-assets');
             try {
                 await vatClient.connect();
                 await accountingClient.connect();
@@ -112,34 +98,10 @@ module.exports = (on) => {
         'db:seed': async (args) => {
             const {pgUser, pgHost, pgPassword, pgPort, mongoUrl} = args;
             const client = new MongoClient(mongoUrl);
-            const vatClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'vat',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const accountingClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'accounting',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const afsClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'annual-financial-statements',
-                password: pgPassword,
-                port: pgPort,
-            });
-            const roaClient = new Client({
-                user: pgUser,
-                host: pgHost,
-                database: 'register-of-assets',
-                password: pgPassword,
-                port: pgPort,
-            });
+            const vatClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'vat');
+            const accountingClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'accounting');
+            const afsClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'annual-financial-statements');
+            const roaClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'register-of-assets');
             try {
                 await vatClient.connect();
                 await accountingClient.connect();

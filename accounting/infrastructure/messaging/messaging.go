@@ -6,12 +6,16 @@ import (
 	"log"
 )
 
+type Service interface {
+	Send(topic string, payload interface{}) error
+}
 
-type Service struct{
+
+type KafkaService struct{
 	Producer *kafka.Producer
 }
 
-func (s *Service) Send(topic string, payload interface{}) error {
+func (s KafkaService) Send(topic string, payload interface{}) error {
 	b, err := json.Marshal(payload)
 	if err != nil {
 		return err
