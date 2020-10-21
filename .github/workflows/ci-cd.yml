@@ -328,7 +328,7 @@ jobs:
         if: steps.changed-vat.outputs.changed == 'true'
   e2e:
     runs-on: ubuntu-latest
-    needs: [deploy-vat-staging,deploy-user-staging,deploy-register-of-assets-staging,deploy-annual-financial-statements-staging,deploy-accounting-staging,deploy-frontend-staging]
+    needs: [build-accounting,build-annual-financial-statements,build-frontend,build-register-of-assets,build-user,build-vat]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
