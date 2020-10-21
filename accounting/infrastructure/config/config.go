@@ -16,12 +16,12 @@ func Load() error {
 		envErr = godotenv.Load(projectpath.Root+"/.env.local")
 	}
 	if envErr != nil {
-		log.Printf("Error loading .env." + env + " file")
+		log.Printf("Error loading .env." + env + " file!")
 		return envErr
 	}
 	envErr = godotenv.Load(projectpath.Root+"/.env")
 	if envErr != nil {
-		log.Printf("Error loading .env file")
+		log.Printf("Error loading .env file!")
 		return envErr
 	}
 	return nil
