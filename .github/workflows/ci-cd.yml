@@ -332,18 +332,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Start CI compose
+    - name: Start Tools compose
       run: |
         docker-compose -f ci-compose.yml up -d zoo kafka minio1 minio2 postgres mongo
         ./waitForPort.sh 5432 30
         ./waitForPort.sh 9092 30
         ./waitForPort.sh 27017 30
-        docker-compose -f ci-compose.yml up -d user-service  accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
-        ./waitForPort.sh 80 30
-        ./waitForPort.sh 9090 30
-        ./waitForPort.sh 9091 30
-        ./waitForPort.sh 8080 30
-        ./waitForPort.sh 9095 30
       working-directory: infra/ci
     - name: Migrate Accounting DB
       run: POSTGRES_USER=postgres POSTGRES_PASSWORD=root POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
@@ -360,6 +354,15 @@ jobs:
     - name: Migrate VAT DB
       working-directory: vat
       run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=root ./mvnw resources:resources liquibase:update -Pstaging
+    - name: Start Services compose
+      run: |
+        docker-compose -f ci-compose.yml up user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
+        ./waitForPort.sh 80 30
+        ./waitForPort.sh 8080 30
+        ./waitForPort.sh 9095 30
+        ./waitForPort.sh 9090 30
+        ./waitForPort.sh 9091 30
+      working-directory: infra/ci
     - name: Prepare
       run: npm ci
       working-directory: e2e
