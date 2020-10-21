@@ -238,7 +238,7 @@
             <version>4.1.0</version>
             <configuration>
               <changeLogFile>src/main/liquibase/changelog.xml</changeLogFile>
-              <url>jdbc:postgresql://haidelbert:5432/vat</url>
+              <url>jdbc:postgresql://localhost:5432/vat</url>
               <username>postgres</username>
               <password>root</password>
               <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
