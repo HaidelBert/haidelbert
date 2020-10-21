@@ -15,7 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload
 
 @Configuration
 class AccountingMessageReceiver(
-        @Value("\${kafka.servers}") private val kafkaServers: String,
+        @Value("\${KAFKA_SERVERS}") private val kafkaServers: String,
         @Value("\${kafka.properties.security.protocol:}") private val kafkaSecurityProtocol: String?,
         @Value("\${kafka.properties.sasl.mechanism:}") private val kafkaSaslMechanism: String?,
         @Value("\${kafka.properties.sasl.jaas.config:}") private val kafkaSaslJaasConfig: String?,
