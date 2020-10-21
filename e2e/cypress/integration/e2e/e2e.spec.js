@@ -13,6 +13,7 @@ describe('Main Usecase', () => {
         cy.route('GET', '/vat/api/protected/annual-completion').as('getAnnualCompletions');
         cy.route('PATCH', '/vat/api/protected/annual-completion/*').as('patchAnnualCompletion');
         cy.route('POST', '/annual-financial-statements/api/protected/annual-financial-statements*').as('postAfs');
+        cy.route('POST', '/register-of-assets/api/protected/year-depreciations?year=*').as('postRoaYd');
         cy.visit("");
         cy.location('pathname').should('eq', '/login');
         cy.get('input[placeholder="Username"]').type('HaidelBert');
@@ -74,6 +75,7 @@ describe('Main Usecase', () => {
         cy.get('button[cy-data="new-yearly-depreciations"]').click();
         cy.contains('Weiter').click();
         cy.contains('Durchführen').click();
+        cy.wait('@postRoaYd');
 
         cy.get('a[href="/annual-financial-statements"]').click();
         cy.get('button[cy-data="new-afs"]').click();
