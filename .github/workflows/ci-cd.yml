@@ -347,7 +347,9 @@ jobs:
       run: ./mvnw resources:resources liquibase:update -Pstaging
     - name: Migrate ROA DB
       working-directory: register-of-assets
-      run: TYPEORM_HOST=localhost TYPEORM_PORT=5432 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=root npm run migrate
+      run: |
+        npm ci
+        TYPEORM_HOST=localhost TYPEORM_PORT=5432 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=root npm run migrate
     - name: Migrate User DB
       run: mongoUrl=mongodb://root:root@localhost:27017 go run ./cmd/migration/migration.go
       working-directory: user
