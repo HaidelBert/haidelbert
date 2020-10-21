@@ -4,7 +4,7 @@ module.exports ={
   "port": process.env.TYPEORM_PORT || 5432,
   "username": process.env.TYPEORM_USERNAME || "postgres",
   "password": process.env.TYPEORM_PASSWORD || "root",
-  "database": "register-of-assets",
+  "database": "register_of_assets",
   "synchronize": true,
   "logging": true,
   "entities": [

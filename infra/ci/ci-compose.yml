@@ -1,0 +1,164 @@
+version: '3'
+services:
+  user-service:
+    image: haidelbert/user:latest
+    environment:
+      - mongoUrl=mongodb://root:root@mongo:27017
+      - JWT_PRIVATE_KEY=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS1FJQkFBS0NBZ0VBc0xyeTdCTTdDcVBwdVVjRkJMaHBKaFQwc25TSmViRW5lZDAxSzNxelBvT1VLa3M4CjgrU3ZXemFqSjZCendmeEJpbmtNZ3dmelNLU0UzVGdWV3o1WWR6SUNwTUVrY2w4ZDhTV2g5NEx0OTNjT09VcjgKdEpOUENTVnhnU2dDNXlhdVF5WlJIVkVzaTd3S0tHUkRDWXBTYVZnL2hXU3QvWktWc2p0aXNjUUdLU0t6c2I4eAozb1FtcFFyWTVIY1Q3SVFJTzBzREtjbXFldTk0NzdMcGRObm12alVEVUIzSEJHWnJMQTRYVUZ3bFIrSm1YMjMxCjViMkxCOFBZT1dmNm9GWmlKcGpCQXpBUUdJWjc5OHoxQjdJSmpOeEFoazBZa3dkNXB6blVMOENBQTJDR1R6R00KSHFFZ3hpZ3hFV0ZLYVV6YW1KNHhRbytqblUwMXlldm5mKzd5emlaajVRTE1oVk1LcVYyTWlLVVdUK0JrcDVBRwpXdVJJQitDc3ROR3JjYk9iSEE4bzdsclhpblNwR2YwUDRUTnZmTlVYV1FHRWhkZlpQbkZCT1ZhdGdITWM1VnFtClJQL0prdDB4L2crU29CekxSQ25KN0FDNXRYZ05pa1BZMXhHL28vV3FvQTBxTFRvYXZjVC9zcjAzM1pDUVVMcDEKSXRkWUtZTVVTSjdqVWpoMHorWWtiZ1hWTGc0NFVJSHc4a1VqTjdHSG1aTnlKZWFjU28zUXAzMkxMaUVnbmVZNgozWWFPL3NpYlpqS0tncXJxRTdIWWtqTm1TRVVrakswUVVlNWQvWDViL1lSZ1hZVk56TThOR0V2WVRZdE1oU0lQCnk5SlRzRE13QmdtN0hwNmRJS0ZIdXViNlM4RmtPWHpER3VyRlFQRHlZR1QydjV6Zk5lcVE4SktEeHVrQ0F3RUEKQVFLQ0FnRUFyYXpLbFJ6QTVNLzRHOCtqS3VSZTBNRy9SckFuZWFPU2U3dmJTSU1vS3NMN2xDU2tIYm9hYWJUagoyVWxnK0wyQld5ZGlHRkp6em10KzlqYnJKZU82NUVnTk9RTmxZYy8vaUwvR3o0bW5lWTFTT1JOc0M3akg3dUVSCkRpL1h5bmpFdjlDajNmK3JteGFMbE80U3d3bGZ1NDZ4dmRFVyt4NVdaZlRlSkh2UzRoSHNMVDBMTVBVRlZTTzMKeWEwTHMxNTlDR2ZMRUFIU3UwVWl2OHcraUVxcTZ6a0ZySEhXNW9nUHdoZUc2YjNrRlNSMEhrdmRYb3hLV0xNcApoaUNjdDN5c3IrbGxwRkJUUVFiSVJOang0MElmQ0lKYUZxRWxDVGhMWVA3L2VuM2VUM05JQ2dOVEE3YXNrbzlrCnlRT25NSndLSmZrdng0Mkk2RWk4RjFieEJWUTQzcVBmUXZJUGVjbUloK0F1a2dYZXhsOTBSQlR0ajU0YVI1WDEKWEtXZ3AwblM0d2FjWGtLRG5VbkVtQVo4ODBya1NURzZPNGRTWSs5WEM4MUUxVFdySDJBTDNNZjBXek94c3ZhUApKTVdjd2NSRzhXUkZldGg5bUM4Q2UreERJZlRhUExNd2pyTHBKRFMra0NaMmhwZC9oSGxldXVCUzROdE1waVJWCmUrK3lPOWhSbDNSaFowakNTT3JYUXhuREtWWktzV3dpYitYb1BBelJGRktrNThSUlQ5YVhiUm9OTHdtM0dRZUEKWkp5cHFISERqaWRuOTI4Y2ZWZndrQU9TV2F2YytMczF5OVhRTDVBNUVFdkY5azdsQ1dmK3dvZ08ySlRaZEo0RwpTbzJ0OFFUQXk1dXdQYkNJZ3F2b0JRb25hOWRPc1JEaXNOWXVpRktqNE41Z1hiSFZEZ0VDZ2dFQkFOYkI0eWZ6CjYxcEpPLzdETXFHODFXSTl1cER2aTc5UENuM1B2djR6L1FKTExJWU1aRDg2bExGMnRZZjhzNzg5ZlF6eWRENmwKT29ackNjemJaMTc4VlRuMGlRV3dDbTA0a3ZieUkvSUhvUE94cEU2dXJrQ0QxdUhuUTZpN1U3T1VJTHUxVDJjZgpsaHJKY2d1blFIMkRHbzlzaHR2U3granBndllkdzE2UE5rd1l3cWV6WGt5bXBpT0E4SzhqZHFDMStBWE1LN3l5CjZkYVIzYUJ4d1ZGSk5DdDAyVTgxVjROaWdvRkFmRDBEclZIMEpKQUI4T2hMcm1SS3ljU0tPWDkwazg2UDYzYXQKWExNeVZFVWtOYW92Tmo0ZnMwM0pmT004RXhvVEZyUTFsOFQ2ZE15aUhjZ2xJTndtblVVRy9zdXpxMmZPMVZERgp2QlNUSmRJaDlhdW9ERmtDZ2dFQkFOS3JpU3ZnZlAraGd0VDVnTXdZV2tWeGgxaG9IaUtZbFdiUmdJM3FuUDBFCmhUVnpOSFlDMEZoY0Z3dXdNZnhrcThLWThLWGhMRjdhbExqd0Fvd0FwWjg0YnBIS0VCN01MdklGemh1eFNSYjQKd05XNGprSThZcm5aZUFyNUZBbm1zVnlJODVjVW1ENWo3VFptd0hON21rZ3V1ZjFjZUx3S1VYT3ZIVHN2TVNPZQorV1N4V0UvLzI5ekptbjB3cHc3MFJRQjZUZFRlemJMNXhpZzEya0phbXJTUW5OR3VvSzR5bUkzSTdFckprMTNIClBMbjlUWFZSVjNyUXFyMkZsT3NvS3BTUkltWmZGRmdIQlpqUWlOL3BBYUJNTmh6bUVMaExSQWZKYVcxdXczOGMKa29Bb0tRQ1pSdHg4TkF6eWNtWFlBcE82bldBNTNDVDBsY1ZHQmJoLy9SRUNnZ0VBUEQrMHpMYWZwbnE1UENYagpCSUVIbEVJaEh4dzFKbnkwUXN1UGw1MWFNOVNITHl3Mnk0NVJ2Ti9DMmQzSlI3T21hNFZ4bTBtYmU2NTMxMk1PClF4V2ppMWpSUUNrOUk1c2xqK1lxczNIMGM2bTRvT0pjdkhqQVJpd3RUUjhRd21haU1FY1RlYWpnNGE3Mk1kTEEKUXZZTzg0SE02OHJjanJsRUptdi9MWDRjQzRrK3d2R05XUSsvdUdJcUk5aGRKWVVuaWVqWHRGNjFQNTg0Z0JTcAoyWFlpRHJiL2FEdGN5OTFOSTVuRndSQlJCWmJxMHdQWVpETW5QN2ZEbDBINEU0dlBFN3BJb3NqTUl2SFJ0bndNCkdpeVltU0VubW9FV2FtR21Na0I4dEIzODhDUWJ0SFVleWRHd3dGS00rSnFYek9vaEFrU0NqK0NKZlhReXZoc00KNHhXSU1RS0NBUUVBdmZjZ0FnaXpybThkWXA1NW5aQjRGaGFCVFI3VnpheDVTL1d1VGtvNHRZN1Y3NVNxd1o5WAo3OVZha3BlVysxaHI2Vld2Nm1SWmRrN3p2Sy93Ry82WldqR3d3cFhLWTNzSytnSnlFRmFVNmJuMWFNSzZ4TTllCjF1ZGFiOHFhWHpNK3k0cFMzUEVkTjJVMENkSXR4L1MwOGxId05KNmw0Q29OdUpzM2FKN3RXSW1KcVZxaG44Ry8KcUIvQ3h4Q1FFOVFBUktZRWVPZFA1UXVGdTh5VHV6R29QeG9IenF3QkNCTm5yTEo1SUJjVVk0TzlKcGxhdDJkWgowczFHcVE5RGNha09mRmxEQTd6SXczZlJmRExPdWRtS05kbURFaHdEQjZ3VzlFNlNXck4rWmFpR0Vqb2tmdjI0CkFDbWZaZTFaYXF5VjVsQm9pTlNqeGs4bW5uUzl3OWpsZ1FLQ0FRQXRTOE9YM0trOG9sWDBtWmFVRnBSSFdQalcKSUNWcDk0UWFZZjNWRndBcHhBMFV0aU9JalpSSXowR0krMWhYQjErWjRkYU1HaHJVUWRiRjVlV0hlK1VMOU9ReQpOSndDWGRYTnNGU2dnQjlZb0NVRGJVNGpES3IwNWowWVpuL1c5YW5kQm1EQnFYbnpQd0cwMTViYWpYVGlrYU96CkdlcjZhem9paFBkd3hQZzl0bGZXSG9ielVFOVRQbWRkOE5hN2s3TFBLOFF3MjFsT3Z2VHlWalRmKzR1bENpWW8KV2hIYjRFVldmUmFxbGMyUUNvOHJHa0djWHBad0I0UDkyQnREenRaUHlMWGxlc08rR0lRaGQzTUFja1BoQmY4UgpQc3ZEajFIMVoxVFcreDRoVWxObXpxYmtyMFJKZENHUVRIUWVpd2p5eDM2SGl3UVJJdWd0ZlgzaTdvTVMKLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
+      - JWT_PUBLIC_KEY=LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUFzTHJ5N0JNN0NxUHB1VWNGQkxocApKaFQwc25TSmViRW5lZDAxSzNxelBvT1VLa3M4OCtTdld6YWpKNkJ6d2Z4Qmlua01nd2Z6U0tTRTNUZ1ZXejVZCmR6SUNwTUVrY2w4ZDhTV2g5NEx0OTNjT09Vcjh0Sk5QQ1NWeGdTZ0M1eWF1UXlaUkhWRXNpN3dLS0dSRENZcFMKYVZnL2hXU3QvWktWc2p0aXNjUUdLU0t6c2I4eDNvUW1wUXJZNUhjVDdJUUlPMHNES2NtcWV1OTQ3N0xwZE5ubQp2alVEVUIzSEJHWnJMQTRYVUZ3bFIrSm1YMjMxNWIyTEI4UFlPV2Y2b0ZaaUpwakJBekFRR0laNzk4ejFCN0lKCmpOeEFoazBZa3dkNXB6blVMOENBQTJDR1R6R01IcUVneGlneEVXRkthVXphbUo0eFFvK2puVTAxeWV2bmYrN3kKemlaajVRTE1oVk1LcVYyTWlLVVdUK0JrcDVBR1d1UklCK0NzdE5HcmNiT2JIQThvN2xyWGluU3BHZjBQNFROdgpmTlVYV1FHRWhkZlpQbkZCT1ZhdGdITWM1VnFtUlAvSmt0MHgvZytTb0J6TFJDbko3QUM1dFhnTmlrUFkxeEcvCm8vV3FvQTBxTFRvYXZjVC9zcjAzM1pDUVVMcDFJdGRZS1lNVVNKN2pVamgweitZa2JnWFZMZzQ0VUlIdzhrVWoKTjdHSG1aTnlKZWFjU28zUXAzMkxMaUVnbmVZNjNZYU8vc2liWmpLS2dxcnFFN0hZa2pObVNFVWtqSzBRVWU1ZAovWDViL1lSZ1hZVk56TThOR0V2WVRZdE1oU0lQeTlKVHNETXdCZ203SHA2ZElLRkh1dWI2UzhGa09YekRHdXJGClFQRHlZR1QydjV6Zk5lcVE4SktEeHVrQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=
+    ports:
+      - '9090:9090'
+    depends_on:
+      - kafka
+      - mongo
+  accounting-service:
+    image: haidelbert/accounting:latest
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_HOST=postgres
+      - JWT_PUBLIC_KEY=LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQ0lqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FnOEFNSUlDQ2dLQ0FnRUFzTHJ5N0JNN0NxUHB1VWNGQkxocApKaFQwc25TSmViRW5lZDAxSzNxelBvT1VLa3M4OCtTdld6YWpKNkJ6d2Z4Qmlua01nd2Z6U0tTRTNUZ1ZXejVZCmR6SUNwTUVrY2w4ZDhTV2g5NEx0OTNjT09Vcjh0Sk5QQ1NWeGdTZ0M1eWF1UXlaUkhWRXNpN3dLS0dSRENZcFMKYVZnL2hXU3QvWktWc2p0aXNjUUdLU0t6c2I4eDNvUW1wUXJZNUhjVDdJUUlPMHNES2NtcWV1OTQ3N0xwZE5ubQp2alVEVUIzSEJHWnJMQTRYVUZ3bFIrSm1YMjMxNWIyTEI4UFlPV2Y2b0ZaaUpwakJBekFRR0laNzk4ejFCN0lKCmpOeEFoazBZa3dkNXB6blVMOENBQTJDR1R6R01IcUVneGlneEVXRkthVXphbUo0eFFvK2puVTAxeWV2bmYrN3kKemlaajVRTE1oVk1LcVYyTWlLVVdUK0JrcDVBR1d1UklCK0NzdE5HcmNiT2JIQThvN2xyWGluU3BHZjBQNFROdgpmTlVYV1FHRWhkZlpQbkZCT1ZhdGdITWM1VnFtUlAvSmt0MHgvZytTb0J6TFJDbko3QUM1dFhnTmlrUFkxeEcvCm8vV3FvQTBxTFRvYXZjVC9zcjAzM1pDUVVMcDFJdGRZS1lNVVNKN2pVamgweitZa2JnWFZMZzQ0VUlIdzhrVWoKTjdHSG1aTnlKZWFjU28zUXAzMkxMaUVnbmVZNjNZYU8vc2liWmpLS2dxcnFFN0hZa2pObVNFVWtqSzBRVWU1ZAovWDViL1lSZ1hZVk56TThOR0V2WVRZdE1oU0lQeTlKVHNETXdCZ203SHA2ZElLRkh1dWI2UzhGa09YekRHdXJGClFQRHlZR1QydjV6Zk5lcVE4SktEeHVrQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=
+      - CLIENT_VAT_SERVICE=root
+      - CLIENT_AFS_SERVICE=root
+      - AWS_S3_ENDPOINT=http://minio1:9190
+      - AWS_S3_REGION=us-east-1
+      - AWS_S3_DISABLE_SSL=true
+      - AWS_S3_FORCE_PATH_STYLE=true
+      - AWS_S3_ID=admin
+      - AWS_S3_SECRET=password
+      - KAFKA_SERVERS=kafka:9092
+    ports:
+      - '9091:9091'
+    depends_on:
+      - kafka
+      - postgres
+  vat-service:
+    image: haidelbert/vat:latest
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/vat
+      - ACCOUNTINGCLIENT_MP-REST_URL=http://accounting-service:9091
+    ports:
+      - '8080:8080'
+    depends_on:
+      - kafka
+      - postgres
+  annual-financial-statements-service:
+    image: haidelbert/annual-financial-statements:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/annual_financial_statements
+      - ACCOUNTING_SERVICEURL=http://accounting:9091
+      - KAFKA_SERVERS=kafka:9092
+      - REGISTER-OF-ASSETS_SERVICEURL=http://register-of-assets-service:3000
+    ports:
+      - '9095:9095'
+    depends_on:
+      - kafka
+      - postgres
+  register-of-assets-service:
+    image: haidelbert/register-of-assets:latest
+    environment:
+      - POSTGRES_HOST=postgres
+    ports:
+      - '3000:3000'
+    depends_on:
+      - kafka
+      - postgres
+  frontend-service:
+    image: haidelbert/frontend:latest
+    ports:
+      - '80:80'
+    depends_on:
+      - register-of-assets-service
+      - annual-financial-statements-service
+      - vat-service
+      - accounting-service
+      - user-service
+  mongo:
+    image: 'mongo'
+    container_name: 'mongo'
+    environment:
+      - MONGO_INITDB_DATABASE=user
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+  postgres:
+    image: postgres
+    container_name: 'postgres'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/initdb.sql
+      - ./postgresql4-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  zoo:
+    image: zookeeper:3.4.9
+    hostname: zoo
+    ports:
+      - "2181:2181"
+    environment:
+        ZOO_MY_ID: 1
+        ZOO_PORT: 2181
+        ZOO_SERVERS: server.1=zoo:2888:3888
+    volumes:
+      - ./zk-single-kafka-single/zoo/data:/data
+      - ./zk-single-kafka-single/zoo/datalog:/datalog
+  kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zoo:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./zk-single-kafka-single/kafka/data:/var/lib/kafka/data
+    depends_on:
+      - zoo
+  minio1:
+    image: minio/minio:RELEASE.2020-08-18T19-41-00Z
+    volumes:
+      - data1-1:/data1
+      - data1-2:/data2
+    ports:
+      - "9190:9000"
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: password
+    command: server http://minio{1...2}/data{1...2}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  minio2:
+    image: minio/minio:RELEASE.2020-10-09T22-55-05Z
+    volumes:
+      - data2-1:/data1
+      - data2-2:/data2
+    ports:
+      - "9191:9000"
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: password
+    command: server http://minio{1...2}/data{1...2}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+volumes:
+  data1-1:
+  data1-2:
+  data2-1:
+  data2-2:

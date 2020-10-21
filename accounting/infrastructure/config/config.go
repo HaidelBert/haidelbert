@@ -12,7 +12,7 @@ func Load() error {
 	var envErr error
 	if env != "" {
 		envErr = godotenv.Load(projectpath.Root+"/.env." + env)
-	} else {
+	} else if fileExists(projectpath.Root+"/.env.local") {
 		envErr = godotenv.Load(projectpath.Root+"/.env.local")
 	}
 	if envErr != nil {
@@ -25,4 +25,12 @@ func Load() error {
 		return envErr
 	}
 	return nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

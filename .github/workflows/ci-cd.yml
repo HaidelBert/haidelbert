@@ -65,42 +65,6 @@ jobs:
             haidelbert/accounting:latest
           push: true
         if: steps.changed-accounting.outputs.changed == 'true'
-  deploy-accounting-staging:
-    runs-on: ubuntu-latest
-    needs: build-accounting
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-accounting
-        with:
-          paths: accounting
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.15
-        if: steps.changed-accounting.outputs.changed == 'true'
-      - name: Migrate staging DB
-        run: ENV=staging POSTGRES_USER=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} POSTGRES_HOST=staging.haidelbert.io POSTGRES_PORT=30621 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
-        working-directory: accounting
-        if: steps.changed-accounting.outputs.changed == 'true'
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/accounting accounting=haidelbert/accounting:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-accounting.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/accounting --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-accounting.outputs.changed == 'true'
   build-annual-financial-statements:
     runs-on: ubuntu-latest
     steps:
@@ -159,37 +123,6 @@ jobs:
             haidelbert/annual-financial-statements:latest
           push: true
         if: steps.changed-annual-financial-statements.outputs.changed == 'true'
-  deploy-annual-financial-statements-staging:
-    runs-on: ubuntu-latest
-    needs: build-annual-financial-statements
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-annual-financial-statements
-        with:
-          paths: annual-financial-statements
-      - name: Migrate Staging DB
-        working-directory: annual-financial-statements
-        run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
-        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/annual-financial-statements annual-financial-statements=haidelbert/annual-financial-statements:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/annual-financial-statements --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-annual-financial-statements.outputs.changed == 'true'
   build-frontend:
     runs-on: ubuntu-latest
     steps:
@@ -242,33 +175,6 @@ jobs:
             haidelbert/frontend:latest
           push: true
         if: steps.changed-frontend.outputs.changed == 'true'
-  deploy-frontend-staging:
-    runs-on: ubuntu-latest
-    needs: build-frontend
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-frontend
-        with:
-          paths: frontend
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/frontend frontend=haidelbert/frontend:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-frontend.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/frontend --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-frontend.outputs.changed == 'true'
   build-register-of-assets:
     runs-on: ubuntu-latest
     steps:
@@ -319,46 +225,6 @@ jobs:
             haidelbert/register-of-assets:latest
           push: true
         if: steps.changed-register-of-assets.outputs.changed == 'true'
-  deploy-register-of-assets-staging:
-    runs-on: ubuntu-latest
-    needs: build-register-of-assets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-register-of-assets
-        with:
-          paths: register-of-assets
-      - name: Use Node.js 12
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-        if: steps.changed-register-of-assets.outputs.changed == 'true'
-      - name: NPM CI
-        run: npm ci
-        working-directory: register-of-assets
-        if: steps.changed-register-of-assets.outputs.changed == 'true'
-      - name: Migrate Staging DB
-        working-directory: register-of-assets
-        run: TYPEORM_HOST=staging.haidelbert.io TYPEORM_PORT=30621 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} npm run migrate
-        if: steps.changed-register-of-assets.outputs.changed == 'true'
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/register-of-assets register-of-assets=haidelbert/register-of-assets:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-register-of-assets.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/register-of-assets --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-register-of-assets.outputs.changed == 'true'
   build-user:
     runs-on: ubuntu-latest
     steps:
@@ -401,42 +267,6 @@ jobs:
             haidelbert/user:${{ github.sha }}
             haidelbert/user:latest
           push: true
-        if: steps.changed-user.outputs.changed == 'true'
-  deploy-user-staging:
-    runs-on: ubuntu-latest
-    needs: build-user
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-user
-        with:
-          paths: user
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.15
-        if: steps.changed-user.outputs.changed == 'true'
-      - name: Migrate staging DB
-        run: ENV=staging mongoUrl=${{ secrets.MONGOURL_STAGING }} go run ./cmd/migration/migration.go
-        working-directory: user
-        if: steps.changed-user.outputs.changed == 'true'
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/user user=haidelbert/user:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-user.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/user --namespace haidelbert --context staging --insecure-skip-tls-verify=true
         if: steps.changed-user.outputs.changed == 'true'
   build-vat:
     runs-on: ubuntu-latest
@@ -496,53 +326,40 @@ jobs:
             haidelbert/vat:latest
           push: true
         if: steps.changed-vat.outputs.changed == 'true'
-  deploy-vat-staging:
-    runs-on: ubuntu-latest
-    needs: build-vat
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 100
-      - uses: marceloprado/has-changed-path@v1
-        id: changed-vat
-        with:
-          paths: vat
-      - name: Set up jdk11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-        if: steps.changed-vat.outputs.changed == 'true'
-      - name: Migrate Staging DB
-        working-directory: vat
-        run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} ./mvnw resources:resources liquibase:update -Pstaging
-        if: steps.changed-vat.outputs.changed == 'true'
-      - name: deploy to cluster
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
-          args: set image deployment/vat vat=haidelbert/vat:${{ github.sha }} --record --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-vat.outputs.changed == 'true'
-      - name: verify deployment
-        uses: steebchen/kubectl@master
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
-        with:
-          args: rollout status deployment/vat --namespace haidelbert --context staging --insecure-skip-tls-verify=true
-        if: steps.changed-vat.outputs.changed == 'true'
   e2e:
     runs-on: ubuntu-latest
     needs: [deploy-vat-staging,deploy-user-staging,deploy-register-of-assets-staging,deploy-annual-financial-statements-staging,deploy-accounting-staging,deploy-frontend-staging]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Start CI compose
+      run: |
+        docker-compose -f ci-compose.yml up -d zoo kafka minio1 minio2 postgres mongo
+        ./waitForPort.sh 5432 30
+        ./waitForPort.sh 9092 30
+        ./waitForPort.sh 27017 30
+        ./waitForPort.sh 80 30
+      working-directory: infra/ci
+    - name: Migrate Accounting DB
+      run: POSTGRES_USER=postgres POSTGRES_PASSWORD=root POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
+      working-directory: accounting
+    - name: Migrate AFS DB
+      working-directory: annual-financial-statements
+      run: ./mvnw resources:resources liquibase:update -Pstaging
+    - name: Migrate ROA DB
+      working-directory: register-of-assets
+      run: TYPEORM_HOST=localhost TYPEORM_PORT=5432 TYPEORM_USERNAME=postgres TYPEORM_PASSWORD=root npm run migrate
+    - name: Migrate User DB
+      run: mongoUrl=mongodb://root:root@localhost:27017 go run ./cmd/migration/migration.go
+      working-directory: user
+    - name: Migrate VAT DB
+      working-directory: vat
+      run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=root ./mvnw resources:resources liquibase:update -Pstaging
     - name: Prepare
       run: npm ci
       working-directory: e2e
     - name: Test
-      run: CYPRESS_POSTGRES_HOST=staging.haidelbert.io CYPRESS_POSTGRES_PORT=30621 CYPRESS_POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_STAGING }} CYPRESS_MONGO_URL=${{ secrets.MONGOURL_STAGING }} CYPRESS_BASE_URL=http://frontend-staging.haidelbert.io npm run cypress:run
+      run: CYPRESS_POSTGRES_HOST=localhost CYPRESS_POSTGRES_PORT=5432 CYPRESS_POSTGRES_PASSWORD=root CYPRESS_MONGO_URL=mongodb://root:root@localhost:27017 CYPRESS_BASE_URL=http://localhost npm run cypress:run
       working-directory: e2e
     - name: Archive e2e artifacts
       uses: actions/upload-artifact@v2
