@@ -81,7 +81,7 @@ jobs:
         with:
           postgresql user: postgres
           postgresql password: root
-          postgresql db: annual-financial-statements_test
+          postgresql db: annual_financial_statements_test
         if: steps.changed-annual-financial-statements.outputs.changed == 'true'
       - name: Set up jdk11
         uses: actions/setup-java@v1
