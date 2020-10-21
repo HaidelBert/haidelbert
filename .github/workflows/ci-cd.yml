@@ -357,6 +357,7 @@ jobs:
     - name: Start Services compose
       run: |
         docker-compose -f ci-compose.yml up user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
+        ./waitForPort.sh 3000 30
         ./waitForPort.sh 80 30
         ./waitForPort.sh 8080 30
         ./waitForPort.sh 9095 30
