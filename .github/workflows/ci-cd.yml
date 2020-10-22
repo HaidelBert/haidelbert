@@ -363,7 +363,6 @@ jobs:
       run: |
         chmod +x waitForEndpoint.sh
         ACCOUNTING_TAG=latest  docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
-        sleep 60  
         ./waitForPort.sh 3000 30
         ./waitForPort.sh 80 30
         ./waitForPort.sh 8080 30
@@ -380,8 +379,8 @@ jobs:
       working-directory: e2e
     - name: Collect logs
       run: |
-        docker-compose -f ci-compose.yml logs
-        docker-compose -f ci-compose.yml logs > compose.logs
+        docker-compose -f ci-compose.yml logs user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
+        docker-compose -f ci-compose.yml logs user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service > compose.logs
       working-directory: infra/ci
       if: always()
     - name: Archive e2e artifacts
