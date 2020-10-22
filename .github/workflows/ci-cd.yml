@@ -361,6 +361,7 @@ jobs:
       run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=root ./mvnw resources:resources liquibase:update -Pstaging
     - name: Start Services compose
       run: |
+        chmod +x waitForEndpoint.sh
         ACCOUNTING_TAG=latest  docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
         ./waitForPort.sh 3000 30
         ./waitForPort.sh 80 30
@@ -368,6 +369,7 @@ jobs:
         ./waitForPort.sh 9095 30
         ./waitForPort.sh 9090 30
         ./waitForPort.sh 9091 30
+        ./waitForEndpoint.sh http://localhost:9095/annual-financial-statements/api/actuator/health
       working-directory: infra/ci
     - name: Prepare
       run: npm ci

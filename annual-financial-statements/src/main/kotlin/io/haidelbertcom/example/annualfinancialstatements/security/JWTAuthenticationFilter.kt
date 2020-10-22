@@ -16,7 +16,7 @@ private const val HEADER_STRING = "Authorization"
 class JWTAuthenticationFilter(private val jwtDecoder: JwtDecoder, authenticationManager: AuthenticationManager?) : BasicAuthenticationFilter(authenticationManager) {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        val header: String = request.getHeader(HEADER_STRING)
+        val header: String? = request.getHeader(HEADER_STRING)
 
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
             chain.doFilter(request, response)

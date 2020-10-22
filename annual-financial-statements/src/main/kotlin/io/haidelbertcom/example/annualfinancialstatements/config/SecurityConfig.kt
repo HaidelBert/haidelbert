@@ -5,6 +5,7 @@ import io.haidelbertcom.example.annualfinancialstatements.security.JwtDecoder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -21,6 +22,7 @@ class SecurityConfig(@Value("\${JWT_PUBLIC_KEY}") private val base64JwtPublicKey
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(JWTAuthenticationFilter(JwtDecoder(base64JwtPublicKey), authenticationManager()))
