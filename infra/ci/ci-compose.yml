@@ -30,7 +30,7 @@ services:
       - AWS_S3_FORCE_PATH_STYLE=true
       - AWS_S3_ID=admin
       - AWS_S3_SECRET=password
-      - KAFKA_SERVERS=kafka:9092
+      - KAFKA_SERVERS=kafka:19092
     ports:
       - '9091:9091'
     depends_on:
@@ -41,8 +41,8 @@ services:
     container_name: 'ci-vat-service-container'
     hostname: vat
     environment:
-      - kafka.bootstrap.servers=kafka:9092
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - kafka.bootstrap.servers=kafka:19092
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:19092
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/vat
       - ACCOUNTINGCLIENT_MP-REST_URL=http://accounting:9091
     ports:
@@ -57,7 +57,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/annual_financial_statements
       - ACCOUNTING_SERVICEURL=http://accounting:9091
-      - KAFKA_SERVERS=kafka:9092
+      - KAFKA_SERVERS=kafka:19092
       - REGISTER-OF-ASSETS_SERVICEURL=http://register-of-assets:3000
     ports:
       - '9095:9095'

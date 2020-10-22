@@ -383,7 +383,7 @@ jobs:
       uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: cypress-artifacts
+        name: e2e-artifacts
         path: |
           e2e/cypress/screenhsots
           e2e/cypress/videos
