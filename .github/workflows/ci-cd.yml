@@ -13,6 +13,8 @@ name: CI/CD
 jobs:
   build-accounting:
     runs-on: ubuntu-latest
+    outputs:
+      accounting-tag: ${{ steps.set-accounting-tag.outputs.accounting-tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,11 +25,9 @@ jobs:
         with:
           paths: accounting
       - name: Set accounting tag
-        run: echo "::set-output name=accounting-tag::${{ github.sha }}"
-        if: steps.changed-accounting.outputs.changed == 'true'
-      - name: Set accounting tag latest
-        run: echo "::set-output name=accounting-tag::latest"
-        if: steps.changed-accounting.outputs.changed == 'false'
+        id: set-accounting-tag
+        run: |
+          [[ ${{ steps.changed-accounting.outputs.changed }} -eq 'true' ]] && echo "::set-output name=accounting-tag::${{ github.sha }}" || echo "::set-output name=accounting-tag::latest"
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
@@ -367,7 +367,7 @@ jobs:
       run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=root ./mvnw resources:resources liquibase:update -Pstaging
     - name: Start Services compose
       run: |
-        ACCOUNTING_TAG=${{ outputs.accounting-tag }}  docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
+        ACCOUNTING_TAG=${{ needs.build-accounting.output.accounting-tag }}  docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
         ./waitForPort.sh 3000 30
         ./waitForPort.sh 80 30
         ./waitForPort.sh 8080 30
