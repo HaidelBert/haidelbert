@@ -375,7 +375,7 @@ jobs:
     - name: Test
       run: CYPRESS_POSTGRES_HOST=localhost CYPRESS_POSTGRES_PORT=5432 CYPRESS_POSTGRES_PASSWORD=root CYPRESS_MONGO_URL=mongodb://root:root@localhost:27017 CYPRESS_BASE_URL=http://localhost npm run cypress:run
       working-directory: e2e
-    - name: Test
+    - name: Collect logs
       run: docker-compose -f ci-compose.yml logs > compose.logs
       working-directory: infra/ci
       if: always()
