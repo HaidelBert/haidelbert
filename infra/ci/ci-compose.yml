@@ -44,7 +44,7 @@ services:
       - kafka.bootstrap.servers=kafka:19092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:19092
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/vat
-      - ACCOUNTINGCLIENT_MP-REST_URL=http://ci-accounting-service-container:9091
+      - ACCOUNTINGCLIENT_MP-REST_URL=http://accounting:9091
     ports:
       - '8080:8080'
     depends_on:
@@ -56,9 +56,9 @@ services:
     hostname: annual-financial-statements
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/annual_financial_statements
-      - ACCOUNTING_SERVICEURL=http://ci-accounting-service-container:9091
+      - ACCOUNTING_SERVICEURL=http://accounting:9091
       - KAFKA_SERVERS=kafka:19092
-      - REGISTER-OF-ASSETS_SERVICEURL=http://ci-register-of-assets-container:3000
+      - REGISTER-OF-ASSETS_SERVICEURL=http://register-of-assets:3000
     ports:
       - '9095:9095'
     depends_on:
@@ -94,7 +94,7 @@ services:
     ports:
       - '27017-27019:27017-27019'
   postgres:
-    image: postgres
+    image: postgres:11
     container_name: 'ci-postgres-container'
     hostname: postgres
     environment:

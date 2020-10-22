@@ -334,6 +334,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Start Tools compose
       run: |
+        docker-compose -f ci-compose.yml pull
         docker-compose -f ci-compose.yml up -d zoo kafka minio1 minio2 postgres mongo
         ./waitForPort.sh 5432 30
         ./waitForPort.sh 9092 30
