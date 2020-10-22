@@ -10,6 +10,9 @@ on:
     - 'e2e/**'
     - '.github/workflows/ci-cd.yml'
 name: CI/CD
+outputs:
+  accounting-tag:
+    value: 'latest'
 jobs:
   build-accounting:
     runs-on: ubuntu-latest
@@ -22,6 +25,10 @@ jobs:
         id: changed-accounting
         with:
           paths: accounting
+      - name: Set accounting tag
+        run: echo "::set-output name=accounting-tag::${{ github.sha }}"
+        shell: bash
+        if: steps.changed-accounting.outputs.changed == 'true'
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
@@ -361,7 +368,7 @@ jobs:
       run: POSTGRES_USERNAME=postgres POSTGRES_PASSWORD=root ./mvnw resources:resources liquibase:update -Pstaging
     - name: Start Services compose
       run: |
-        docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
+        ACCOUNTING_TAG=${{ outputs.accounting-tag }}  docker-compose -f ci-compose.yml up -d user-service accounting-service vat-service annual-financial-statements-service register-of-assets-service frontend-service
         ./waitForPort.sh 3000 30
         ./waitForPort.sh 80 30
         ./waitForPort.sh 8080 30

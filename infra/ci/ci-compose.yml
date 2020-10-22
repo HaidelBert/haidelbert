@@ -14,7 +14,7 @@ services:
       - kafka
       - mongo
   accounting-service:
-    image: haidelbert/accounting:latest
+    image: haidelbert/accounting:${ACCOUNTING_TAG}
     container_name: 'ci-accounting-service-container'
     hostname: accounting
     environment:
