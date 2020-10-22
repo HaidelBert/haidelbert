@@ -43,4 +43,7 @@ connect().then(connection => {
             console.log('server started at http://localhost:'+PORT);
         });
     }
+}).catch(e => {
+    console.error(e);
+    throw e;
 });
