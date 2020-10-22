@@ -338,6 +338,9 @@ jobs:
         ./waitForPort.sh 5432 30
         ./waitForPort.sh 9092 30
         ./waitForPort.sh 27017 30
+        ./waitForPort.sh 2181 30
+        ./waitForPort.sh 9190 30
+        ./waitForPort.sh 9191 30
       working-directory: infra/ci
     - name: Migrate Accounting DB
       run: POSTGRES_USER=postgres POSTGRES_PASSWORD=root POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=accounting go run ./cmd/migration/migrate.go
