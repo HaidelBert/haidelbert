@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import { verify }  from "jsonwebtoken";
 
 export function checkJwt(req: Request, res: Response, next: NextFunction) {
-    console.log("checkJwt");
     if (!req.get("Authorization")) {
         res.status(401);
         res.send("UNAUTHORIZED");
