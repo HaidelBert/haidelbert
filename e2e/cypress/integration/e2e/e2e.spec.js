@@ -50,13 +50,13 @@ describe('Main Usecase', () => {
         cy.contains(lastYear).click();
         cy.wait("@getPreRegistration");
 
-        cy.get('tbody[cy-data="pre-registration-table"]>tr')
-            .each(($el, index, $list) => {
-                cy.wait(10);
-                cy.get('button[cy-data="mark-tx-authority-done"]').eq(0).click();
-                cy.wait("@patchPreRegistration");
-                cy.wait("@getPreRegistration");
-            });
+        [1, 2, 3, 4].forEach(() => {
+            cy.wait(10);
+            cy.get('button[cy-data="mark-tx-authority-done"]').eq(0).click();
+            cy.wait("@patchPreRegistration");
+            cy.wait("@getPreRegistration");
+            cy.wait(10);
+        });
 
         cy.get('button[cy-data="new-annual-completion"]').click();
         cy.wait(100);
@@ -70,6 +70,7 @@ describe('Main Usecase', () => {
         cy.get('button[cy-data="mark-tx-authority-done"]').eq(0).click();
         cy.wait("@patchAnnualCompletion");
         cy.wait("@getAnnualCompletions");
+        cy.wait(100);
 
         cy.get('a[href="/register-of-assets"]').click();
         cy.get('button[cy-data="new-yearly-depreciations"]').click();

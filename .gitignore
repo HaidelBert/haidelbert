@@ -4,6 +4,7 @@ infra/ci/*-volume/
 infra/ci/zk-single-kafka-single/
 infra/dev/*-volume/
 infra/dev/zk-single-kafka-single/
+infra/dev/kafka/
 .idea
 *.iml
 

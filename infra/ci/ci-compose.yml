@@ -2,6 +2,8 @@ version: '3'
 services:
   user-service:
     image: haidelbert/user:latest
+    container_name: 'ci-user-service-container'
+    hostname: user
     environment:
       - mongoUrl=mongodb://root:root@mongo:27017
       - JWT_PRIVATE_KEY=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS1FJQkFBS0NBZ0VBc0xyeTdCTTdDcVBwdVVjRkJMaHBKaFQwc25TSmViRW5lZDAxSzNxelBvT1VLa3M4CjgrU3ZXemFqSjZCendmeEJpbmtNZ3dmelNLU0UzVGdWV3o1WWR6SUNwTUVrY2w4ZDhTV2g5NEx0OTNjT09VcjgKdEpOUENTVnhnU2dDNXlhdVF5WlJIVkVzaTd3S0tHUkRDWXBTYVZnL2hXU3QvWktWc2p0aXNjUUdLU0t6c2I4eAozb1FtcFFyWTVIY1Q3SVFJTzBzREtjbXFldTk0NzdMcGRObm12alVEVUIzSEJHWnJMQTRYVUZ3bFIrSm1YMjMxCjViMkxCOFBZT1dmNm9GWmlKcGpCQXpBUUdJWjc5OHoxQjdJSmpOeEFoazBZa3dkNXB6blVMOENBQTJDR1R6R00KSHFFZ3hpZ3hFV0ZLYVV6YW1KNHhRbytqblUwMXlldm5mKzd5emlaajVRTE1oVk1LcVYyTWlLVVdUK0JrcDVBRwpXdVJJQitDc3ROR3JjYk9iSEE4bzdsclhpblNwR2YwUDRUTnZmTlVYV1FHRWhkZlpQbkZCT1ZhdGdITWM1VnFtClJQL0prdDB4L2crU29CekxSQ25KN0FDNXRYZ05pa1BZMXhHL28vV3FvQTBxTFRvYXZjVC9zcjAzM1pDUVVMcDEKSXRkWUtZTVVTSjdqVWpoMHorWWtiZ1hWTGc0NFVJSHc4a1VqTjdHSG1aTnlKZWFjU28zUXAzMkxMaUVnbmVZNgozWWFPL3NpYlpqS0tncXJxRTdIWWtqTm1TRVVrakswUVVlNWQvWDViL1lSZ1hZVk56TThOR0V2WVRZdE1oU0lQCnk5SlRzRE13QmdtN0hwNmRJS0ZIdXViNlM4RmtPWHpER3VyRlFQRHlZR1QydjV6Zk5lcVE4SktEeHVrQ0F3RUEKQVFLQ0FnRUFyYXpLbFJ6QTVNLzRHOCtqS3VSZTBNRy9SckFuZWFPU2U3dmJTSU1vS3NMN2xDU2tIYm9hYWJUagoyVWxnK0wyQld5ZGlHRkp6em10KzlqYnJKZU82NUVnTk9RTmxZYy8vaUwvR3o0bW5lWTFTT1JOc0M3akg3dUVSCkRpL1h5bmpFdjlDajNmK3JteGFMbE80U3d3bGZ1NDZ4dmRFVyt4NVdaZlRlSkh2UzRoSHNMVDBMTVBVRlZTTzMKeWEwTHMxNTlDR2ZMRUFIU3UwVWl2OHcraUVxcTZ6a0ZySEhXNW9nUHdoZUc2YjNrRlNSMEhrdmRYb3hLV0xNcApoaUNjdDN5c3IrbGxwRkJUUVFiSVJOang0MElmQ0lKYUZxRWxDVGhMWVA3L2VuM2VUM05JQ2dOVEE3YXNrbzlrCnlRT25NSndLSmZrdng0Mkk2RWk4RjFieEJWUTQzcVBmUXZJUGVjbUloK0F1a2dYZXhsOTBSQlR0ajU0YVI1WDEKWEtXZ3AwblM0d2FjWGtLRG5VbkVtQVo4ODBya1NURzZPNGRTWSs5WEM4MUUxVFdySDJBTDNNZjBXek94c3ZhUApKTVdjd2NSRzhXUkZldGg5bUM4Q2UreERJZlRhUExNd2pyTHBKRFMra0NaMmhwZC9oSGxldXVCUzROdE1waVJWCmUrK3lPOWhSbDNSaFowakNTT3JYUXhuREtWWktzV3dpYitYb1BBelJGRktrNThSUlQ5YVhiUm9OTHdtM0dRZUEKWkp5cHFISERqaWRuOTI4Y2ZWZndrQU9TV2F2YytMczF5OVhRTDVBNUVFdkY5azdsQ1dmK3dvZ08ySlRaZEo0RwpTbzJ0OFFUQXk1dXdQYkNJZ3F2b0JRb25hOWRPc1JEaXNOWXVpRktqNE41Z1hiSFZEZ0VDZ2dFQkFOYkI0eWZ6CjYxcEpPLzdETXFHODFXSTl1cER2aTc5UENuM1B2djR6L1FKTExJWU1aRDg2bExGMnRZZjhzNzg5ZlF6eWRENmwKT29ackNjemJaMTc4VlRuMGlRV3dDbTA0a3ZieUkvSUhvUE94cEU2dXJrQ0QxdUhuUTZpN1U3T1VJTHUxVDJjZgpsaHJKY2d1blFIMkRHbzlzaHR2U3granBndllkdzE2UE5rd1l3cWV6WGt5bXBpT0E4SzhqZHFDMStBWE1LN3l5CjZkYVIzYUJ4d1ZGSk5DdDAyVTgxVjROaWdvRkFmRDBEclZIMEpKQUI4T2hMcm1SS3ljU0tPWDkwazg2UDYzYXQKWExNeVZFVWtOYW92Tmo0ZnMwM0pmT004RXhvVEZyUTFsOFQ2ZE15aUhjZ2xJTndtblVVRy9zdXpxMmZPMVZERgp2QlNUSmRJaDlhdW9ERmtDZ2dFQkFOS3JpU3ZnZlAraGd0VDVnTXdZV2tWeGgxaG9IaUtZbFdiUmdJM3FuUDBFCmhUVnpOSFlDMEZoY0Z3dXdNZnhrcThLWThLWGhMRjdhbExqd0Fvd0FwWjg0YnBIS0VCN01MdklGemh1eFNSYjQKd05XNGprSThZcm5aZUFyNUZBbm1zVnlJODVjVW1ENWo3VFptd0hON21rZ3V1ZjFjZUx3S1VYT3ZIVHN2TVNPZQorV1N4V0UvLzI5ekptbjB3cHc3MFJRQjZUZFRlemJMNXhpZzEya0phbXJTUW5OR3VvSzR5bUkzSTdFckprMTNIClBMbjlUWFZSVjNyUXFyMkZsT3NvS3BTUkltWmZGRmdIQlpqUWlOL3BBYUJNTmh6bUVMaExSQWZKYVcxdXczOGMKa29Bb0tRQ1pSdHg4TkF6eWNtWFlBcE82bldBNTNDVDBsY1ZHQmJoLy9SRUNnZ0VBUEQrMHpMYWZwbnE1UENYagpCSUVIbEVJaEh4dzFKbnkwUXN1UGw1MWFNOVNITHl3Mnk0NVJ2Ti9DMmQzSlI3T21hNFZ4bTBtYmU2NTMxMk1PClF4V2ppMWpSUUNrOUk1c2xqK1lxczNIMGM2bTRvT0pjdkhqQVJpd3RUUjhRd21haU1FY1RlYWpnNGE3Mk1kTEEKUXZZTzg0SE02OHJjanJsRUptdi9MWDRjQzRrK3d2R05XUSsvdUdJcUk5aGRKWVVuaWVqWHRGNjFQNTg0Z0JTcAoyWFlpRHJiL2FEdGN5OTFOSTVuRndSQlJCWmJxMHdQWVpETW5QN2ZEbDBINEU0dlBFN3BJb3NqTUl2SFJ0bndNCkdpeVltU0VubW9FV2FtR21Na0I4dEIzODhDUWJ0SFVleWRHd3dGS00rSnFYek9vaEFrU0NqK0NKZlhReXZoc00KNHhXSU1RS0NBUUVBdmZjZ0FnaXpybThkWXA1NW5aQjRGaGFCVFI3VnpheDVTL1d1VGtvNHRZN1Y3NVNxd1o5WAo3OVZha3BlVysxaHI2Vld2Nm1SWmRrN3p2Sy93Ry82WldqR3d3cFhLWTNzSytnSnlFRmFVNmJuMWFNSzZ4TTllCjF1ZGFiOHFhWHpNK3k0cFMzUEVkTjJVMENkSXR4L1MwOGxId05KNmw0Q29OdUpzM2FKN3RXSW1KcVZxaG44Ry8KcUIvQ3h4Q1FFOVFBUktZRWVPZFA1UXVGdTh5VHV6R29QeG9IenF3QkNCTm5yTEo1SUJjVVk0TzlKcGxhdDJkWgowczFHcVE5RGNha09mRmxEQTd6SXczZlJmRExPdWRtS05kbURFaHdEQjZ3VzlFNlNXck4rWmFpR0Vqb2tmdjI0CkFDbWZaZTFaYXF5VjVsQm9pTlNqeGs4bW5uUzl3OWpsZ1FLQ0FRQXRTOE9YM0trOG9sWDBtWmFVRnBSSFdQalcKSUNWcDk0UWFZZjNWRndBcHhBMFV0aU9JalpSSXowR0krMWhYQjErWjRkYU1HaHJVUWRiRjVlV0hlK1VMOU9ReQpOSndDWGRYTnNGU2dnQjlZb0NVRGJVNGpES3IwNWowWVpuL1c5YW5kQm1EQnFYbnpQd0cwMTViYWpYVGlrYU96CkdlcjZhem9paFBkd3hQZzl0bGZXSG9ielVFOVRQbWRkOE5hN2s3TFBLOFF3MjFsT3Z2VHlWalRmKzR1bENpWW8KV2hIYjRFVldmUmFxbGMyUUNvOHJHa0djWHBad0I0UDkyQnREenRaUHlMWGxlc08rR0lRaGQzTUFja1BoQmY4UgpQc3ZEajFIMVoxVFcreDRoVWxObXpxYmtyMFJKZENHUVRIUWVpd2p5eDM2SGl3UVJJdWd0ZlgzaTdvTVMKLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
@@ -13,6 +15,8 @@ services:
       - mongo
   accounting-service:
     image: haidelbert/accounting:latest
+    container_name: 'ci-accounting-service-container'
+    hostname: accounting
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_HOST=postgres
@@ -34,6 +38,8 @@ services:
       - postgres
   vat-service:
     image: haidelbert/vat:latest
+    container_name: 'ci-vat-service-container'
+    hostname: vat
     environment:
       - kafka.bootstrap.servers=kafka:9092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -46,6 +52,8 @@ services:
       - postgres
   annual-financial-statements-service:
     image: haidelbert/annual-financial-statements:latest
+    container_name: 'ci-annual-financial-statements-service-container'
+    hostname: annual-financial-statements
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/annual_financial_statements
       - ACCOUNTING_SERVICEURL=http://accounting:9091
@@ -58,6 +66,8 @@ services:
       - postgres
   register-of-assets-service:
     image: haidelbert/register-of-assets:latest
+    container_name: 'ci-register-of-assets-container'
+    hostname: register-of-assets
     environment:
       - POSTGRES_HOST=postgres
     ports:
@@ -66,11 +76,14 @@ services:
       - postgres
   frontend-service:
     image: haidelbert/frontend:latest
+    container_name: 'ci-frontend-of-assets-container'
+    hostname: frontend
     ports:
       - '80:80'
   mongo:
     image: 'mongo'
-    container_name: 'mongo'
+    hostname: mongo
+    container_name: 'ci-mongo-container'
     environment:
       - MONGO_INITDB_DATABASE=user
       - MONGO_INITDB_ROOT_USERNAME=root
@@ -82,7 +95,8 @@ services:
       - '27017-27019:27017-27019'
   postgres:
     image: postgres
-    container_name: 'postgres'
+    container_name: 'ci-postgres-container'
+    hostname: postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
@@ -94,6 +108,7 @@ services:
   zoo:
     image: zookeeper:3.4.9
     hostname: zoo
+    container_name: 'ci-zookeeper-container'
     ports:
       - "2181:2181"
     environment:
@@ -106,6 +121,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:5.5.1
     hostname: kafka
+    container_name: 'ci-kafka-container'
     ports:
       - "9092:9092"
     environment:
@@ -122,6 +138,8 @@ services:
       - zoo
   minio1:
     image: minio/minio:RELEASE.2020-08-18T19-41-00Z
+    container_name: 'ci-minio1-container'
+    hostname: minio1
     volumes:
       - data1-1:/data1
       - data1-2:/data2
@@ -138,6 +156,8 @@ services:
       retries: 3
   minio2:
     image: minio/minio:RELEASE.2020-10-09T22-55-05Z
+    container_name: 'ci-minio2-container'
+    hostname: minio2
     volumes:
       - data2-1:/data1
       - data2-2:/data2
