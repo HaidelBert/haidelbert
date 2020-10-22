@@ -76,7 +76,7 @@ services:
       - postgres
   frontend-service:
     image: haidelbert/frontend:latest
-    container_name: 'ci-frontend-of-assets-container'
+    container_name: 'ci-frontend-container'
     hostname: frontend
     ports:
       - '80:80'
