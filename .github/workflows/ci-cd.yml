@@ -9,6 +9,7 @@ on:
     - 'annual-financial-statements/**'
     - 'e2e/**'
     - '.github/workflows/ci-cd.yml'
+    - 'infra/ci/**'
 name: CI/CD
 jobs:
   build-accounting:
