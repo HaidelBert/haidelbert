@@ -45,48 +45,40 @@ export class YearDepreciationsController {
             const assets = await this.assetsRepository.findActive(userId, year);
             const depreciations = calculateDepreciations(assets);
             await this.assetsRepository.manager.transaction(async entityManager => {
-                try {
-                    const assetDepreciations: AssetDepreciation[] = [];
-                    for(let depreciation of depreciations) {
-                        depreciation.asset.netRemainingBlockValue = depreciation.netRemainingBlockValue;
-                        depreciation.asset.active = depreciation.active;
-                        await entityManager.save(depreciation.asset);
+                const assetDepreciations: AssetDepreciation[] = [];
+                for(let depreciation of depreciations) {
+                    depreciation.asset.netRemainingBlockValue = depreciation.netRemainingBlockValue;
+                    depreciation.asset.active = depreciation.active;
+                    await entityManager.save(depreciation.asset);
 
-                        const assetDepreciation= new AssetDepreciation();
-                        assetDepreciation.asset = Promise.resolve(depreciation.asset);
-                        assetDepreciation.year = year;
-                        assetDepreciation.netRemainingBlockValue = depreciation.netRemainingBlockValue;
-                        assetDepreciation.netDepreciationAmount = depreciation.netDepreciationAmount;
+                    const assetDepreciation= new AssetDepreciation();
+                    assetDepreciation.asset = Promise.resolve(depreciation.asset);
+                    assetDepreciation.year = year;
+                    assetDepreciation.netRemainingBlockValue = depreciation.netRemainingBlockValue;
+                    assetDepreciation.netDepreciationAmount = depreciation.netDepreciationAmount;
 
-                        await entityManager.save(assetDepreciation)
-                        assetDepreciations.push(assetDepreciation);
-                    }
-                    const totalDepreciations = assetDepreciations
-                        .map(assetDepreciation => assetDepreciation.netDepreciationAmount)
-                        .reduce((accumulator, currentValue) => accumulator + currentValue);
-                    const yearDepreciation: YearDepreciation = new YearDepreciation();
-                    yearDepreciation.sumDepreciations = totalDepreciations;
-                    yearDepreciation.year = year;
-                    yearDepreciation.depreciations=Promise.resolve(assetDepreciations);
-                    yearDepreciation.userId = userId;
+                    await entityManager.save(assetDepreciation)
+                    assetDepreciations.push(assetDepreciation);
+                }
+                const totalDepreciations = assetDepreciations
+                    .map(assetDepreciation => assetDepreciation.netDepreciationAmount)
+                    .reduce((accumulator, currentValue) => accumulator + currentValue);
+                const yearDepreciation: YearDepreciation = new YearDepreciation();
+                yearDepreciation.sumDepreciations = totalDepreciations;
+                yearDepreciation.year = year;
+                yearDepreciation.depreciations=Promise.resolve(assetDepreciations);
+                yearDepreciation.userId = userId;
 
-                    await entityManager.save(yearDepreciation);
+                await entityManager.save(yearDepreciation);
 
-                    for(let assetDepreciation of assetDepreciations) {
-                        assetDepreciation.yearDepreciation = Promise.resolve(yearDepreciation);
-                        await entityManager.save(assetDepreciation)
-                    }
-
-                    res.status(201);
-                    res.json(undefined);
-                }catch(e){
-                    console.error(e);
-                    next(e);
-                    return;
+                for(let assetDepreciation of assetDepreciations) {
+                    assetDepreciation.yearDepreciation = Promise.resolve(yearDepreciation);
+                    await entityManager.save(assetDepreciation)
                 }
             });
+            res.status(201);
+            res.json(undefined);
         }catch(e) {
-            console.error(e);
             next(e);
             return;
         }
