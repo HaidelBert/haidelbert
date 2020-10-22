@@ -11,3 +11,5 @@ infra/dev/kafka/
 user/jwtRS256.key
 
 */node_modules/
+
+infra/dev/compose.logs

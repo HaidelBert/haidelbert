@@ -375,6 +375,10 @@ jobs:
     - name: Test
       run: CYPRESS_POSTGRES_HOST=localhost CYPRESS_POSTGRES_PORT=5432 CYPRESS_POSTGRES_PASSWORD=root CYPRESS_MONGO_URL=mongodb://root:root@localhost:27017 CYPRESS_BASE_URL=http://localhost npm run cypress:run
       working-directory: e2e
+    - name: Test
+      run: docker-compose -f ci-compose.yml logs > compose.logs
+      working-directory: infra/ci
+      if: always()
     - name: Archive e2e artifacts
       uses: actions/upload-artifact@v2
       if: always()
@@ -383,3 +387,4 @@ jobs:
         path: |
           e2e/cypress/screenhsots
           e2e/cypress/videos
+          infra/ci/compose.logs
