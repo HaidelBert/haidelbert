@@ -89,8 +89,6 @@ export class YearDepreciationsController {
         try {
             const year = parseInt(req.query["year"] as string, 10);
             const userId = req.query["user_id"] as string;
-            console.log(userId)
-            console.log(year)
             const yearDepreciation = await this.yearDepreciationsRepository.findByYear(userId, year);
 
             res.json(yearDepreciation);

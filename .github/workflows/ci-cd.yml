@@ -376,6 +376,7 @@ jobs:
         ./waitForPort.sh 9090 30
         ./waitForPort.sh 9091 30
         ./waitForEndpoint.sh http://localhost:9095/annual-financial-statements/api/actuator/health
+        ./waitForEndpoint.sh http://localhost:8080/health/ready
       working-directory: infra/ci
     - name: Prepare
       run: npm ci
