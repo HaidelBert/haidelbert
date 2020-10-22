@@ -10,9 +10,6 @@ on:
     - 'e2e/**'
     - '.github/workflows/ci-cd.yml'
 name: CI/CD
-outputs:
-  accounting-tag:
-    value: 'latest'
 jobs:
   build-accounting:
     runs-on: ubuntu-latest
@@ -27,8 +24,10 @@ jobs:
           paths: accounting
       - name: Set accounting tag
         run: echo "::set-output name=accounting-tag::${{ github.sha }}"
-        shell: bash
         if: steps.changed-accounting.outputs.changed == 'true'
+      - name: Set accounting tag latest
+        run: echo "::set-output name=accounting-tag::latest"
+        if: steps.changed-accounting.outputs.changed == 'false'
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
