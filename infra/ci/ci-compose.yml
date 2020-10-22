@@ -63,18 +63,11 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - kafka
       - postgres
   frontend-service:
     image: haidelbert/frontend:latest
     ports:
       - '80:80'
-    depends_on:
-      - register-of-assets-service
-      - annual-financial-statements-service
-      - vat-service
-      - accounting-service
-      - user-service
   mongo:
     image: 'mongo'
     container_name: 'mongo'
