@@ -110,8 +110,8 @@ module.exports = (on) => {
             const client = new MongoClient(mongoUrl);
             const vatClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'vat');
             const accountingClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'accounting');
-            const afsClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'annual-financial-statements');
-            const roaClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'register-of-assets');
+            const afsClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'annual_financial_statements');
+            const roaClient = buildPgClient(pgUser, pgHost, pgPassword, pgPort, 'register_of_assets');
             try {
                 await vatClient.connect();
                 await accountingClient.connect();
