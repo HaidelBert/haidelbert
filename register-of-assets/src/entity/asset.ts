@@ -27,6 +27,5 @@ export class Asset{
     @OneToMany(() => AssetDepreciation, assetDepreciation => assetDepreciation.asset, {
         eager: true
     })
-    @JoinColumn({ name: "asset_id" })
     depreciations?: AssetDepreciation[];
 }
