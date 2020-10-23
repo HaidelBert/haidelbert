@@ -78,9 +78,8 @@ export class YearDepreciationsController {
             });
             res.status(201);
             res.json(undefined);
-        }catch(e) {
-            console.error(e);
-            next(e);
+        }catch(error) {
+            next(error);
             return;
         }
     }

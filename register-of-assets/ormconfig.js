@@ -5,8 +5,9 @@ module.exports ={
   "username": process.env.TYPEORM_USERNAME || "postgres",
   "password": process.env.TYPEORM_PASSWORD || "root",
   "database": "register_of_assets",
-  "synchronize": true,
-  "logging": true,
+  "synchronize": false,
+  logging: "all",
+  debug: true,
   "entities": [
     "src/entity/**/*.ts"
   ],
