@@ -1,1 +1,5 @@
 /build/
+src/**/*.js
+src/**/*.js.map
+migration/**/*.js
+migration/**/*.js.map

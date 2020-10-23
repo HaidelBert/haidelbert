@@ -40,7 +40,7 @@ connect().then(connection => {
 
     if (require.main === module) { // true if file is executed
         app.listen(PORT, () => {
-            console.log('server started at http://localhost:'+PORT);
+            console.log('Server started at http://localhost:'+PORT);
         });
     }
 }).catch(e => {
