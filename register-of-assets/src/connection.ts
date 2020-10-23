@@ -11,6 +11,7 @@ export const connect = async (): Promise<Connection> => {
         username: process.env.POSTGRES_USERNAME,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,
-        entities: [Asset, AssetDepreciation, YearDepreciation]
+        entities: [Asset, AssetDepreciation, YearDepreciation],
+        logging: "all",
     });
 };

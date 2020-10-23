@@ -13,7 +13,7 @@ services:
     ports:
       - '27017-27019:27017-27019'
   haidelbert-postgres:
-    image: postgres
+    image: postgres:11
     container_name: 'dev-postgres-container'
     environment:
       - POSTGRES_DB=accounting
