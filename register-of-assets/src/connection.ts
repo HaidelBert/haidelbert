@@ -13,5 +13,6 @@ export const connect = async (): Promise<Connection> => {
         database: process.env.POSTGRES_DB,
         entities: [Asset, AssetDepreciation, YearDepreciation],
         logging: "all",
+        synchronize: false
     });
 };
