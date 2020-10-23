@@ -13,6 +13,7 @@ describe('Main Usecase', () => {
         cy.route('GET', '/vat/api/protected/annual-completion').as('getAnnualCompletions');
         cy.route('PATCH', '/vat/api/protected/annual-completion/*').as('patchAnnualCompletion');
         cy.route('POST', '/annual-financial-statements/api/protected/annual-financial-statements*').as('postAfs');
+        cy.route('GET', '/annual-financial-statements/api/protected/annual-financial-statements*').as('getAfs');
         cy.route('POST', '/register-of-assets/api/protected/year-depreciations?year=*').as('postRoaYd');
         cy.visit("");
         cy.location('pathname').should('eq', '/login');
@@ -84,5 +85,8 @@ describe('Main Usecase', () => {
         cy.get('input[formcontrolname="year"]').type(lastYear);
         cy.get('button[cy-data="save-afs"]').click();
         cy.wait('@postAfs');
+        cy.wait('@getAfs');
+
+        cy.contains('€15,915.86').should('be.visible');
     });
 });
