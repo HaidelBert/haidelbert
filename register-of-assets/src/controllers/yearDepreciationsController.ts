@@ -49,7 +49,6 @@ export class YearDepreciationsController {
                 for(let depreciation of depreciations) {
                     depreciation.asset.netRemainingBlockValue = depreciation.netRemainingBlockValue;
                     depreciation.asset.active = depreciation.active;
-                    delete depreciation.asset.depreciations;
                     await entityManager.save(depreciation.asset);
 
                     const assetDepreciation= new AssetDepreciation();

@@ -25,7 +25,9 @@ export class Asset{
     active: boolean = false;
 
     @OneToMany(() => AssetDepreciation, assetDepreciation => assetDepreciation.asset, {
-        eager: true
+        eager: true,
+        cascade: true,
+        onDelete: 'CASCADE'
     })
     depreciations?: AssetDepreciation[];
 }
