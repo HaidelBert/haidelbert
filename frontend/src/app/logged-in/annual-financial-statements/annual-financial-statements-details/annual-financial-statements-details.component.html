@@ -1,9 +1,0 @@
-<nz-descriptions *ngIf="!!details" [nzColumn]="1" nzTitle="Zusammenfassung">
-  <nz-descriptions-item nzTitle="Einnahmen" [nzSpan]="1">{{ formatTotalRevenue() }}</nz-descriptions-item>
-  <nz-descriptions-item nzTitle="Ausgaben" [nzSpan]="1">{{ formatTotalExpenditure() }}</nz-descriptions-item>
-  <nz-descriptions-item nzTitle="Ergebnis" [nzSpan]="1"><strong>{{ details ? formatMoney(details.result) : '' }}</strong></nz-descriptions-item>
-</nz-descriptions>
-<nz-divider></nz-divider>
-<nz-descriptions *ngIf="!!details" [nzColumn]="1" nzTitle="Details">
-  <nz-descriptions-item *ngFor="let position of positions" [nzTitle]="position.key" [nzSpan]="1">{{ formatMoney(position.net) }}</nz-descriptions-item>
-</nz-descriptions>
