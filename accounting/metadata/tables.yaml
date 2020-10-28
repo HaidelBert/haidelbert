@@ -1,1 +1,59 @@
-[]
+- table:
+    schema: public
+    name: accounting_records
+- table:
+    schema: public
+    name: annual_completions
+- table:
+    schema: public
+    name: asset_depreciations
+  object_relationships:
+  - name: asset
+    using:
+      foreign_key_constraint_on: asset_id
+  - name: year_depreciation
+    using:
+      foreign_key_constraint_on: year_depreciation_id
+- table:
+    schema: public
+    name: assets
+  array_relationships:
+  - name: asset_depreciations
+    using:
+      foreign_key_constraint_on:
+        column: asset_id
+        table:
+          schema: public
+          name: asset_depreciations
+- table:
+    schema: public
+    name: financial_statements
+  array_relationships:
+  - name: tax_authority_positions
+    using:
+      foreign_key_constraint_on:
+        column: financial_statement_id
+        table:
+          schema: public
+          name: tax_authority_positions
+- table:
+    schema: public
+    name: pre_registrations
+- table:
+    schema: public
+    name: tax_authority_positions
+  object_relationships:
+  - name: financial_statement
+    using:
+      foreign_key_constraint_on: financial_statement_id
+- table:
+    schema: public
+    name: year_depreciations
+  array_relationships:
+  - name: asset_depreciations
+    using:
+      foreign_key_constraint_on:
+        column: year_depreciation_id
+        table:
+          schema: public
+          name: asset_depreciations
