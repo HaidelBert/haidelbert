@@ -18,6 +18,7 @@ services:
     - "haidelbert-postgres-dev"
     restart: always
     environment:
+      ACTION_BASE_URL:  http://host.docker.internal:3001
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:root@haidelbert-postgres-dev:5432/haidelbert
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_DEV_MODE: "true"
